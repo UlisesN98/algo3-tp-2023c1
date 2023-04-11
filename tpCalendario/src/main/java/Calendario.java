@@ -35,6 +35,7 @@ public class Calendario {
         for (int i = 0; i < sizeListaEventos; i++){
             if Objects.equals(listaEventos.get(i).getTitulo(), titulo) {
                 listaEventos.remove(i);
+                i -= 1;
                 sizeListaEventos -= 1;
             }
         }
@@ -59,6 +60,7 @@ public class Calendario {
         for (int i = 0; i < sizeListaTareas; i++){
             if Objects.equals(listaEventos.get(i).getTitulo(), titulo) {
                 listaTareas.remove(i);
+                i -= 1;
                 sizeListaTareas -= 1;
             }
         }
