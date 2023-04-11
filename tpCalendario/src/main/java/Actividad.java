@@ -16,4 +16,8 @@ public class Actividad {
         this.fin = fin;
         this.listaAlarmas = new ArrayList<>();
     }
+
+    public String getTitulo() {
+        return titulo;
+    }
 }
