@@ -11,6 +11,7 @@ target/
 .idea/encodings
 .idea/misc
 .idea/vcs
+.idea/workspace
 *.iws
 *.iml
 *.ipr
