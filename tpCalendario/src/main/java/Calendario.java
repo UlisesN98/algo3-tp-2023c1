@@ -1,24 +1,21 @@
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class Calendario {
 
     private Integer idEventos;
     private Integer idTareas;
-    private final HashMap<Integer,Evento> listaEventos;
-    private final HashMap<Integer,Tarea> listaTareas;
+    private final ArrayList<Evento> listaEventos;
+    private final ArrayList<Tarea> listaTareas;
 
     public Calendario() {
-        this.idEventos = 0;
-        this.idTareas = 0;
-        this.listaEventos = new HashMap<>();
-        this.listaTareas = new HashMap<>();
+        this.listaEventos = new ArrayList<>();
+        this.listaTareas = new ArrayList<>();
     }
 
     public void crearEvento(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
-        var nuevoEvento = new Evento(this.idEventos, titulo, descripcion, inicio, fin);
-        listaEventos.put(this.idEventos, nuevoEvento);
-        this.idEventos += 1;
+        var nuevoEvento = new Evento(titulo, descripcion, inicio, fin);
+        listaEventos.add(nuevoEvento);
     }
 
     public void modificarEvento() {
@@ -29,12 +26,13 @@ public class Calendario {
 
     }
 
-    public void crearTarea() {
-
+    public void crearTarea(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
+        var nuevaTarea = new Tarea(titulo, descripcion, inicio, fin);
+        listaTareas.add(nuevaTarea);
     }
 
-    public void modificarTarea() {
-
+    public void modificarTarea(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
+        
     }
 
     public void eliminarTarea() {
