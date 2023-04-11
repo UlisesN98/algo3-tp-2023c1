@@ -1,9 +1,10 @@
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 public class Calendario {
 
-    private final Integer idEventos;
-    private final Integer idTareas;
+    private Integer idEventos;
+    private Integer idTareas;
     private final HashMap<Integer,Evento> listaEventos;
     private final HashMap<Integer,Tarea> listaTareas;
 
@@ -14,8 +15,10 @@ public class Calendario {
         this.listaTareas = new HashMap<>();
     }
 
-    public void crearEvento() {
-
+    public void crearEvento(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
+        var nuevoEvento = new Evento(this.idEventos, titulo, descripcion, inicio, fin);
+        listaEventos.put(this.idEventos, nuevoEvento);
+        this.idEventos += 1;
     }
 
     public void modificarEvento() {

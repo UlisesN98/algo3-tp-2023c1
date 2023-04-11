@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class Evento extends Actividad {
 
-    public Evento(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin, ArrayList<Alarma> listaAlarmas) {
-        super(titulo, descripcion, inicio, fin, listaAlarmas);
+    public Evento(Integer id, String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
+        super(id, titulo, descripcion, inicio, fin);
     }
 }

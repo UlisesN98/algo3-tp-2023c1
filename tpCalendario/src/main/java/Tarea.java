@@ -5,8 +5,8 @@ public class Tarea extends Actividad {
 
     private final boolean completada;
 
-    public Tarea(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin, ArrayList<Alarma> listaAlarmas) {
-        super(titulo, descripcion, inicio, fin, listaAlarmas);
+    public Tarea(Integer id, String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
+        super(id, titulo, descripcion, inicio, fin);
         this.completada = false;
     }
 }
