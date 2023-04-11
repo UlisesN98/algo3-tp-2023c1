@@ -9,4 +9,8 @@ public class Tarea extends Actividad {
         super(titulo, descripcion, inicio, fin);
         this.completada = false;
     }
+
+    public boolean isCompletada() {
+        return completada;
+    }
 }

@@ -20,4 +20,20 @@ public class Actividad {
     public String getTitulo() {
         return titulo;
     }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public LocalDateTime getInicio() {
+        return inicio;
+    }
+
+    public LocalDateTime getFin() {
+        return fin;
+    }
+
+    public ArrayList<Alarma> getListaAlarmas() {
+        return listaAlarmas;
+    }
 }
