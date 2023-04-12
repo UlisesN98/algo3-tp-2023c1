@@ -3,10 +3,10 @@ import java.util.ArrayList;
 
 public class Actividad {
 
-    private final String titulo;
-    private final String descripcion;
-    private final LocalDateTime inicio;
-    private final LocalDateTime fin;
+    private String titulo;
+    private String descripcion;
+    private LocalDateTime inicio;
+    private LocalDateTime fin;
     private final ArrayList<Alarma> listaAlarmas;
 
     public Actividad(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
@@ -35,5 +35,21 @@ public class Actividad {
 
     public ArrayList<Alarma> getListaAlarmas() {
         return listaAlarmas;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public void setInicio(LocalDateTime inicio) {
+        this.inicio = inicio;
+    }
+
+    public void setFin(LocalDateTime fin) {
+        this.fin = fin;
     }
 }
