@@ -24,7 +24,7 @@ public class Calendario {
 
     public void modificarEvento(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
         for (int i = 0; i < sizeListaEventos; i++){
-            if Objects.equals(listaEventos.get(i).getTitulo(), titulo) {
+            if (Objects.equals(listaEventos.get(i).getTitulo(), titulo)) {
                 var eventoModificado = new Evento(titulo, descripcion, inicio, fin);
                 listaEventos.set(i, eventoModificado);
             }
@@ -33,7 +33,7 @@ public class Calendario {
 
     public void eliminarEvento(String titulo) {
         for (int i = 0; i < sizeListaEventos; i++){
-            if Objects.equals(listaEventos.get(i).getTitulo(), titulo) {
+            if (Objects.equals(listaEventos.get(i).getTitulo(), titulo)) {
                 listaEventos.remove(i);
                 i -= 1;
                 sizeListaEventos -= 1;
@@ -49,7 +49,7 @@ public class Calendario {
 
     public void modificarTarea(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
         for (int i = 0; i < sizeListaTareas; i++){
-            if Objects.equals(listaTareas.get(i).getTitulo(), titulo) {
+            if (Objects.equals(listaTareas.get(i).getTitulo(), titulo)) {
                 var tareaModificada = new Tarea(titulo, descripcion, inicio, fin);
                 listaTareas.set(i, tareaModificada);
             }
@@ -58,7 +58,7 @@ public class Calendario {
 
     public void eliminarTarea(String titulo) {
         for (int i = 0; i < sizeListaTareas; i++){
-            if Objects.equals(listaEventos.get(i).getTitulo(), titulo) {
+            if (Objects.equals(listaEventos.get(i).getTitulo(), titulo)) {
                 listaTareas.remove(i);
                 i -= 1;
                 sizeListaTareas -= 1;
