@@ -21,16 +21,21 @@ public class Calendario {
         return null;
     }
 
-    public void crearEvento(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
+    public void crearEvento(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin, LocalDateTime[] inicioAlarmas, Integer[] efectoAlarmas) {
         var nuevoEvento = new Evento(titulo, descripcion, inicio, fin);
+        if (inicioAlarmas.length != 0) {
+            for (int i = 0; i < inicioAlarmas.length; i++) {
+                nuevoEvento.agregarAlarma(inicioAlarmas[i], efectoAlarmas[i]);
+            }
+        }
         listaEventos.add(nuevoEvento);
     }
 
-    public void modificarEvento(Evento evento, String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
-        evento.setTitulo(titulo);
-        evento.setDescripcion(descripcion);
-        evento.setInicio(inicio);
-        evento.setFin(fin);
+    public void modificarEvento(Evento evento, String nuevoTitulo, String nuevaDescripcion, LocalDateTime nuevoInicio, LocalDateTime nuevoFin) {
+        evento.setTitulo(nuevoTitulo);
+        evento.setDescripcion(nuevaDescripcion);
+        evento.setInicio(nuevoInicio);
+        evento.setFin(nuevoFin);
     }
 
     public void eliminarEvento(Evento evento) {
@@ -60,4 +65,10 @@ public class Calendario {
         }
     }
 
+    public void cambiarEstadoTarea(Tarea tarea) {
+        if (tarea.getCompletada()) {
+            tarea.setCompletada(false);
+        }
+        tarea.setCompletada(true);
+    }
 }

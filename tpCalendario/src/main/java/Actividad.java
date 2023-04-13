@@ -7,6 +7,7 @@ public class Actividad {
     private String descripcion;
     private LocalDateTime inicio;
     private LocalDateTime fin;
+    //private boolean diaCompleto;
     private final ArrayList<Alarma> listaAlarmas;
 
     public Actividad(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
@@ -14,6 +15,7 @@ public class Actividad {
         this.descripcion = descripcion;
         this.inicio = inicio;
         this.fin = fin;
+        //this.diaCompleto = false;
         this.listaAlarmas = new ArrayList<>();
     }
 
@@ -51,5 +53,25 @@ public class Actividad {
 
     public void setFin(LocalDateTime fin) {
         this.fin = fin;
+    }
+    public void agregarAlarma(LocalDateTime inicio, Integer efecto) {
+        var nuevaAlarma = new Alarma(inicio, efecto);
+        listaAlarmas.add(nuevaAlarma);
+    }
+
+    public void modificarAlarma(Alarma alarma, LocalDateTime nuevoInicio, Integer nuevoEfecto) {
+        alarma.setInicio(nuevoInicio);
+        alarma.setEfecto(nuevoEfecto);
+    }
+    public Alarma buscarAlarma(LocalDateTime inicio, Integer efecto) {
+        for (Alarma alarma : listaAlarmas) {
+            if (alarma.getInicio().equals(inicio) && alarma.getEfecto().equals((efecto))) {
+                return alarma;
+            }
+        }
+        return null;
+    }
+    public void eliminarAlarma(Alarma alarma) {
+        listaAlarmas.remove(alarma);
     }
 }
