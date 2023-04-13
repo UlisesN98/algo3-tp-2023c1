@@ -5,55 +5,37 @@ public class Actividad {
 
     private String titulo;
     private String descripcion;
-    private LocalDateTime inicio;
-    private LocalDateTime fin;
-    //private boolean diaCompleto;
+    private boolean diaCompleto;
     private final ArrayList<Alarma> listaAlarmas;
 
-    public Actividad(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
+    public Actividad(String titulo, String descripcion, boolean diaCompleto) {
         this.titulo = titulo;
         this.descripcion = descripcion;
-        this.inicio = inicio;
-        this.fin = fin;
-        //this.diaCompleto = false;
+        this.diaCompleto = diaCompleto;
         this.listaAlarmas = new ArrayList<>();
     }
 
     public String getTitulo() {
         return titulo;
     }
-
     public String getDescripcion() {
         return descripcion;
     }
-
-    public LocalDateTime getInicio() {
-        return inicio;
-    }
-
-    public LocalDateTime getFin() {
-        return fin;
-    }
-
-    public ArrayList<Alarma> getListaAlarmas() {
-        return listaAlarmas;
+    public boolean isDiaCompleto() {
+        return diaCompleto;
     }
 
     public void setTitulo(String titulo) {
         this.titulo = titulo;
     }
-
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
-
-    public void setInicio(LocalDateTime inicio) {
-        this.inicio = inicio;
+    public void setDiaCompleto(boolean diaCompleto) {
+        this.diaCompleto = diaCompleto;
     }
 
-    public void setFin(LocalDateTime fin) {
-        this.fin = fin;
-    }
+
     public void agregarAlarma(LocalDateTime inicio, Integer efecto) {
         var nuevaAlarma = new Alarma(inicio, efecto);
         listaAlarmas.add(nuevaAlarma);
@@ -63,6 +45,7 @@ public class Actividad {
         alarma.setInicio(nuevoInicio);
         alarma.setEfecto(nuevoEfecto);
     }
+
     public Alarma buscarAlarma(LocalDateTime inicio, Integer efecto) {
         for (Alarma alarma : listaAlarmas) {
             if (alarma.getInicio().equals(inicio) && alarma.getEfecto().equals((efecto))) {
@@ -71,6 +54,7 @@ public class Actividad {
         }
         return null;
     }
+
     public void eliminarAlarma(Alarma alarma) {
         listaAlarmas.remove(alarma);
     }

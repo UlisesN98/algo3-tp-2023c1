@@ -1,6 +1,5 @@
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class Calendario {
 
@@ -21,13 +20,15 @@ public class Calendario {
         return null;
     }
 
-    public void crearEvento(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin, LocalDateTime[] inicioAlarmas, Integer[] efectoAlarmas) {
-        var nuevoEvento = new Evento(titulo, descripcion, inicio, fin);
+    public void crearEvento(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio, LocalDateTime fin, LocalDateTime[] inicioAlarmas, Integer[] efectoAlarmas) {
+        var nuevoEvento = new Evento(titulo, descripcion, diaCompleto, inicio, fin);
+
         if (inicioAlarmas.length != 0) {
             for (int i = 0; i < inicioAlarmas.length; i++) {
                 nuevoEvento.agregarAlarma(inicioAlarmas[i], efectoAlarmas[i]);
             }
         }
+
         listaEventos.add(nuevoEvento);
     }
 
@@ -42,47 +43,38 @@ public class Calendario {
         listaEventos.remove(evento);
     }
 
-    public Tarea buscarTarea(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
+    public Tarea buscarTarea(String titulo, String descripcion, LocalDateTime limite) {
         for (Tarea tarea : listaTareas) {
-            if (tarea.getTitulo().equals(titulo) && tarea.getDescripcion().equals(descripcion) && tarea.getInicio().equals(inicio) && tarea.getFin().equals(fin)) {
+            if (tarea.getTitulo().equals(titulo) && tarea.getDescripcion().equals(descripcion) && tarea.getLimite().equals(limite)) {
                 return tarea;
             }
         }
         return null;
     }
 
-    public void crearTarea(String titulo, String descripcion, LocalDateTime fin, LocalDateTime[] inicioAlarmas, Integer[] efectoAlarmas) {
-        var nuevaTarea = new Tarea(titulo, descripcion, fin, fin);
+    public void crearTarea(String titulo, String descripcion, boolean diaCompleto, LocalDateTime limite, LocalDateTime[] inicioAlarmas, Integer[] efectoAlarmas) {
+        var nuevaTarea = new Tarea(titulo, descripcion, diaCompleto, limite);
+
         if (inicioAlarmas.length != 0) {
             for (int i = 0; i < inicioAlarmas.length; i++) {
                 nuevaTarea.agregarAlarma(inicioAlarmas[i], efectoAlarmas[i]);
             }
         }
+
         listaTareas.add(nuevaTarea);
     }
 
-    public void modificarTarea(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
-        for (int i = 0; i < listaTareas.size(); i++){
-            if (Objects.equals(listaTareas.get(i).getTitulo(), titulo)) {
-                var tareaModificada = new Tarea(titulo, descripcion, inicio, fin);
-                listaTareas.set(i, tareaModificada);
-            }
-        }
+    public void modificarTarea(Tarea tarea, String nuevoTitulo, String nuevaDescripcion, LocalDateTime nuevolimite) {
+        tarea.setTitulo(nuevoTitulo);
+        tarea.setDescripcion(nuevaDescripcion);
+        tarea.setLimite(nuevolimite);
     }
 
-    public void eliminarTarea(String titulo) {
-        for (int i = 0; i < listaTareas.size(); i++){
-            if (Objects.equals(listaEventos.get(i).getTitulo(), titulo)) {
-                listaTareas.remove(i);
-                i -= 1;
-            }
-        }
+    public void eliminarTarea(Tarea tarea) {
+        listaTareas.remove(tarea);
     }
 
-    public void cambiarEstadoTarea(Tarea tarea) {
-        if (tarea.getCompletada()) {
-            tarea.setCompletada(false);
-        }
+    public void completarTarea(Tarea tarea) {
         tarea.setCompletada(true);
     }
 }

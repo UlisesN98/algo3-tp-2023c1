@@ -16,7 +16,7 @@ public class CalendarioTest {
         LocalDateTime[] inicioAlarmas = {LocalDateTime.parse("2023-04-24T14:00")};
         Integer[] efectoAlarmas = {0};
 
-        nuevoCalendario.crearEvento(titulo, descripcion, inicio, fin, inicioAlarmas, efectoAlarmas);
+        nuevoCalendario.crearEvento(titulo, descripcion, false, inicio, fin, inicioAlarmas, efectoAlarmas);
         Evento nuevoEvento = nuevoCalendario.buscarEvento(titulo, descripcion, inicio, fin);
         Alarma alarmaEvento = nuevoEvento.buscarAlarma(inicioAlarmas[0], efectoAlarmas[0]);
 
@@ -45,7 +45,7 @@ public class CalendarioTest {
         LocalDateTime fin2 = LocalDateTime.parse("2018-12-14T15:00");
 
 
-        nuevoCalendario.crearEvento(titulo1, descripcion1, inicio1, fin1, inicioAlarmas, efectoAlarmas);
+        nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmas, efectoAlarmas);
         Evento nuevoEvento = nuevoCalendario.buscarEvento(titulo1, descripcion1, inicio1, fin1);
         nuevoCalendario.modificarEvento(nuevoEvento, titulo2, descripcion2, inicio2, fin2);
 
@@ -66,7 +66,7 @@ public class CalendarioTest {
         LocalDateTime[] inicioAlarmas = {LocalDateTime.parse("2018-07-10T14:00")};
         Integer[] efectoAlarmas = {0};
 
-        nuevoCalendario.crearEvento(titulo, descripcion, inicio, fin, inicioAlarmas, efectoAlarmas);
+        nuevoCalendario.crearEvento(titulo, descripcion, false, inicio, fin, inicioAlarmas, efectoAlarmas);
         Evento nuevoEvento1 = nuevoCalendario.buscarEvento(titulo, descripcion, inicio, fin);
         nuevoCalendario.eliminarEvento(nuevoEvento1);
         Evento nuevoEvento2 = nuevoCalendario.buscarEvento(titulo, descripcion, inicio, fin);
