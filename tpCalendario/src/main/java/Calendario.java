@@ -42,8 +42,22 @@ public class Calendario {
         listaEventos.remove(evento);
     }
 
-    public void crearTarea(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
-        var nuevaTarea = new Tarea(titulo, descripcion, inicio, fin);
+    public Tarea buscarTarea(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
+        for (Tarea tarea : listaTareas) {
+            if (tarea.getTitulo().equals(titulo) && tarea.getDescripcion().equals(descripcion) && tarea.getInicio().equals(inicio) && tarea.getFin().equals(fin)) {
+                return tarea;
+            }
+        }
+        return null;
+    }
+
+    public void crearTarea(String titulo, String descripcion, LocalDateTime fin, LocalDateTime[] inicioAlarmas, Integer[] efectoAlarmas) {
+        var nuevaTarea = new Tarea(titulo, descripcion, fin, fin);
+        if (inicioAlarmas.length != 0) {
+            for (int i = 0; i < inicioAlarmas.length; i++) {
+                nuevaTarea.agregarAlarma(inicioAlarmas[i], efectoAlarmas[i]);
+            }
+        }
         listaTareas.add(nuevaTarea);
     }
 
