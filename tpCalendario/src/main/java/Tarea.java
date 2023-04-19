@@ -21,10 +21,11 @@ public class Tarea extends Actividad {
         this.limite = limite;
     }
 
-    public boolean getCompletada() {
+    public boolean isCompletada() {
         return completada;
     }
-    public void setCompletada(boolean completada) {
-        this.completada = completada;
+
+    public void cambiarEstadoTarea() {
+        this.completada = !completada;
     }
 }

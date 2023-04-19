@@ -4,7 +4,6 @@ public class Evento extends Actividad {
 
     private LocalDateTime inicio;
     private LocalDateTime fin;
-    //private TipoDuracion duracion(?);
 
     public Evento(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio, LocalDateTime fin) {
         super(titulo, descripcion, diaCompleto);
@@ -16,7 +15,6 @@ public class Evento extends Actividad {
 
         this.inicio = inicio;
         this.fin = fin;
-        //this.duracion = semanal(?);
     }
 
     public LocalDateTime getInicio() {
@@ -34,4 +32,5 @@ public class Evento extends Actividad {
     public void setFin(LocalDateTime fin) {
         this.fin = fin;
     }
+
 }
