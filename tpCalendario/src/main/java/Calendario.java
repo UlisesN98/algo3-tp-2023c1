@@ -1,14 +1,30 @@
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.TreeSet;
 
 public class Calendario {
 
     private final ArrayList<Evento> listaEventos;
     private final ArrayList<Tarea> listaTareas;
 
+    private final TreeSet<Alarma> listaAlarmasCalendario;
+
     public Calendario() {
         this.listaEventos = new ArrayList<>();
         this.listaTareas = new ArrayList<>();
+        this.listaAlarmasCalendario = new TreeSet<>(new Comparator<Alarma>() {
+            @Override
+            public int compare(Alarma o1, Alarma o2) {
+                if (o1.getInicio().isBefore(o2.getInicio())){
+                    return -1;
+                }
+                if (o1.getInicio().isAfter(o2.getInicio())){
+                    return 1;
+                }
+                return 0;
+            }
+        });
     }
 
     public Evento buscarEvento(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
@@ -33,10 +49,17 @@ public class Calendario {
     }
 
     public void modificarEvento(Evento evento, String nuevoTitulo, String nuevaDescripcion, LocalDateTime nuevoInicio, LocalDateTime nuevoFin) {
-        evento.setTitulo(nuevoTitulo);
-        evento.setDescripcion(nuevaDescripcion);
-        evento.setInicio(nuevoInicio);
-        evento.setFin(nuevoFin);
+        modificar(evento, nuevoTitulo, nuevaDescripcion);
+        modificarInicioFin(evento, nuevoInicio, nuevoFin);
+    }
+
+    public void modificarInicioFin(Evento evento, LocalDateTime nuevoInicio, LocalDateTime nuevoFin){
+        if (nuevoInicio != null){
+            evento.setInicio(nuevoInicio);
+        }
+        if (nuevoFin != null){
+            evento.setFin(nuevoFin);
+        }
     }
 
     public void eliminarEvento(Evento evento) {
@@ -64,14 +87,26 @@ public class Calendario {
         listaTareas.add(nuevaTarea);
     }
 
-    public void modificarTarea(Tarea tarea, String nuevoTitulo, String nuevaDescripcion, LocalDateTime nuevolimite) {
-        tarea.setTitulo(nuevoTitulo);
-        tarea.setDescripcion(nuevaDescripcion);
-        tarea.setLimite(nuevolimite);
+    public void modificarTarea(Tarea tarea, String nuevoTitulo, String nuevaDescripcion, LocalDateTime nuevoLimite) {
+        modificar(tarea, nuevoTitulo, nuevaDescripcion);
+        modificarLimite(tarea, nuevoLimite);
     }
 
     public void eliminarTarea(Tarea tarea) {
         listaTareas.remove(tarea);
+    }
+
+    public void modificar(Actividad actividad, String nuevoTitulo, String nuevaDescripcion){
+        if (nuevoTitulo != null){
+            actividad.setTitulo(nuevoTitulo);
+        }
+        if (nuevaDescripcion != null){
+            actividad.setDescripcion(nuevaDescripcion);
+        }
+    }
+
+    public void modificarLimite(Tarea tarea, LocalDateTime nuevoLimite){
+        tarea.setLimite(nuevoLimite);
     }
 
     public void completarTarea(Tarea tarea) {
