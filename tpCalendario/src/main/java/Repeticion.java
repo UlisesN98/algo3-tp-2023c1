@@ -1,148 +1,190 @@
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.TreeSet;
 
-public class Repeticion  {
+public class Repeticion {
 
-    private LocalDateTime inicio;       //fecha en la que se comienza el primer evento
-    private String tipo;                //que tipo de repeticion es (diaria, semanal, mensual, anual)
-    private Integer frecuencia;         //cada cuanto se repite (cada 2 dias, cada 3 meses, etc.)
-    private DayOfWeek[] dias;           //si es semanal y se especifican dias, lista de los dias
-    private String tipoFinalizacion;    //como termina (nunca, despues de cierta cantidad, despues de una fecha)
-    private String finalizacion;        //si termina despues de una cantidad es un numero, si termina despues de una fecha es una fecha en formato LocalDateTime
+    private LocalDateTime inicio;
+    private TipoRepeticion tipoRep; //ENUM
+    private Integer frecuencia;
+    private DayOfWeek[] dias;
+    private TipoFinalizacion tipoFin; //ENUM
+    private String finalizacion;
 
-    public Repeticion(LocalDateTime inicio, String tipo, Integer frecuencia, String tipoFinalizacion, String finalizacion, DayOfWeek[] dias) {
+    public Repeticion(LocalDateTime inicio, TipoRepeticion tipoRep, Integer frecuencia, TipoFinalizacion tipoFin, String finalizacion, DayOfWeek[] dias) {
         this.inicio = inicio;
-        this.tipo = tipo;
+        this.tipoRep = tipoRep;
         this.frecuencia = frecuencia;
         this.dias = dias;
-        this.tipoFinalizacion = tipoFinalizacion;
+        this.tipoFin = tipoFin;
         this.finalizacion = finalizacion;
     }
 
-    //metodo prototipo para poder entender la logica de las repeticiones, no necesariamente se usara en el calendario
-    public ArrayList<LocalDateTime> obtenerRepeticiones(int limite) {
-        var repeticiones = new ArrayList<LocalDateTime>();              //lista de fechas donde se repite
-        LocalDateTime repeticion = inicio;                              //fecha inicial
-
-        //dependiendo del tipo de repeticion se calcula distinto, mas o menos
-        if (tipo.equals("diaria")) {
-            obtenerDiarias(repeticiones, repeticion, limite);
+    //falta agregarle el caso de los dias de la semana, y esta muy fea e inentendible, y si uso la funcion que obtiene todas las repeticiones y me quedo solo las que me sirven?
+    public TreeSet<LocalDateTime> obtenerRepeticionesPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
+        LocalDateTime repeticion = inicio;
+        var repeticiones = new TreeSet<LocalDateTime>(); //el treeset los guarda ordenados, puede que especificamente aca no sirva pero en una funcion de abajo si
+        if (inicio.isAfter(finIntervalo)) {
+            return repeticiones;
         }
-        if (this.tipo.equals("semanal")) {
-            obtenerSemanales(repeticiones, repeticion, limite);
-        }
-        if (this.tipo.equals("mensual")) {
-            obtenerMensuales(repeticiones, repeticion, limite);
-        }
-        if (this.tipo.equals("anual")) {
-            obtenerAnuales(repeticiones, repeticion, limite);
-        }
-        return repeticiones;
-    }
-
-    public void obtenerDiarias(ArrayList<LocalDateTime> repeticiones, LocalDateTime repeticion, int limite) {
-        if (tipoFinalizacion.equals("nunca")) {                 //caso donde la repeticion es infinita
-            for (int i = 0; i < limite; i++) {                  //se iterara hasta un limite
-                repeticiones.add(repeticion);
-                repeticion = repeticion.plusDays(frecuencia);   //tras agregar una repeticon aumenta la fecha en la cantidad definida por la frecuencia
+        if (tipoFin.equals(TipoFinalizacion.FECHA)) {
+            if (LocalDateTime.parse(finalizacion).isBefore(inicioIntervalo)) {
+                return repeticiones;
             }
-        }
-        if (tipoFinalizacion.equals("cantidad")) {                          //caso donde la repeticion la determina una cantidad
-            for (int i = 0; i < Integer.parseInt(finalizacion); i++) {      //itero hasta dicha cantidad, la paso de string a int
-                repeticiones.add(repeticion);
-                repeticion = repeticion.plusDays(frecuencia);
-            }
-        }
-        if (tipoFinalizacion.equals("fecha")) {                                     //caso donde la repeticion la determina una fecha
-            while (repeticion.isBefore(LocalDateTime.parse(finalizacion))) {        //itero hasta alcanzar la fecha, paso de string a LocalDateTime
-                repeticiones.add(repeticion);
-                repeticion = repeticion.plusDays(frecuencia);
-            }
-        }
-    }
-
-    public void obtenerSemanales(ArrayList<LocalDateTime> repeticiones, LocalDateTime repeticion, int limite) {
-        if (tipoFinalizacion.equals("nunca")) {
-            for (int i = 0; i < limite; i++) {
-                calcularSemanales(repeticiones, repeticion);        //metodo extra para calcular los dos casos posibles
-                repeticion = repeticion.plusWeeks(frecuencia);      //aumento le fecha en la cantidad de semanas definidas en el intervalo, es lo mismo para los dos casos
-            }
-        }
-        if (tipoFinalizacion.equals("cantidad")) {
-            for (int i = 0; i < Integer.parseInt(finalizacion); i++) {
-                calcularSemanales(repeticiones, repeticion);
-                repeticion = repeticion.plusWeeks(frecuencia);
-            }
-        }
-        if (tipoFinalizacion.equals("fecha")) {
-            while (repeticion.isBefore(LocalDateTime.parse(finalizacion))) {
-                calcularSemanales(repeticiones, repeticion);
-                repeticion = repeticion.plusWeeks(frecuencia);
-            }
-        }
-    }
-
-    public void calcularSemanales(ArrayList<LocalDateTime> repeticiones, LocalDateTime repeticion) {
-        if (dias.length != 0) {                                 //si tengo una lista de dias
-            for (DayOfWeek diaRep : dias) {                     //itero la lista de dias
-                DayOfWeek dia = repeticion.getDayOfWeek();      //obtengo que dia es la fecha inicial o la fecha tras aumentar una semana
-                int resta = diaRep.getValue() - dia.getValue(); //DayOfWeek le otorga un numero a cada dia -> lunes = 1, ..., domingo = 7
-                if (resta >= 0) {
-                    repeticiones.add(repeticion.plusDays(resta));               //si el resultado de la resta es positivo sumo los dias que indica
-                } else {
-                    repeticiones.add(repeticion.plusDays(resta).plusWeeks(1));  //si el resultado es negativo le sumo una semana para contrarrestar la resta
+            else {
+                while (repeticion.isBefore(LocalDateTime.parse(finalizacion)) && repeticion.isBefore(finIntervalo)) {
+                    if (repeticion.isAfter(inicioIntervalo) || repeticion.equals(inicioIntervalo)) {
+                        repeticiones.add(repeticion);
+                    }
+                    repeticion = sumarTiempo(repeticion);
                 }
+                return repeticiones;
+            }
+        }
+        if (tipoFin.equals(TipoFinalizacion.CANTIDAD)) {
+            if (obtenerUltimaRepeticion(inicio).isBefore(inicioIntervalo)) {
+                return repeticiones;
+            }
+            else {
+                for (int i = 0; i < Integer.parseInt(finalizacion); i++) {
+                    if (repeticion.isAfter(inicioIntervalo) || repeticion.equals(inicioIntervalo)) {
+                        repeticiones.add(repeticion);
+                    }
+                    repeticion = sumarTiempo(repeticion);
+                    if (repeticion.isAfter(finIntervalo)) {
+                        break;
+                    }
+                }
+                return repeticiones;
             }
         }
         else {
-            repeticiones.add(repeticion); //si no hay lista de dias se comporta como el metodo de repeticiones diarias
-        }
-        //esta funcion no esta completa, no contempla si un dia se pasa de la fecha limite, ni de la cantidad de repeticiones limite o el limite indicado
-        //dependiendo el orden de la lista de dias es como agrega las fechas, pudiendo no agregarlas en orden cronologico
-    }
-
-    //misma logica que las diarias pero aumento un mes
-    public void obtenerMensuales(ArrayList<LocalDateTime> repeticiones, LocalDateTime repeticion, int limite) {
-        if (tipoFinalizacion.equals("nunca")) {
-            for (int i = 0; i < limite; i++) {
-                repeticiones.add(repeticion);
-                repeticion = repeticion.plusMonths(frecuencia);
+            while (repeticion.isBefore(finIntervalo)) {
+                if (repeticion.isAfter(inicioIntervalo) || repeticion.equals(inicioIntervalo)) {
+                    repeticiones.add(repeticion);
+                }
+                repeticion = sumarTiempo(repeticion);
             }
-        }
-        if (tipoFinalizacion.equals("cantidad")) {
-            for (int i = 0; i < Integer.parseInt(finalizacion); i++) {
-                repeticiones.add(repeticion);
-                repeticion = repeticion.plusMonths(frecuencia);
-            }
-        }
-        if (tipoFinalizacion.equals("fecha")) {
-            while (repeticion.isBefore(LocalDateTime.parse(finalizacion))) {
-                repeticiones.add(repeticion);
-                repeticion = repeticion.plusMonths(frecuencia);
-            }
+            return repeticiones;
         }
     }
 
-    //misma logica que las diarias pero aumenta un año
-    public void obtenerAnuales(ArrayList<LocalDateTime> repeticiones, LocalDateTime repeticion, int limite) {
-        if (tipoFinalizacion.equals("nunca")) {
+    //te obtiene la ultima repeticion de los que tienen cantidad limite
+    public LocalDateTime obtenerUltimaRepeticion(LocalDateTime fecha){
+        if (tipoRep.equals(TipoRepeticion.DIARIA)) {
+            return fecha.plusDays((long) frecuencia * Integer.parseInt(finalizacion));
+        }
+        if (this.tipoRep.equals(TipoRepeticion.SEMANAL)) {
+            return fecha.plusWeeks((long) frecuencia * Integer.parseInt(finalizacion));
+        }
+        if (this.tipoRep.equals(TipoRepeticion.MENSUAL)) {
+            return fecha.plusMonths((long) frecuencia * Integer.parseInt(finalizacion));
+        }
+        else {
+            return fecha.plusYears((long) frecuencia * Integer.parseInt(finalizacion));
+        }
+    }
+
+    //esto te obtiene todas las repeticiones
+    public TreeSet<LocalDateTime> obtenerRepeticiones(int limite) {
+        var repeticiones = new TreeSet<LocalDateTime>();
+        LocalDateTime repeticion = inicio;
+
+        if (dias.length == 0) {
+            agregarRepeticiones(repeticiones, repeticion, limite); //para agregar las que respetan una intervalo
+        } else {
+            agregarRepeticionesDS(repeticiones, repeticion, limite); //para agregar las que son dias de le semana
+        }
+
+        return repeticiones;
+    }
+
+    public void agregarRepeticiones(TreeSet<LocalDateTime> repeticiones, LocalDateTime repeticion, int limite) {
+        if (tipoFin.equals(TipoFinalizacion.INFINITA)) {
             for (int i = 0; i < limite; i++) {
                 repeticiones.add(repeticion);
-                repeticion = repeticion.plusYears(frecuencia);
+                repeticion = sumarTiempo(repeticion);
             }
         }
-        if (tipoFinalizacion.equals("cantidad")) {
+        if (tipoFin.equals(TipoFinalizacion.CANTIDAD)) {
             for (int i = 0; i < Integer.parseInt(finalizacion); i++) {
                 repeticiones.add(repeticion);
-                repeticion = repeticion.plusYears(frecuencia);
+                repeticion = sumarTiempo(repeticion);
             }
         }
-        if (tipoFinalizacion.equals("fecha")) {
+        if (tipoFin.equals(TipoFinalizacion.FECHA)) {
             while (repeticion.isBefore(LocalDateTime.parse(finalizacion))) {
                 repeticiones.add(repeticion);
-                repeticion = repeticion.plusYears(frecuencia);
+                repeticion = sumarTiempo(repeticion);
             }
         }
+    }
+
+    public LocalDateTime sumarTiempo(LocalDateTime repeticion){
+        if (tipoRep.equals(TipoRepeticion.DIARIA)) {
+            return repeticion.plusDays(frecuencia);
+        }
+        if (this.tipoRep.equals(TipoRepeticion.SEMANAL)) {
+            return repeticion.plusWeeks(frecuencia);
+        }
+        if (this.tipoRep.equals(TipoRepeticion.MENSUAL)) {
+            return repeticion.plusMonths(frecuencia);
+        }
+        else {
+            return repeticion.plusYears(frecuencia);
+        }
+    }
+
+    public void agregarRepeticionesDS(TreeSet<LocalDateTime> repeticiones, LocalDateTime repeticion, int limite) {
+        if (tipoFin.equals(TipoFinalizacion.INFINITA)) {
+            for (int i = 0; i < limite;) {
+                TreeSet<LocalDateTime> repSemanalas = calcularSemanales(repeticion);
+                for (LocalDateTime r: repSemanalas) { // esto es una mierda pero es lo primero que se me ocurrio para respetar la condicion de corte
+                    if (i < limite) {
+                        repeticiones.add(r);
+                        i++;
+                    }
+                }
+                repeticion = repeticion.plusWeeks(frecuencia);
+            }
+        }
+        if (tipoFin.equals(TipoFinalizacion.CANTIDAD)) {
+            for (int i = 0; i < Integer.parseInt(finalizacion);) {
+                TreeSet<LocalDateTime> repSemanales = calcularSemanales(repeticion);
+                for (LocalDateTime r: repSemanales) { // esto es una mierda pero es lo primero que se me ocurrio para respetar la condicion de corte
+                    if (i < Integer.parseInt(finalizacion)) {
+                        repeticiones.add(r);
+                        i++;
+                    }
+                }
+                repeticion = repeticion.plusWeeks(frecuencia);
+            }
+        }
+        if (tipoFin.equals(TipoFinalizacion.FECHA)) {
+            while (repeticion.isBefore(LocalDateTime.parse(finalizacion))) {
+                TreeSet<LocalDateTime> repSemanales = calcularSemanales(repeticion);
+                for (LocalDateTime r: repSemanales) { // esto es una mierda pero es lo primero que se me ocurrio para respetar la condicion de corte
+                    if (r.isBefore(LocalDateTime.parse((finalizacion)))) {
+                        repeticiones.add(r);
+                    }
+                }
+                repeticion = repeticion.plusWeeks(frecuencia);
+            }
+        }
+    }
+
+    public TreeSet<LocalDateTime> calcularSemanales(LocalDateTime repeticion) {
+        var repeticiones = new TreeSet<LocalDateTime>();
+        for (DayOfWeek diaRep : dias) {
+                DayOfWeek dia = repeticion.getDayOfWeek();
+                int resta = diaRep.getValue() - dia.getValue();
+                if (resta >= 0) {
+                    repeticiones.add(repeticion.plusDays(resta));
+                } else {
+                    repeticiones.add(repeticion.plusDays(resta).plusWeeks(1));
+                }
+            }
+        return repeticiones;
     }
 }
+
