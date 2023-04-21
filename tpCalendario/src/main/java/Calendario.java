@@ -58,7 +58,7 @@ public class Calendario {
         var eventosIntervalo = new ArrayList<Evento>();
 
         for (Evento evento : listaEventos) {
-            if (evento.getInicio().isAfter(inicioIntervalo) && evento.getInicio().isBefore(finIntervalo)) {
+            if ((evento.getInicio().isAfter(inicioIntervalo) || evento.getInicio().isEqual(inicioIntervalo)) && evento.getInicio().isBefore(finIntervalo)) {
                 eventosIntervalo.add(evento);
             } else if (evento.getFin().isAfter(inicioIntervalo) && evento.getFin().isBefore(finIntervalo)) {
                 eventosIntervalo.add(evento);
@@ -73,7 +73,7 @@ public class Calendario {
     public ArrayList<Tarea> buscarTareaPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
         var tareasIntervalo = new ArrayList<Tarea>();
         for (Tarea tarea : listaTareas) {
-            if (tarea.getLimite().isAfter(inicioIntervalo) && tarea.getLimite().isBefore(finIntervalo)) {
+            if ((tarea.getLimite().isAfter(inicioIntervalo) || tarea.getLimite().isEqual(inicioIntervalo)) && (tarea.getLimite().isBefore(finIntervalo))) {
                 tareasIntervalo.add(tarea);
             }
         }

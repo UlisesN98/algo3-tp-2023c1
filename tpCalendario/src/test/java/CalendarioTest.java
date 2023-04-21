@@ -123,7 +123,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void eliminarTarea() { // Nota memoria, seguir corriendo pruebas desde aca y corregir errores.
+    public void eliminarTarea() {
         var nuevoCalendario = new Calendario();
         String titulo = "Tarea 3";
         String descripcion = "Tercer tarea a probar";
@@ -135,8 +135,9 @@ public class CalendarioTest {
         ArrayList<Tarea> nuevaListaTareas1 = nuevoCalendario.buscarTarea(titulo, descripcion, limite);
         Tarea tareaBuscada1 = nuevaListaTareas1.get(0);
         nuevoCalendario.eliminarTarea(tareaBuscada1);
+        ArrayList<Tarea> listaTareasPostBorrado = nuevoCalendario.buscarTarea(titulo, descripcion, limite);
 
-        assertNull(nuevaListaTareas1.get(0));
+        assertEquals(listaTareasPostBorrado.size(), 0);
     }
 
     @Test
@@ -249,8 +250,9 @@ public class CalendarioTest {
         Tarea tareaBuscada = nuevaListaTarea1.get(0);
         Alarma alarmaTarea1 = tareaBuscada.buscarAlarma(inicioAlarmas[0], efectoAlarmas[0]);
         tareaBuscada.eliminarAlarma(alarmaTarea1);
+        Alarma alarmaTareaPostBorrado = tareaBuscada.buscarAlarma(inicioAlarmas[0], efectoAlarmas[0]);
 
-        assertNull(alarmaTarea1);
+        assertNull(alarmaTareaPostBorrado);
     }
     @Test
     public void tareaCompletaIncompleta(){
@@ -413,8 +415,10 @@ public class CalendarioTest {
             nuevoCalendario.eliminarTarea(tareaActual);
         }
 
+        ArrayList<Tarea> listaTareasPostBorrado = nuevoCalendario.buscarTareaPorIntervalo(limite1, limite1.plusMinutes(1000));
+
         for (int i = 0; i < 1000; i++){
-            assertNull(nuevaListaTareas.get(i));
+            assertEquals(listaTareasPostBorrado.size(), 0);
         }
     }
 
@@ -441,8 +445,10 @@ public class CalendarioTest {
             nuevoCalendario.eliminarEvento(eventoActual);
         }
 
+        ArrayList<Evento> listaEventosPostBorrado = nuevoCalendario.buscarEventoPorIntervalo(inicio1, fin1.plusMinutes(1000));
+
         for (int i = 0; i < 1000; i++){
-            assertNull(nuevaListaEventos.get(i));
+            assertEquals(listaEventosPostBorrado.size(), 0);
         }
     }
 }
