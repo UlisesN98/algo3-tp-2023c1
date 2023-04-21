@@ -66,6 +66,13 @@ public class Calendario {
                 eventosIntervalo.add(evento);
             }
             //casos si su repeticion esta en el intervalo
+            if (evento.getRepeticion() != null){
+                Repeticion repeticion = evento.getRepeticion();
+                TreeSet<LocalDateTime> instanciasRepetidas = repeticion.calcularRepeticionesPorIntervalo(evento.getInicio(), inicioIntervalo, finIntervalo);
+                for (LocalDateTime fecha : instanciasRepetidas){
+                    eventosIntervalo.add(crearEvento(evento.getTitulo(), evento.getDescripcion(), false, fecha, repeticion.calcularSiguienteRepeticion(fecha), new ArrayList<Alarma>, new ArrayList<Efecto>, null));
+                }
+            }
         }
         return eventosIntervalo;
     }
@@ -93,8 +100,8 @@ public class Calendario {
     }
 
     // METODOS DE CREACION
-    public void crearEvento(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio, LocalDateTime fin, LocalDateTime[] inicioAlarmas, Efecto[] efectoAlarmas) {
-        var nuevoEvento = new Evento(titulo, descripcion, diaCompleto, inicio, fin);
+    public void crearEvento(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio, LocalDateTime fin, LocalDateTime[] inicioAlarmas, Efecto[] efectoAlarmas, Repeticion repeticion) {
+        var nuevoEvento = new Evento(titulo, descripcion, diaCompleto, inicio, fin, repeticion);
 
         if (inicioAlarmas.length != 0) {
             for (int i = 0; i < inicioAlarmas.length; i++) {

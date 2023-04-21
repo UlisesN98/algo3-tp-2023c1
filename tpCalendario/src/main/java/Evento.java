@@ -4,10 +4,9 @@ public class Evento extends Actividad {
 
     private LocalDateTime inicio;
     private LocalDateTime fin;
-    //private boolean repetido;
-    //private Repeticion repeticion;
+    private Repeticion repeticion;
 
-    public Evento(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio, LocalDateTime fin) { // (boolean repetido, Repeticion repeticion)
+    public Evento(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio, LocalDateTime fin, Repeticion repeticion) { // (boolean repetido, Repeticion repeticion)
         super(titulo, descripcion, diaCompleto);
 
         if (diaCompleto) {
@@ -18,8 +17,7 @@ public class Evento extends Actividad {
         this.inicio = inicio;
         this.fin = fin;
 
-        //this.repetido = repetido;
-        //this.repeticion = repeticion;
+        this.repeticion = repeticion;
     }
 
     public LocalDateTime getInicio() {
@@ -30,6 +28,8 @@ public class Evento extends Actividad {
         return fin;
     }
 
+    public Repeticion getRepeticion(){ return repeticion; }
+
     public void setInicio(LocalDateTime inicio) {
         this.inicio = inicio;
     }
@@ -37,5 +37,7 @@ public class Evento extends Actividad {
     public void setFin(LocalDateTime fin) {
         this.fin = fin;
     }
+
+    public void setRepeticion(Repeticion repeticion) { this.repeticion = repeticion; }
 
 }

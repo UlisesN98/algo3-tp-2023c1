@@ -17,7 +17,7 @@ public class CalendarioTest {
         LocalDateTime[] inicioAlarmas = {LocalDateTime.parse("2023-04-24T14:00")};
         Efecto[] efectoAlarmas = {Efecto.NOTIFICACION};
 
-        nuevoCalendario.crearEvento(titulo, descripcion, false, inicio, fin, inicioAlarmas, efectoAlarmas);
+        nuevoCalendario.crearEvento(titulo, descripcion, false, inicio, fin, inicioAlarmas, efectoAlarmas, null);
         ArrayList<Evento> nuevaListaEventos = nuevoCalendario.buscarEvento(titulo, descripcion, inicio, fin);
         Evento eventoBuscado = nuevaListaEventos.get(0);
         Alarma alarmaEvento = eventoBuscado.buscarAlarma(inicioAlarmas[0], efectoAlarmas[0]);
@@ -47,7 +47,7 @@ public class CalendarioTest {
         LocalDateTime fin2 = LocalDateTime.parse("2018-12-14T15:00");
 
 
-        nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmas, efectoAlarmas);
+        nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmas, efectoAlarmas, null);
         ArrayList<Evento> nuevaListaEventos = nuevoCalendario.buscarEvento(titulo1, descripcion1, inicio1, fin1);
         Evento eventoBuscado = nuevaListaEventos.get(0);
         nuevoCalendario.modificar(eventoBuscado, titulo2, descripcion2, inicio2, fin2);
@@ -69,7 +69,7 @@ public class CalendarioTest {
         LocalDateTime[] inicioAlarmas = {LocalDateTime.parse("2018-07-10T14:00")};
         Efecto[] efectoAlarmas = {Efecto.NOTIFICACION};
 
-        nuevoCalendario.crearEvento(titulo, descripcion, false, inicio, fin, inicioAlarmas, efectoAlarmas);
+        nuevoCalendario.crearEvento(titulo, descripcion, false, inicio, fin, inicioAlarmas, efectoAlarmas, null);
         ArrayList<Evento> nuevaListaEventos1 = nuevoCalendario.buscarEvento(titulo, descripcion, inicio, fin);
         Evento eventoBuscado1 = nuevaListaEventos1.get(0);
         nuevoCalendario.eliminarEvento(eventoBuscado1);
@@ -155,8 +155,8 @@ public class CalendarioTest {
         LocalDateTime inicio2 = LocalDateTime.parse("2018-10-10T11:25");
         LocalDateTime fin2 = LocalDateTime.parse("2018-10-10T14:25");
 
-        nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmas, efectoAlarmas);
-        nuevoCalendario.crearEvento(titulo2, descripcion2, false, inicio2, fin2, inicioAlarmas, efectoAlarmas);
+        nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmas, efectoAlarmas, null);
+        nuevoCalendario.crearEvento(titulo2, descripcion2, false, inicio2, fin2, inicioAlarmas, efectoAlarmas, null);
         ArrayList<Evento> nuevaListaEventos1 = nuevoCalendario.buscarEvento(titulo1, descripcion1, inicio1, fin1);
         ArrayList<Evento> nuevaListaEventos2 = nuevoCalendario.buscarEvento(titulo2, descripcion2, inicio2, fin2);
         Evento eventoBuscado1 = nuevaListaEventos1.get(0);
@@ -311,7 +311,7 @@ public class CalendarioTest {
         Efecto[] efectoAlarmas = {Efecto.NOTIFICACION};
 
         for (int i = 0; i < 1000; i++){
-            nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1.plusMinutes(i), fin1.plusMinutes(i), inicioAlarmas, efectoAlarmas);
+            nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1.plusMinutes(i), fin1.plusMinutes(i), inicioAlarmas, efectoAlarmas, null);
         }
 
         ArrayList<Evento> nuevaListaEventos = nuevoCalendario.buscarEventoPorIntervalo(inicio1, fin1.plusMinutes(1000));
@@ -375,7 +375,7 @@ public class CalendarioTest {
         LocalDateTime fin2 = LocalDateTime.parse("2018-10-10T23:25");
 
         for (int i = 0; i < 1000; i++){
-            nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1.plusMinutes(i), fin1.plusMinutes(i), inicioAlarmas, efectoAlarmas);
+            nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1.plusMinutes(i), fin1.plusMinutes(i), inicioAlarmas, efectoAlarmas, null);
         }
 
         ArrayList<Evento> nuevaListaEventos = nuevoCalendario.buscarEventoPorIntervalo(inicio1, fin1.plusMinutes(1000));
@@ -433,7 +433,7 @@ public class CalendarioTest {
         Efecto[] efectoAlarmas = {Efecto.NOTIFICACION};
 
         for (int i = 0; i < 1000; i++){
-            nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1.plusMinutes(i), fin1.plusMinutes(i), inicioAlarmas, efectoAlarmas);
+            nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1.plusMinutes(i), fin1.plusMinutes(i), inicioAlarmas, efectoAlarmas, null);
         }
 
         ArrayList<Evento> nuevaListaEventos = nuevoCalendario.buscarEventoPorIntervalo(inicio1, fin1.plusMinutes(1000));
