@@ -1,6 +1,6 @@
-public enum TipoRepeticion {
+public enum Frecuencia {
     DIARIA,
     SEMANAL,
     MENSUAL,
-    ANUAL,
+    ANUAL
 }

@@ -4,8 +4,10 @@ public class Evento extends Actividad {
 
     private LocalDateTime inicio;
     private LocalDateTime fin;
+    //private boolean repetido;
+    //private Repeticion repeticion;
 
-    public Evento(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio, LocalDateTime fin) {
+    public Evento(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio, LocalDateTime fin) { // (boolean repetido, Repeticion repeticion)
         super(titulo, descripcion, diaCompleto);
 
         if (diaCompleto) {
@@ -15,6 +17,9 @@ public class Evento extends Actividad {
 
         this.inicio = inicio;
         this.fin = fin;
+
+        //this.repetido = repetido;
+        //this.repeticion = repeticion;
     }
 
     public LocalDateTime getInicio() {
