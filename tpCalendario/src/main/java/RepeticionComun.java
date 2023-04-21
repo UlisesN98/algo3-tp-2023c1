@@ -5,8 +5,8 @@ public class RepeticionComun extends Repeticion {
 
     private Frecuencia frecuencia;
 
-    public RepeticionComun(Frecuencia frecuencia, Finalizacion finalizacion, String fin) {
-        super(finalizacion, fin);
+    public RepeticionComun(LocalDateTime inicio, Frecuencia frecuencia, Finalizacion finalizacion, String fin) {
+        super(inicio, finalizacion, fin);
         this.frecuencia = frecuencia;
     }
 
@@ -38,12 +38,9 @@ public class RepeticionComun extends Repeticion {
         if (finalizacion.equals(Finalizacion.FECHA)) {
             return fecha.isAfter(LocalDateTime.parse(fin));
         } else if (finalizacion.equals(Finalizacion.CANTIDAD)) {
-            return fecha.isAfter(sumarTiempo(fecha, Integer.parseInt(fin)));
+            return fecha.isAfter(sumarTiempo(inicio, Integer.parseInt(fin)));
         } else {
             return false;
         }
     }
-
-
-
 }

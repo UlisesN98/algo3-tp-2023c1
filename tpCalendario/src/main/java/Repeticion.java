@@ -3,10 +3,12 @@ import java.util.TreeSet;
 
 public abstract class Repeticion {
 
+    protected LocalDateTime inicio;
     protected Finalizacion finalizacion;
     protected String fin;
 
-    public Repeticion(Finalizacion finalizacion, String fin) {
+    public Repeticion(LocalDateTime inicio, Finalizacion finalizacion, String fin) {
+        this.inicio = inicio;
         this.finalizacion = finalizacion;
         this.fin = fin;
     }

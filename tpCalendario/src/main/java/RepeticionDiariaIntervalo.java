@@ -4,8 +4,9 @@ import java.util.TreeSet;
 public class RepeticionDiariaIntervalo extends Repeticion {
 
     private Integer intervalo;
-    public RepeticionDiariaIntervalo(Integer intervalo, Finalizacion finalizacion, String fin) {
-        super(finalizacion, fin);
+
+    public RepeticionDiariaIntervalo(LocalDateTime inicio, Integer intervalo, Finalizacion finalizacion, String fin) {
+        super(inicio, finalizacion, fin);
         this.intervalo = intervalo;
     }
 
@@ -25,10 +26,9 @@ public class RepeticionDiariaIntervalo extends Repeticion {
         if (finalizacion.equals(Finalizacion.FECHA)) {
             return fecha.isAfter(LocalDateTime.parse(fin));
         } else if (finalizacion.equals(Finalizacion.CANTIDAD)) {
-            return fecha.isAfter(fecha.plusDays((long) intervalo * Integer.parseInt(fin)));
+            return fecha.isAfter(inicio.plusDays((long) intervalo * Integer.parseInt(fin)));
         } else {
             return false;
         }
     }
-
 }
