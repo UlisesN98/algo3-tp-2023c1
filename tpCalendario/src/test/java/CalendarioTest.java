@@ -73,8 +73,9 @@ public class CalendarioTest {
         ArrayList<Evento> nuevaListaEventos1 = nuevoCalendario.buscarEvento(titulo, descripcion, inicio, fin);
         Evento eventoBuscado1 = nuevaListaEventos1.get(0);
         nuevoCalendario.eliminarEvento(eventoBuscado1);
+        ArrayList<Evento> listaEventosPostBorrado = nuevoCalendario.buscarEvento(titulo, descripcion, inicio, fin);
 
-        assertNull(nuevaListaEventos1.get(0));
+        assertEquals(listaEventosPostBorrado.size(), 0);
     }
 
     @Test
@@ -114,7 +115,7 @@ public class CalendarioTest {
         nuevoCalendario.crearTarea(titulo, descripcion, false, limite, inicioAlarmas, efectoAlarmas);
         ArrayList<Tarea> nuevaListaTareas = nuevoCalendario.buscarTarea(titulo, descripcion, limite);
         Tarea tareaBuscada = nuevaListaTareas.get(0);
-        nuevoCalendario.modificar(tareaBuscada, titulo2, descripcion2, limite);
+        nuevoCalendario.modificar(tareaBuscada, titulo2, descripcion2, limite2);
 
         assertEquals(titulo2, tareaBuscada.getTitulo());
         assertEquals(descripcion2, tareaBuscada.getDescripcion());
@@ -122,7 +123,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void eliminarTarea() {
+    public void eliminarTarea() { // Nota memoria, seguir corriendo pruebas desde aca y corregir errores.
         var nuevoCalendario = new Calendario();
         String titulo = "Tarea 3";
         String descripcion = "Tercer tarea a probar";
