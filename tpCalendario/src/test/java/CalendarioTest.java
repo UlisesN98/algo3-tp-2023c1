@@ -1,6 +1,5 @@
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -456,8 +455,7 @@ public class CalendarioTest {
 
         for (int i = 0; i < 1000; i++){
             Tarea tareaActual = nuevaListaTareas.get(i);
-            Alarma alarmaActual = tareaActual.buscarAlarma(inicioAlarmas[0], efectoAlarmas[0]);
-            tareaActual.eliminarAlarma(alarmaActual);
+            nuevoCalendario.eliminarAlarma(tareaActual, inicioAlarmas[0], efectoAlarmas[0]);
             nuevoCalendario.eliminarTarea(tareaActual);
         }
 
@@ -486,8 +484,7 @@ public class CalendarioTest {
 
         for (int i = 0; i < 1000; i++){
             Evento eventoActual = nuevaListaEventos.get(i);
-            Alarma alarmaActual = eventoActual.buscarAlarma(inicioAlarmas[0], efectoAlarmas[0]);
-            eventoActual.eliminarAlarma(alarmaActual);
+            nuevoCalendario.eliminarAlarma(eventoActual, inicioAlarmas[0], efectoAlarmas[0]);
             nuevoCalendario.eliminarEvento(eventoActual);
         }
 
@@ -496,5 +493,89 @@ public class CalendarioTest {
         for (int i = 0; i < 1000; i++){
             assertEquals(listaEventosPostBorrado.size(), 0);
         }
+    }
+
+    @Test
+    public void testProximaDisparoAlarma(){
+        var nuevoCalendario = new Calendario();
+        String titulo1 = "Evento A";
+        String descripcion1 = "Desc. evento A";
+        LocalDateTime inicio1 = LocalDateTime.parse("2018-10-10T11:25");
+        LocalDateTime fin1 = LocalDateTime.parse("2018-10-10T14:25");
+        LocalDateTime[] inicioAlarmasEvento = {LocalDateTime.parse("2018-10-10T14:00")};
+
+        String titulo2 = "Tarea A";
+        String descripcion2 = "Desc. Tarea A";
+        LocalDateTime limite1 = LocalDateTime.parse("2018-10-10T18:25");
+        LocalDateTime[] inicioAlarmasTarea = {LocalDateTime.parse("2018-10-10T14:30")};
+
+        LocalDateTime inicioAlarmaTarea2 = LocalDateTime.parse("2018-10-10T15:30");
+
+        LocalDateTime inicioAlarmaEvento2 = LocalDateTime.parse("2018-10-10T15:00");
+        LocalDateTime inicioAlarmaEvento3 = LocalDateTime.parse("2018-10-10T16:00");
+
+        Efecto[] efectoAlarmas = {Efecto.NOTIFICACION};
+
+        nuevoCalendario.setTiempoActual(LocalDateTime.parse("2018-10-10T12:00"));
+
+        nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmasEvento, efectoAlarmas, null);
+        ArrayList<Evento> nuevaListaEventos = nuevoCalendario.buscarEvento(titulo1, descripcion1, inicio1, fin1);
+        Evento eventoBuscado = nuevaListaEventos.get(0);
+
+        nuevoCalendario.agregarAlarma(eventoBuscado, inicioAlarmaEvento2, efectoAlarmas[0]);
+        nuevoCalendario.agregarAlarma(eventoBuscado, inicioAlarmaEvento3, efectoAlarmas[0]);
+
+        nuevoCalendario.crearTarea(titulo2, descripcion2, false, limite1, inicioAlarmasTarea, efectoAlarmas);
+        ArrayList<Tarea> nuevaListaTareas = nuevoCalendario.buscarTarea(titulo2, descripcion2, limite1);
+        Tarea tareaBuscada = nuevaListaTareas.get(0);
+
+        nuevoCalendario.agregarAlarma(tareaBuscada, inicioAlarmaTarea2, efectoAlarmas[0]);
+
+        Alarma alarmaEvento1 = eventoBuscado.buscarAlarma(inicioAlarmasEvento[0], efectoAlarmas[0]);
+        Alarma alarmaEvento2 = eventoBuscado.buscarAlarma(inicioAlarmaEvento2, efectoAlarmas[0]);
+        Alarma alarmaEvento3 = eventoBuscado.buscarAlarma(inicioAlarmaEvento3, efectoAlarmas[0]);
+
+        Alarma alarmaTarea1 = tareaBuscada.buscarAlarma(inicioAlarmasTarea[0], efectoAlarmas[0]);
+        Alarma alarmaTarea2 = tareaBuscada.buscarAlarma(inicioAlarmaTarea2, efectoAlarmas[0]);
+
+        assertEquals(alarmaEvento1, nuevoCalendario.obtenerProximaAlarma());
+        assertEquals(alarmaEvento1, nuevoCalendario.obtenerProximaAlarma()); // A proposito, chequea que la proxima alarma siga siendo la misma a pesar de que no cambio nada.
+
+        assertFalse(nuevoCalendario.iniciaProximaAlarma());
+
+        assertEquals(nuevoCalendario.dispararProximaAlarma(), eventoBuscado); // Primera alarma deberia en teoria haber sido removida.
+
+        assertEquals(alarmaTarea1, nuevoCalendario.obtenerProximaAlarma());
+        assertEquals(alarmaTarea1, nuevoCalendario.obtenerProximaAlarma());
+
+        assertFalse(nuevoCalendario.iniciaProximaAlarma());
+
+        assertEquals(nuevoCalendario.dispararProximaAlarma(), tareaBuscada); // Segunda alarma removida.
+
+        assertEquals(alarmaEvento2, nuevoCalendario.obtenerProximaAlarma());
+        assertEquals(alarmaEvento2, nuevoCalendario.obtenerProximaAlarma());
+
+        assertFalse(nuevoCalendario.iniciaProximaAlarma());
+
+        assertEquals(nuevoCalendario.dispararProximaAlarma(), eventoBuscado); // Tercera removida.
+
+        assertEquals(alarmaTarea2, nuevoCalendario.obtenerProximaAlarma());
+        assertEquals(alarmaTarea2, nuevoCalendario.obtenerProximaAlarma());
+
+        assertFalse(nuevoCalendario.iniciaProximaAlarma());
+
+        assertEquals(nuevoCalendario.dispararProximaAlarma(), tareaBuscada); // Cuarta removida.
+
+        nuevoCalendario.setTiempoActual(LocalDateTime.parse("2018-10-10T16:00"));
+
+        assertEquals(alarmaEvento3, nuevoCalendario.obtenerProximaAlarma());
+        assertEquals(alarmaEvento3, nuevoCalendario.obtenerProximaAlarma());
+
+        assertTrue(nuevoCalendario.iniciaProximaAlarma());
+
+        assertEquals(nuevoCalendario.dispararProximaAlarma(), eventoBuscado); // Quinta y ultima alarma removida.
+
+        assertNull(eventoBuscado.buscarAlarma(inicioAlarmaEvento2, efectoAlarmas[0]));
+        assertNull(tareaBuscada.buscarAlarma(inicioAlarmaTarea2, efectoAlarmas[0]));
     }
 }

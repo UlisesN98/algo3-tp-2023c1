@@ -11,6 +11,10 @@ public class Calendario {
 
     private final TreeSet<Alarma> listaAlarmas;
 
+    public void setTiempoActual(LocalDateTime tiempoActual) {
+        this.tiempoActual = tiempoActual;
+    }
+
     public Calendario() {
         this.tiempoActual = LocalDateTime.now();
         this.listaEventos = new ArrayList<>();
