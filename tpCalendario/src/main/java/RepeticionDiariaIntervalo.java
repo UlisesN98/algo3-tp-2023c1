@@ -3,12 +3,33 @@ import java.util.TreeSet;
 
 public class RepeticionDiariaIntervalo extends Repeticion {
 
-    private Integer intervalo;
+    private Integer intervalo; // Intervalo de dias en los que ocurre una repeticion
+    private LocalDateTime fin; // Fecha limite de la repeticion
 
-    public RepeticionDiariaIntervalo(LocalDateTime inicio, Integer intervalo, Finalizacion finalizacion, String fin) {
-        super(inicio, finalizacion, fin);
+    // Constructor para repeticiones sin limite
+    public RepeticionDiariaIntervalo(LocalDateTime inicio, Integer intervalo) {
+        super(inicio);
         this.intervalo = intervalo;
+        this.fin = null;
     }
+
+    // Constructor para repeticiones con fecha limite
+    public RepeticionDiariaIntervalo(LocalDateTime inicio, LocalDateTime fin, Integer intervalo) {
+        super(inicio);
+        this.intervalo = intervalo;
+        this.fin = fin;
+    }
+
+    // Constructor para repeticiones con cantidad limite
+    public RepeticionDiariaIntervalo(LocalDateTime inicio, Integer fin, Integer intervalo) {
+        super(inicio);
+        this.intervalo = intervalo;
+        this.fin = calcularFechaFin(fin - 1);
+
+    }
+
+    // Metodo que calcula la fecha limite en base a la cantidad especificada
+    private LocalDateTime calcularFechaFin(Integer fin) { return inicio.plusDays((long) intervalo * fin); }
 
     @Override
     public LocalDateTime calcularSiguienteRepeticion(LocalDateTime fecha) {
@@ -17,18 +38,34 @@ public class RepeticionDiariaIntervalo extends Repeticion {
     }
 
     @Override
-    public TreeSet<LocalDateTime> calcularRepeticionesPorIntervalo(LocalDateTime fecha, LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
-        return null;
+    public TreeSet<LocalDateTime> calcularRepeticionesPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
+        LocalDateTime repeticion = inicio;
+        var repeticiones = new TreeSet<LocalDateTime>();
+
+        if (repeticion.isAfter(finIntervalo)) {
+            return repeticiones;
+        }
+
+        if (superoLimite(inicioIntervalo)) {
+            return repeticiones;
+        }
+
+        while (repeticion.isBefore(finIntervalo) || repeticion.equals(finIntervalo)) {
+            if (repeticion.isAfter(inicioIntervalo) || repeticion.equals(inicioIntervalo)) {
+                repeticiones.add(repeticion);
+            }
+            repeticion = repeticion.plusDays(intervalo);
+
+            if (superoLimite(repeticion)) {break;}
+        }
+        return repeticiones;
     }
 
-    @Override
-    public boolean superoLimite(LocalDateTime fecha) {
-        if (finalizacion.equals(Finalizacion.FECHA)) {
-            return fecha.isAfter(LocalDateTime.parse(fin));
-        } else if (finalizacion.equals(Finalizacion.CANTIDAD)) {
-            return fecha.isAfter(inicio.plusDays((long) intervalo * Integer.parseInt(fin)));
-        } else {
+    // Indica si la fecha pasada por parametro supero la fecha limite
+    private boolean superoLimite(LocalDateTime fecha) {
+        if (fin == null) {
             return false;
         }
+        return fecha.isAfter(fin);
     }
 }

@@ -3,11 +3,33 @@ import java.util.TreeSet;
 
 public class RepeticionComun extends Repeticion {
 
-    private Frecuencia frecuencia;
+    private Frecuencia frecuencia; // Frecuencia que puede tomar una repeticion
+    private LocalDateTime fin; // Fecha limite de la repeticion
 
-    public RepeticionComun(LocalDateTime inicio, Frecuencia frecuencia, Finalizacion finalizacion, String fin) {
-        super(inicio, finalizacion, fin);
+    // Constructor para repeticiones sin limite
+    public RepeticionComun(LocalDateTime inicio, Frecuencia frecuencia) {
+        super(inicio);
         this.frecuencia = frecuencia;
+        this.fin = null;
+    }
+
+    // Constructor para repeticiones con fecha limite
+    public RepeticionComun(LocalDateTime inicio, LocalDateTime fin, Frecuencia frecuencia) {
+        super(inicio);
+        this.frecuencia = frecuencia;
+        this.fin = fin;
+    }
+
+    // Constructor para repeticiones con cantidad limite
+    public RepeticionComun(LocalDateTime inicio, Integer fin, Frecuencia frecuencia) {
+        super(inicio);
+        this.frecuencia = frecuencia;
+        this.fin = calcularFechaFin(fin - 1);
+    }
+
+    // Metodo que calcula la fecha limite en base a la cantidad especificada
+    private LocalDateTime calcularFechaFin(Integer fin) {
+        return sumarTiempo(inicio, fin);
     }
 
     @Override
@@ -17,10 +39,30 @@ public class RepeticionComun extends Repeticion {
     }
 
     @Override
-    public TreeSet<LocalDateTime> calcularRepeticionesPorIntervalo(LocalDateTime fecha, LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
-        return null;
+    public TreeSet<LocalDateTime> calcularRepeticionesPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
+        LocalDateTime repeticion = inicio;
+        var repeticiones = new TreeSet<LocalDateTime>();
+
+        if (repeticion.isAfter(finIntervalo)) {
+            return repeticiones;
+        }
+
+        if (superoLimite(inicioIntervalo)) {
+            return repeticiones;
+        }
+
+        while (repeticion.isBefore(finIntervalo) || repeticion.equals(finIntervalo)) {
+            if (repeticion.isAfter(inicioIntervalo) || repeticion.equals(inicioIntervalo)) {
+                repeticiones.add(repeticion);
+            }
+            repeticion = sumarTiempo(repeticion, 1);
+
+            if (superoLimite(repeticion)) {break;}
+        }
+        return repeticiones;
     }
 
+    // Indica si la fecha pasada por parametro supero la fecha limite
     private LocalDateTime sumarTiempo(LocalDateTime fecha, int cantidad) {
         if (frecuencia.equals(Frecuencia.DIARIA)) {
             return fecha.plusDays(cantidad);
@@ -33,14 +75,11 @@ public class RepeticionComun extends Repeticion {
         }
     }
 
-    @Override
-    public boolean superoLimite(LocalDateTime fecha) {
-        if (finalizacion.equals(Finalizacion.FECHA)) {
-            return fecha.isAfter(LocalDateTime.parse(fin));
-        } else if (finalizacion.equals(Finalizacion.CANTIDAD)) {
-            return fecha.isAfter(sumarTiempo(inicio, Integer.parseInt(fin)));
-        } else {
+    // Indica si la fecha pasada por parametro supero la fecha limite
+    private boolean superoLimite(LocalDateTime fecha) {
+        if (fin == null) {
             return false;
         }
+        return fecha.isAfter(fin);
     }
 }
