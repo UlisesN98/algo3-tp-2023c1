@@ -11,6 +11,10 @@ public class Calendario {
 
     private final TreeSet<Alarma> listaAlarmas;
 
+    public void setTiempoActual(LocalDateTime tiempoActual) {
+        this.tiempoActual = tiempoActual;
+    }
+
     public Calendario() {
         this.tiempoActual = LocalDateTime.now();
         this.listaEventos = new ArrayList<>();
@@ -58,7 +62,7 @@ public class Calendario {
         var eventosIntervalo = new ArrayList<Evento>();
 
         for (Evento evento : listaEventos) {
-            if (evento.getInicio().isAfter(inicioIntervalo) && evento.getInicio().isBefore(finIntervalo)) {
+            if ((evento.getInicio().isAfter(inicioIntervalo) || evento.getInicio().isEqual(inicioIntervalo)) && evento.getInicio().isBefore(finIntervalo)) {
                 eventosIntervalo.add(evento);
             } else if (evento.getFin().isAfter(inicioIntervalo) && evento.getFin().isBefore(finIntervalo)) {
                 eventosIntervalo.add(evento);
@@ -66,6 +70,14 @@ public class Calendario {
                 eventosIntervalo.add(evento);
             }
             //casos si su repeticion esta en el intervalo
+            if (evento.getRepeticion() != null){
+                Repeticion repeticion = evento.getRepeticion();
+                TreeSet<LocalDateTime> instanciasRepetidas = repeticion.calcularRepeticionesPorIntervalo(evento.getInicio(), inicioIntervalo, finIntervalo);
+                for (LocalDateTime fecha : instanciasRepetidas){
+                    Evento eventoCreado = new Evento(evento.getTitulo(), evento.getDescripcion(), false, fecha, repeticion.calcularSiguienteRepeticion(fecha), null);
+                    eventosIntervalo.add(eventoCreado);
+                }
+            }
         }
         return eventosIntervalo;
     }
@@ -73,7 +85,7 @@ public class Calendario {
     public ArrayList<Tarea> buscarTareaPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
         var tareasIntervalo = new ArrayList<Tarea>();
         for (Tarea tarea : listaTareas) {
-            if (tarea.getLimite().isAfter(inicioIntervalo) && tarea.getLimite().isBefore(finIntervalo)) {
+            if ((tarea.getLimite().isAfter(inicioIntervalo) || tarea.getLimite().isEqual(inicioIntervalo)) && (tarea.getLimite().isBefore(finIntervalo))) {
                 tareasIntervalo.add(tarea);
             }
         }
@@ -93,8 +105,8 @@ public class Calendario {
     }
 
     // METODOS DE CREACION
-    public void crearEvento(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio, LocalDateTime fin, LocalDateTime[] inicioAlarmas, Efecto[] efectoAlarmas) {
-        var nuevoEvento = new Evento(titulo, descripcion, diaCompleto, inicio, fin);
+    public void crearEvento(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio, LocalDateTime fin, LocalDateTime[] inicioAlarmas, Efecto[] efectoAlarmas, Repeticion repeticion) {
+        var nuevoEvento = new Evento(titulo, descripcion, diaCompleto, inicio, fin, repeticion);
 
         if (inicioAlarmas.length != 0) {
             for (int i = 0; i < inicioAlarmas.length; i++) {
