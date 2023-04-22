@@ -1,5 +1,6 @@
 import org.junit.Test;
 
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -215,6 +216,48 @@ public class CalendarioTest {
     }
 
     @Test
+    public void crearAlarma(){
+        var nuevoCalendario = new Calendario();
+        String titulo1 = "Tarea/Evento A";
+        String descripcion1 = "Desc tarea/evento A";
+        LocalDateTime limite1 = LocalDateTime.parse("2018-10-10T11:25");
+        LocalDateTime inicio1 = LocalDateTime.parse("2018-10-10T15:25");
+        LocalDateTime fin1 = LocalDateTime.parse("2018-10-10T20:25");
+        LocalDateTime[] inicioAlarmas = {LocalDateTime.parse("2018-10-10T14:00")};
+        Efecto[] efectoAlarmas = {Efecto.NOTIFICACION};
+        LocalDateTime inicioAlarmasNuevo = LocalDateTime.parse("2018-10-10T20:00");
+        Efecto efectoAlarmaNuevo = Efecto.SONIDO;
+
+        nuevoCalendario.crearTarea(titulo1, descripcion1, false, limite1, inicioAlarmas, efectoAlarmas);
+        nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmas, efectoAlarmas, null);
+        ArrayList<Tarea> nuevaListaTarea1 = nuevoCalendario.buscarTarea(titulo1, descripcion1, limite1);
+        ArrayList<Evento> nuevaListaEvento1 = nuevoCalendario.buscarEvento(titulo1, descripcion1, inicio1, fin1);
+
+        Tarea tareaBuscada = nuevaListaTarea1.get(0);
+        Evento eventoBuscado = nuevaListaEvento1.get(0);
+
+        nuevoCalendario.agregarAlarma(tareaBuscada, inicioAlarmasNuevo, efectoAlarmaNuevo);
+        nuevoCalendario.agregarAlarma(eventoBuscado, inicioAlarmasNuevo, efectoAlarmaNuevo);
+
+        Alarma alarmaTareaOriginal = tareaBuscada.buscarAlarma(inicioAlarmas[0], efectoAlarmas[0]);
+        Alarma alarmaTareaNueva = tareaBuscada.buscarAlarma(inicioAlarmasNuevo, efectoAlarmaNuevo);
+        Alarma alarmaEventoOriginal = eventoBuscado.buscarAlarma(inicioAlarmas[0], efectoAlarmas[0]);
+        Alarma alarmaEventoNueva = eventoBuscado.buscarAlarma(inicioAlarmasNuevo, efectoAlarmaNuevo);
+
+        assertEquals(inicioAlarmas[0], alarmaTareaOriginal.getInicio());
+        assertEquals(efectoAlarmas[0], alarmaTareaOriginal.getEfecto());
+
+        assertEquals(inicioAlarmas[0], alarmaEventoOriginal.getInicio());
+        assertEquals(efectoAlarmas[0], alarmaEventoOriginal.getEfecto());
+
+        assertEquals(inicioAlarmasNuevo, alarmaTareaNueva.getInicio());
+        assertEquals(efectoAlarmaNuevo, alarmaTareaNueva.getEfecto());
+
+        assertEquals(inicioAlarmasNuevo, alarmaEventoNueva.getInicio());
+        assertEquals(efectoAlarmaNuevo, alarmaEventoNueva.getEfecto());
+    }
+
+    @Test
     public void modificarAlarma() {
         var nuevoCalendario = new Calendario();
         String titulo1 = "Tarea A";
@@ -229,8 +272,10 @@ public class CalendarioTest {
         ArrayList<Tarea> nuevaListaTarea1 = nuevoCalendario.buscarTarea(titulo1, descripcion1, limite1);
         Tarea tareaBuscada = nuevaListaTarea1.get(0);
         Alarma alarmaTarea1 = tareaBuscada.buscarAlarma(inicioAlarmas[0], efectoAlarmas[0]);
-        tareaBuscada.modificarAlarma(alarmaTarea1, efectoAlarmaNuevo);
-        tareaBuscada.modificarAlarma(alarmaTarea1, inicioAlarmasNuevo);
+
+        nuevoCalendario.modificarAlarma(tareaBuscada, inicioAlarmas[0], efectoAlarmas[0], inicioAlarmasNuevo);
+
+        nuevoCalendario.modificarAlarma(tareaBuscada, inicioAlarmasNuevo, efectoAlarmas[0], efectoAlarmaNuevo);
 
         assertEquals(inicioAlarmasNuevo, alarmaTarea1.getInicio());
         assertEquals(efectoAlarmaNuevo, alarmaTarea1.getEfecto());
@@ -248,8 +293,9 @@ public class CalendarioTest {
         nuevoCalendario.crearTarea(titulo1, descripcion1, false, limite1, inicioAlarmas, efectoAlarmas);
         ArrayList<Tarea> nuevaListaTarea1 = nuevoCalendario.buscarTarea(titulo1, descripcion1, limite1);
         Tarea tareaBuscada = nuevaListaTarea1.get(0);
-        Alarma alarmaTarea1 = tareaBuscada.buscarAlarma(inicioAlarmas[0], efectoAlarmas[0]);
-        tareaBuscada.eliminarAlarma(alarmaTarea1);
+
+        nuevoCalendario.eliminarAlarma(tareaBuscada, inicioAlarmas[0], efectoAlarmas[0]);
+
         Alarma alarmaTareaPostBorrado = tareaBuscada.buscarAlarma(inicioAlarmas[0], efectoAlarmas[0]);
 
         assertNull(alarmaTareaPostBorrado);
