@@ -70,7 +70,10 @@ public class Calendario {
                 Repeticion repeticion = evento.getRepeticion();
                 TreeSet<LocalDateTime> instanciasRepetidas = repeticion.calcularRepeticionesPorIntervalo(evento.getInicio(), inicioIntervalo, finIntervalo);
                 for (LocalDateTime fecha : instanciasRepetidas){
-                    eventosIntervalo.add(crearEvento(evento.getTitulo(), evento.getDescripcion(), false, fecha, repeticion.calcularSiguienteRepeticion(fecha), new ArrayList<Alarma>, new ArrayList<Efecto>, null));
+                    LocalDateTime[] inicioAlarmaVacio = {};
+                    Efecto[] efectoAlarmaVacio = {};
+                    Evento eventoCreado = new Evento(evento.getTitulo(), evento.getDescripcion(), false, fecha, repeticion.calcularSiguienteRepeticion(fecha), null);
+                    eventosIntervalo.add(eventoCreado);
                 }
             }
         }
