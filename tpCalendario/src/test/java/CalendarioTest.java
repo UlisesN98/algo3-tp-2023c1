@@ -578,4 +578,32 @@ public class CalendarioTest {
         assertNull(eventoBuscado.buscarAlarma(inicioAlarmaEvento2, efectoAlarmas[0]));
         assertNull(tareaBuscada.buscarAlarma(inicioAlarmaTarea2, efectoAlarmas[0]));
     }
+
+    @Test
+    public void testBusquedaActividadesMixtasConReps(){
+        var nuevoCalendario = new Calendario();
+        String titulo1 = "Evento A";
+        String descripcion1 = "Desc. evento A";
+        LocalDateTime inicio1 = LocalDateTime.parse("2018-10-10T11:25");
+        LocalDateTime fin1 = LocalDateTime.parse("2018-10-10T14:25");
+        LocalDateTime[] inicioAlarmasEvento = {LocalDateTime.parse("2018-10-10T14:00")};
+
+        Repeticion repeticionEvento = ...; // Pendiente
+
+        String titulo2 = "Tarea A";
+        String descripcion2 = "Desc. Tarea A";
+        LocalDateTime limite1 = LocalDateTime.parse("2018-10-10T18:25");
+        LocalDateTime[] inicioAlarmasTarea = {LocalDateTime.parse("2018-10-10T14:30")};
+
+        LocalDateTime inicioIntervaloBuscar = LocalDateTime.parse("2018-10-10T12:45");
+        LocalDateTime finIntervaloBuscar = LocalDateTime.parse("2018-10-10T23:45");
+
+        Efecto[] efectoAlarmas = {Efecto.NOTIFICACION};
+
+        nuevoCalendario.crearTarea(titulo2, descripcion2, false, limite1, inicioAlarmasTarea, efectoAlarmas);
+
+        nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmasEvento, efectoAlarmas, repeticionEvento);
+
+        ArrayList<Actividad> nuevaListaActividades = nuevoCalendario.buscarPorIntervalo(inicioIntervaloBuscar, finIntervaloBuscar);
+    }
 }
