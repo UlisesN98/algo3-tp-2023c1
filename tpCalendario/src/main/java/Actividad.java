@@ -20,12 +20,6 @@ public class Actividad {
         this.descripcion = descripcion;
         this.diaCompleto = diaCompleto;
         this.listaAlarmas = new ArrayList<>();
-        if (titulo == null){
-            this.titulo = "Sin titulo";
-        }
-        if (descripcion == null){
-            this.descripcion = "Sin descripcion";
-        }
     }
 
     public String getTitulo() { return titulo; }
