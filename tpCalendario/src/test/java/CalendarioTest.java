@@ -724,4 +724,74 @@ public class CalendarioTest {
         assertEquals(segundaTareaLista.getDescripcion(), descripcionTarea2);
         assertEquals(segundaTareaLista.getFin(), limite2);
     }
+
+    @Test
+    public void testEventoDiaCompleto(){
+        var nuevoCalendario = new Calendario();
+        String tituloEvento1 = "Algoritmos 3";
+        String descripcionEvento1 = "Clase de Algo3";
+        LocalDateTime inicio1 = LocalDateTime.parse("2023-03-13T14:00");
+        LocalDateTime fin1 = LocalDateTime.parse("2023-03-16T17:00");
+        LocalDateTime[] inicioAlarmasEvento = {LocalDateTime.parse("2023-03-13T13:00")};
+        Efecto[] efectoAlarmas = {Efecto.NOTIFICACION};
+
+        nuevoCalendario.crearEvento(tituloEvento1, descripcionEvento1, true, inicio1, fin1, inicioAlarmasEvento, efectoAlarmas, null);
+        ArrayList<Evento> listaEventos = nuevoCalendario.buscarEventoPorIntervalo(LocalDateTime.parse("2023-03-11T12:00"), LocalDateTime.parse("2023-03-20T12:00"));
+        Evento eventoBuscado = listaEventos.get(0);
+
+        assertEquals(eventoBuscado.getInicio(), LocalDateTime.parse("2023-03-13T00:00"));
+        assertEquals(eventoBuscado.getFin(), LocalDateTime.parse("2023-03-17T00:00"));
+    }
+
+    @Test
+    public void testEventoConvertidoDiaCompleto(){
+        var nuevoCalendario = new Calendario();
+        String tituloEvento1 = "Algoritmos 3";
+        String descripcionEvento1 = "Clase de Algo3";
+        LocalDateTime inicio1 = LocalDateTime.parse("2023-03-13T14:00");
+        LocalDateTime fin1 = LocalDateTime.parse("2023-03-16T17:00");
+        LocalDateTime[] inicioAlarmasEvento = {LocalDateTime.parse("2023-03-13T13:00")};
+        Efecto[] efectoAlarmas = {Efecto.NOTIFICACION};
+
+        nuevoCalendario.crearEvento(tituloEvento1, descripcionEvento1, false, inicio1, fin1, inicioAlarmasEvento, efectoAlarmas, null);
+        ArrayList<Evento> listaEventos = nuevoCalendario.buscarEventoPorIntervalo(LocalDateTime.parse("2023-03-11T12:00"), LocalDateTime.parse("2023-03-20T12:00"));
+        Evento eventoBuscado = listaEventos.get(0);
+        nuevoCalendario.modificar(eventoBuscado, true);
+
+        assertEquals(eventoBuscado.getInicio(), LocalDateTime.parse("2023-03-13T00:00"));
+        assertEquals(eventoBuscado.getFin(), LocalDateTime.parse("2023-03-17T00:00"));
+    }
+
+    @Test
+    public void testTareaDiaCompleto(){
+        var nuevoCalendario = new Calendario();
+        String tituloTarea1 = "Algoritmos 3";
+        String descripcionTarea1 = "Clase de Algo3";
+        LocalDateTime limite1 = LocalDateTime.parse("2023-03-13T14:00");
+        LocalDateTime[] inicioAlarmasTarea = {LocalDateTime.parse("2023-03-13T13:00")};
+        Efecto[] efectoAlarmas = {Efecto.NOTIFICACION};
+
+        nuevoCalendario.crearTarea(tituloTarea1, descripcionTarea1, true, limite1, inicioAlarmasTarea, efectoAlarmas);
+        ArrayList<Tarea> listaTareas = nuevoCalendario.buscarTareaPorIntervalo(LocalDateTime.parse("2023-03-11T12:00"), LocalDateTime.parse("2023-03-20T12:00"));
+        Tarea tareaBuscada = listaTareas.get(0);
+
+        assertEquals(tareaBuscada.getFin(), LocalDateTime.parse("2023-03-14T00:00"));
+    }
+
+    @Test
+    public void testTareaConvertidaDiaCompleto(){
+        var nuevoCalendario = new Calendario();
+        String tituloTarea1 = "Algoritmos 3";
+        String descripcionTarea1 = "Clase de Algo3";
+        LocalDateTime limite1 = LocalDateTime.parse("2023-03-13T14:00");
+        LocalDateTime[] inicioAlarmasTarea = {LocalDateTime.parse("2023-03-13T13:00")};
+        Efecto[] efectoAlarmas = {Efecto.NOTIFICACION};
+
+        nuevoCalendario.crearTarea(tituloTarea1, descripcionTarea1, false, limite1, inicioAlarmasTarea, efectoAlarmas);
+        ArrayList<Tarea> listaTareas = nuevoCalendario.buscarTareaPorIntervalo(LocalDateTime.parse("2023-03-11T12:00"), LocalDateTime.parse("2023-03-20T12:00"));
+        Tarea tareaBuscada = listaTareas.get(0);
+        nuevoCalendario.modificar(tareaBuscada, true);
+
+        assertEquals(tareaBuscada.getFin(), LocalDateTime.parse("2023-03-14T00:00"));
+    }
 }
