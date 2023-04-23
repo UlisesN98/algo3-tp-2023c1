@@ -47,6 +47,7 @@ public class RepeticionSemanalDias extends Repeticion {
     public LocalDateTime calcularSiguienteRepeticion(LocalDateTime fecha) {
         var repeticiones = new TreeSet<LocalDateTime>();
         repeticiones = obtenerRepeticionesSemana(fecha);
+        if (repeticiones.first().getDayOfWeek() == fecha.getDayOfWeek()) { repeticiones.remove(repeticiones.first());}
         return superoLimite(repeticiones.first())? null : repeticiones.first();
     }
 
