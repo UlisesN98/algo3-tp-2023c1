@@ -685,7 +685,6 @@ public class CalendarioTest {
         // Ayuda memoria, eventos: evento1, evento1, evento2, evento1
         // tareas: tarea1, tarea2
 
-        System.out.println(listaEventos);
         assertEquals(listaEventos.size(), 4);
         assertEquals(listaTareas.size(), 2);
 
@@ -716,5 +715,13 @@ public class CalendarioTest {
         assertEquals(cuartoEventoLista.getDescripcion(), descripcionEvento1);
         assertEquals(cuartoEventoLista.getInicio(), LocalDateTime.parse("2023-05-01T14:00"));
         assertEquals(cuartoEventoLista.getFin(), LocalDateTime.parse("2023-05-01T17:00"));
+
+        assertEquals(primerTareaLista.getTitulo(), tituloTarea1);
+        assertEquals(primerTareaLista.getDescripcion(), descripcionTarea1);
+        assertEquals(primerTareaLista.getFin(), limite1);
+
+        assertEquals(segundaTareaLista.getTitulo(), tituloTarea2);
+        assertEquals(segundaTareaLista.getDescripcion(), descripcionTarea2);
+        assertEquals(segundaTareaLista.getFin(), limite2);
     }
 }
