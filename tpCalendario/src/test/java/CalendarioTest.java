@@ -609,8 +609,36 @@ public class CalendarioTest {
         nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmasEvento, efectoAlarmas, repeticionEvento);
 
         ArrayList<Actividad> nuevaListaActividades = nuevoCalendario.buscarPorIntervalo(inicioIntervaloBuscar, finIntervaloBuscar);
+        Evento eventoPrimera = (Evento) nuevaListaActividades.get(0);
+        Tarea tareaPrimera = (Tarea) nuevaListaActividades.get(1);
+        Evento eventoSegunda = (Evento) nuevaListaActividades.get(2);
+        Evento eventoTercera = (Evento) nuevaListaActividades.get(3);
+        Evento eventoCuarta = (Evento) nuevaListaActividades.get(4);
 
         // Assert
-        System.out.println(nuevaListaActividades);
+
+        assertEquals(eventoPrimera.getTitulo(), titulo1);
+        assertEquals(eventoPrimera.getDescripcion(), descripcion1);
+        assertEquals(eventoPrimera.getInicio(), LocalDateTime.parse("2023-04-24T14:00"));
+        assertEquals(eventoPrimera.getFin(), LocalDateTime.parse("2023-04-24T17:00"));
+
+        assertEquals(tareaPrimera.getTitulo(), titulo2);
+        assertEquals(tareaPrimera.getDescripcion(), descripcion2);
+        assertEquals(tareaPrimera.getFin(), limite1);
+
+        assertEquals(eventoSegunda.getTitulo(), titulo1);
+        assertEquals(eventoSegunda.getDescripcion(), descripcion1);
+        assertEquals(eventoSegunda.getInicio(), LocalDateTime.parse("2023-04-27T14:00"));
+        assertEquals(eventoSegunda.getFin(), LocalDateTime.parse("2023-04-27T17:00"));
+
+        assertEquals(eventoTercera.getTitulo(), titulo1);
+        assertEquals(eventoTercera.getDescripcion(), descripcion1);
+        assertEquals(eventoTercera.getInicio(), LocalDateTime.parse("2023-05-01T14:00"));
+        assertEquals(eventoTercera.getFin(), LocalDateTime.parse("2023-05-01T17:00"));
+
+        assertEquals(eventoCuarta.getTitulo(), titulo1);
+        assertEquals(eventoCuarta.getDescripcion(), descripcion1);
+        assertEquals(eventoCuarta.getInicio(), LocalDateTime.parse("2023-05-04T14:00"));
+        assertEquals(eventoCuarta.getFin(), LocalDateTime.parse("2023-05-04T17:00"));
     }
 }
