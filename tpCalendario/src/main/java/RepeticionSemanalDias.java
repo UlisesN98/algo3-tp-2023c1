@@ -53,6 +53,8 @@ public class RepeticionSemanalDias extends Repeticion {
 
     @Override
     public TreeSet<LocalDateTime> calcularRepeticionesPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
+        System.out.println(inicioIntervalo);
+        System.out.println(finIntervalo);
         LocalDateTime repeticion = inicio;
         var repeticiones = new TreeSet<LocalDateTime>();
 
@@ -63,7 +65,8 @@ public class RepeticionSemanalDias extends Repeticion {
         while (repeticion.isBefore(finIntervalo) || repeticion.equals(finIntervalo)) {
             TreeSet<LocalDateTime> repSemanales = obtenerRepeticionesSemana(repeticion);
             for (LocalDateTime rep : repSemanales) {
-                if (superoLimite(rep)) {break;}
+                System.out.println(rep);
+                if (superoLimite(rep) || (rep.isAfter(finIntervalo))) {break;}
                 if (rep.isAfter(inicioIntervalo) || rep.equals(inicioIntervalo)) {repeticiones.add(rep);}
             }
             repeticion = repeticion.plusWeeks(1);
