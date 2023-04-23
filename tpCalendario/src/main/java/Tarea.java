@@ -13,26 +13,28 @@ public class Tarea extends Actividad {
     @Override
     public void setFin(LocalDateTime fin) {
         if (diaCompleto) {
-            fin = fin.getHour() == 0 && fin.getMinute() == 0? fin : LocalDateTime.of(fin.getYear(), fin.getMonth(), fin.getDayOfMonth(), 0, 0).plusDays(1);
+            inicio = LocalDateTime.of(fin.getYear(), fin.getMonth(), fin.getDayOfMonth(), 0, 0);
+            this.fin = inicio.plusDays(1);
+        } else {
+            this.inicio = fin;
+            this.fin = fin;
         }
-        this.fin = fin;
     }
 
     @Override
     public void setDiaCompleto(boolean esDiaCompleto) {
-        if (esDiaCompleto) {
-            this.fin = LocalDateTime.of(fin.getYear(), fin.getMonth(), fin.getDayOfMonth(), 0, 0).plusDays(1);
+        if (!diaCompleto && esDiaCompleto) {
+            inicio = LocalDateTime.of(fin.getYear(), fin.getMonth(), fin.getDayOfMonth(), 0, 0);
+            fin = inicio.plusDays(1);
+        } else if (diaCompleto && !esDiaCompleto) {
+            inicio = fin;
         }
         this.diaCompleto = esDiaCompleto;
     }
 
-    public boolean isCompletada() {
-        return completada;
-    }
+    public boolean isCompletada() { return completada; }
 
-    public void cambiarEstadoTarea() {
-        this.completada = !completada;
-    }
+    public void cambiarEstadoTarea() { this.completada = !completada; }
 
     @Override
     public String toString() {
