@@ -609,6 +609,9 @@ public class CalendarioTest {
         nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmasEvento, efectoAlarmas, repeticionEvento);
 
         ArrayList<Actividad> nuevaListaActividades = nuevoCalendario.buscarPorIntervalo(inicioIntervaloBuscar, finIntervaloBuscar);
+
+        assertEquals(nuevaListaActividades.size(), 5);
+
         Evento eventoPrimera = (Evento) nuevaListaActividades.get(0);
         Tarea tareaPrimera = (Tarea) nuevaListaActividades.get(1);
         Evento eventoSegunda = (Evento) nuevaListaActividades.get(2);
@@ -640,5 +643,78 @@ public class CalendarioTest {
         assertEquals(eventoCuarta.getDescripcion(), descripcion1);
         assertEquals(eventoCuarta.getInicio(), LocalDateTime.parse("2023-05-04T14:00"));
         assertEquals(eventoCuarta.getFin(), LocalDateTime.parse("2023-05-04T17:00"));
+    }
+
+    @Test
+    public void testBusquedaMezclada(){
+        var nuevoCalendario = new Calendario();
+        String tituloEvento1 = "Algoritmos 3";
+        String descripcionEvento1 = "Clase de Algo3";
+        LocalDateTime inicio1 = LocalDateTime.parse("2023-03-13T14:00");
+        LocalDateTime fin1 = LocalDateTime.parse("2023-03-13T17:00");
+        LocalDateTime[] inicioAlarmasEvento = {LocalDateTime.parse("2023-03-13T13:00")};
+
+        Repeticion repeticionEvento = new RepeticionSemanalDias(inicio1, LocalDateTime.parse("2023-06-29T17:00"), new DayOfWeek[] {DayOfWeek.MONDAY, DayOfWeek.THURSDAY});
+
+        String tituloEvento2 = "Torneo Local";
+        String descripcionEvento2 = "Cosas";
+        LocalDateTime inicio2 = LocalDateTime.parse("2023-04-29T12:00");
+        LocalDateTime fin2 = LocalDateTime.parse("2023-04-29T18:00");
+
+        String tituloTarea1 = "Entrega TP";
+        String descripcionTarea1 = "Fecha limite entrega TP Etapa 1";
+        LocalDateTime limite1 = LocalDateTime.parse("2023-04-24T23:59");
+        LocalDateTime[] inicioAlarmasTarea = {LocalDateTime.parse("2023-04-24T22:00")};
+
+        String tituloTarea2 = "Entrega Informe";
+        String descripcionTarea2 = "Informe de trabajo";
+        LocalDateTime limite2 = LocalDateTime.parse("2023-04-26T23:59");
+
+        LocalDateTime inicioIntervaloBuscar = LocalDateTime.parse("2023-04-24T00:00");
+        LocalDateTime finIntervaloBuscar = LocalDateTime.parse("2023-05-02T00:00");
+
+        Efecto[] efectoAlarmas = {Efecto.NOTIFICACION};
+
+        nuevoCalendario.crearTarea(tituloTarea2, descripcionTarea2, false, limite2, inicioAlarmasTarea, efectoAlarmas);
+        nuevoCalendario.crearEvento(tituloEvento2, descripcionEvento2, false, inicio2, fin2, inicioAlarmasEvento, efectoAlarmas, null);
+        nuevoCalendario.crearTarea(tituloTarea1, descripcionTarea1, false, limite1, inicioAlarmasTarea, efectoAlarmas);
+        nuevoCalendario.crearEvento(tituloEvento1, descripcionEvento1, false, inicio1, fin1, inicioAlarmasEvento, efectoAlarmas, repeticionEvento);
+
+        ArrayList<Evento> listaEventos = nuevoCalendario.buscarEventoPorIntervalo(inicioIntervaloBuscar, finIntervaloBuscar);
+        ArrayList<Tarea> listaTareas = nuevoCalendario.buscarTareaPorIntervalo(inicioIntervaloBuscar, finIntervaloBuscar);
+        // Ayuda memoria, eventos: evento1, evento1, evento2, evento1
+        // tareas: tarea1, tarea2
+
+        System.out.println(listaEventos);
+        assertEquals(listaEventos.size(), 4);
+        assertEquals(listaTareas.size(), 2);
+
+        Evento primerEventoLista = listaEventos.get(0);
+        Evento segundoEventoLista = listaEventos.get(1);
+        Evento tercerEventoLista = listaEventos.get(2);
+        Evento cuartoEventoLista = listaEventos.get(3);
+
+        Tarea primerTareaLista = listaTareas.get(0);
+        Tarea segundaTareaLista = listaTareas.get(1);
+
+        assertEquals(primerEventoLista.getTitulo(), tituloEvento1);
+        assertEquals(primerEventoLista.getDescripcion(), descripcionEvento1);
+        assertEquals(primerEventoLista.getInicio(), LocalDateTime.parse("2023-04-24T14:00"));
+        assertEquals(primerEventoLista.getFin(), LocalDateTime.parse("2023-04-24T17:00"));
+
+        assertEquals(segundoEventoLista.getTitulo(), tituloEvento1);
+        assertEquals(segundoEventoLista.getDescripcion(), descripcionEvento1);
+        assertEquals(segundoEventoLista.getInicio(), LocalDateTime.parse("2023-04-27T14:00"));
+        assertEquals(segundoEventoLista.getFin(), LocalDateTime.parse("2023-04-27T17:00"));
+
+        assertEquals(tercerEventoLista.getTitulo(), tituloEvento2);
+        assertEquals(tercerEventoLista.getDescripcion(), descripcionEvento2);
+        assertEquals(tercerEventoLista.getInicio(), LocalDateTime.parse("2023-04-29T12:00"));
+        assertEquals(tercerEventoLista.getFin(), LocalDateTime.parse("2023-04-29T18:00"));
+
+        assertEquals(cuartoEventoLista.getTitulo(), tituloEvento1);
+        assertEquals(cuartoEventoLista.getDescripcion(), descripcionEvento1);
+        assertEquals(cuartoEventoLista.getInicio(), LocalDateTime.parse("2023-05-01T14:00"));
+        assertEquals(cuartoEventoLista.getFin(), LocalDateTime.parse("2023-05-01T17:00"));
     }
 }
