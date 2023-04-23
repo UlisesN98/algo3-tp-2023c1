@@ -95,7 +95,7 @@ public class CalendarioTest {
 
         assertEquals(titulo, tareaBuscada.getTitulo());
         assertEquals(descripcion, tareaBuscada.getDescripcion());
-        assertEquals(limite, tareaBuscada.getLimite());
+        assertEquals(limite, tareaBuscada.getFin());
         assertEquals(inicioAlarmas[0], alarmaTarea.getInicio());
         assertEquals(efectoAlarmas[0], alarmaTarea.getEfecto());
     }
@@ -120,7 +120,7 @@ public class CalendarioTest {
 
         assertEquals(titulo2, tareaBuscada.getTitulo());
         assertEquals(descripcion2, tareaBuscada.getDescripcion());
-        assertEquals(limite2, tareaBuscada.getLimite());
+        assertEquals(limite2, tareaBuscada.getFin());
     }
 
     @Test
@@ -204,13 +204,13 @@ public class CalendarioTest {
 
         assertEquals(titulo1, tareaBuscada1.getTitulo());
         assertEquals(descripcion1, tareaBuscada1.getDescripcion());
-        assertEquals(limite1, tareaBuscada1.getLimite());
+        assertEquals(limite1, tareaBuscada1.getFin());
         assertEquals(inicioAlarmas[0], alarmaTarea1.getInicio());
         assertEquals(efectoAlarmas[0], alarmaTarea1.getEfecto());
 
         assertEquals(titulo2, tareaBuscada1.getTitulo());
         assertEquals(descripcion2, tareaBuscada1.getDescripcion());
-        assertEquals(limite2, tareaBuscada1.getLimite());
+        assertEquals(limite2, tareaBuscada1.getFin());
         assertEquals(inicioAlarmas[0], alarmaTarea2.getInicio());
         assertEquals(efectoAlarmas[0], alarmaTarea2.getEfecto());
     }
@@ -340,7 +340,7 @@ public class CalendarioTest {
             Alarma alarmaActual = tareaActual.buscarAlarma(inicioAlarmas[0], efectoAlarmas[0]);
             assertEquals(titulo1, tareaActual.getTitulo());
             assertEquals(descripcion1, tareaActual.getDescripcion());
-            assertEquals(limite1.plusMinutes(i), tareaActual.getLimite());
+            assertEquals(limite1.plusMinutes(i), tareaActual.getFin());
             assertEquals(inicioAlarmas[0], alarmaActual.getInicio());
             assertEquals(efectoAlarmas[0], alarmaActual.getEfecto());
         }
@@ -399,7 +399,7 @@ public class CalendarioTest {
             Alarma alarmaActual = tareaActual.buscarAlarma(inicioAlarmas[0], efectoAlarmas[0]);
             assertEquals(titulo2, tareaActual.getTitulo());
             assertEquals(descripcion2, tareaActual.getDescripcion());
-            assertEquals(limite2.plusMinutes(i), tareaActual.getLimite());
+            assertEquals(limite2.plusMinutes(i), tareaActual.getFin());
             assertEquals(inicioAlarmas[0], alarmaActual.getInicio());
             assertEquals(efectoAlarmas[0], alarmaActual.getEfecto());
         }
