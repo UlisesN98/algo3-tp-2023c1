@@ -1,5 +1,6 @@
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.TreeSet;
 
@@ -26,6 +27,19 @@ public class Calendario {
                 return 0;
             }
         });
+    }
+
+    public class ComparadorBusqueda implements Comparator<Actividad> {
+        @Override
+        public int compare(Actividad o1, Actividad o2){
+            if (o1.getInicio().isBefore(o2.getInicio())){
+                return -1;
+            }
+            if (o1.getInicio().isAfter(o2.getInicio())){
+                return 1;
+            }
+            return 0;
+        }
     }
 
     public void setTiempoActual(LocalDateTime tiempoActual) {this.tiempoActual = tiempoActual;}
@@ -75,6 +89,9 @@ public class Calendario {
                 }
             }
         }
+
+        Collections.sort(eventosIntervalo, new ComparadorBusqueda());
+
         return eventosIntervalo;
     }
 
@@ -85,6 +102,9 @@ public class Calendario {
                 tareasIntervalo.add(tarea);
             }
         }
+
+        Collections.sort(tareasIntervalo, new ComparadorBusqueda());
+
         return tareasIntervalo;
     }
 
@@ -96,6 +116,8 @@ public class Calendario {
 
         listaActividades.addAll(eventosIntervalo);
         listaActividades.addAll(tareasIntervalo);
+
+        Collections.sort(listaActividades, new ComparadorBusqueda());
 
         return listaActividades;
     }
