@@ -8,12 +8,7 @@ public class Calendario {
     private LocalDateTime tiempoActual;
     private final ArrayList<Evento> listaEventos;
     private final ArrayList<Tarea> listaTareas;
-
     private final TreeSet<Alarma> listaAlarmas;
-
-    public void setTiempoActual(LocalDateTime tiempoActual) {
-        this.tiempoActual = tiempoActual;
-    }
 
     public Calendario() {
         this.tiempoActual = LocalDateTime.now();
@@ -32,6 +27,8 @@ public class Calendario {
             }
         });
     }
+
+    public void setTiempoActual(LocalDateTime tiempoActual) {this.tiempoActual = tiempoActual;}
 
     // METODOS DE BUSQUEDA
     public ArrayList<Evento> buscarEvento(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
@@ -69,12 +66,11 @@ public class Calendario {
             } else if (evento.getInicio().isBefore(inicioIntervalo) && evento.getFin().isAfter(finIntervalo)) {
                 eventosIntervalo.add(evento);
             }
-            //casos si su repeticion esta en el intervalo
-            if (evento.getRepeticion() != null){
-                Repeticion repeticion = evento.getRepeticion();
-                TreeSet<LocalDateTime> instanciasRepetidas = repeticion.calcularRepeticionesPorIntervalo(evento.getInicio(), inicioIntervalo, finIntervalo);
+
+            if (evento.esRepetido()){
+                TreeSet<LocalDateTime> instanciasRepetidas = evento.repeticionesPorIntervalo(inicioIntervalo, finIntervalo);
                 for (LocalDateTime fecha : instanciasRepetidas){
-                    Evento eventoCreado = new Evento(evento.getTitulo(), evento.getDescripcion(), false, fecha, repeticion.calcularSiguienteRepeticion(fecha), null);
+                    Evento eventoCreado = new Evento(evento.getTitulo(), evento.getDescripcion(), evento.isDiaCompleto(), fecha, fecha.plusSeconds(evento.getDiferencia()), null);
                     eventosIntervalo.add(eventoCreado);
                 }
             }
@@ -167,10 +163,17 @@ public class Calendario {
         modificar(tarea, nuevoLimite);
     }
 
-    //public void modificar(Evento evento, boolean diaCompleto) {} modificarles si es de dia completo podria o deberia afectar sus fechas
+    public void modificar(Evento evento, boolean diaCompleto) {
+        evento.setDiaCompleto(diaCompleto);
+    }
 
-    //public void modificar(Tarea tarea, boolean diaCompleto) {}
+    public void modificar(Tarea tarea, boolean diaCompleto) {
+        tarea.setDiaCompleto(diaCompleto);
+    }
 
+    public void modificar(Evento evento, Repeticion repeticion) {
+        evento.setRepeticion(repeticion);
+    }
 
 
     // METODOS DE ELIMINACION

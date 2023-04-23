@@ -2,6 +2,7 @@ import junit.framework.TestResult;
 import org.junit.Test;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.TreeSet;
 
@@ -153,5 +154,19 @@ public class RepeticionTest {
             fechasResultantes2.remove(fechaResultante2);
             fechasResultantes3.remove(fechaResultante3);
         }
+    }
+
+    @Test
+    public void name() {
+
+        var f = LocalDateTime.parse("2023-04-23T00:00");
+        var d = Duration.ofMinutes(120);
+
+        var tu = d.getUnits();
+
+        var f2 = f.plus(d.getSeconds(), d.getUnits().get(0));
+        System.out.println(f2);
+
+
     }
 }

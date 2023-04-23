@@ -18,7 +18,18 @@ public class Tarea extends Actividad {
         return limite;
     }
     public void setLimite(LocalDateTime limite) {
+        if (diaCompleto) {
+            limite = LocalDateTime.of(limite.getYear(), limite.getMonth(), limite.getDayOfMonth(), 0, 0).plusDays(1);
+        }
         this.limite = limite;
+    }
+
+    @Override
+    public void setDiaCompleto(boolean esDiaCompleto) {
+        if (esDiaCompleto) {
+            limite = LocalDateTime.of(limite.getYear(), limite.getMonth(), limite.getDayOfMonth(), 0, 0).plusDays(1);
+        }
+        this.diaCompleto = esDiaCompleto;
     }
 
     public boolean isCompletada() {
@@ -27,5 +38,10 @@ public class Tarea extends Actividad {
 
     public void cambiarEstadoTarea() {
         this.completada = !completada;
+    }
+
+    @Override
+    public String toString() {
+        return titulo + ": " + descripcion + " - " + limite;
     }
 }

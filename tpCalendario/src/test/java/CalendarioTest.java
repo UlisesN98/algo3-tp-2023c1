@@ -1,5 +1,6 @@
 import org.junit.Test;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -312,11 +313,11 @@ public class CalendarioTest {
         ArrayList<Tarea> nuevaListaTarea1 = nuevoCalendario.buscarTarea(titulo1, descripcion1, limite1);
         Tarea tareaBuscada = nuevaListaTarea1.get(0);
 
-        assertFalse(tareaBuscada.isCompletada());
+        assertFalse(nuevoCalendario.tareaEstaCompletada(tareaBuscada));
 
-        tareaBuscada.cambiarEstadoTarea();
+        nuevoCalendario.marcarTarea(tareaBuscada);
 
-        assertTrue(tareaBuscada.isCompletada());
+        assertTrue(nuevoCalendario.tareaEstaCompletada(tareaBuscada));
     }
 
     @Test
@@ -581,29 +582,35 @@ public class CalendarioTest {
 
     @Test
     public void testBusquedaActividadesMixtasConReps(){
+
+        // Arrange
         var nuevoCalendario = new Calendario();
-        String titulo1 = "Evento A";
-        String descripcion1 = "Desc. evento A";
-        LocalDateTime inicio1 = LocalDateTime.parse("2018-10-10T11:25");
-        LocalDateTime fin1 = LocalDateTime.parse("2018-10-10T14:25");
-        LocalDateTime[] inicioAlarmasEvento = {LocalDateTime.parse("2018-10-10T14:00")};
+        String titulo1 = "Algoritmos 3";
+        String descripcion1 = "Clase de Algo3";
+        LocalDateTime inicio1 = LocalDateTime.parse("2023-03-13T14:00");
+        LocalDateTime fin1 = LocalDateTime.parse("2023-03-13T17:00");
+        LocalDateTime[] inicioAlarmasEvento = {LocalDateTime.parse("2023-03-13T13:00")};
 
-        Repeticion repeticionEvento = ...; // Pendiente
+        Repeticion repeticionEvento = new RepeticionSemanalDias(inicio1, LocalDateTime.parse("2023-06-29T17:00"), new DayOfWeek[] {DayOfWeek.MONDAY, DayOfWeek.THURSDAY});
 
-        String titulo2 = "Tarea A";
-        String descripcion2 = "Desc. Tarea A";
-        LocalDateTime limite1 = LocalDateTime.parse("2018-10-10T18:25");
-        LocalDateTime[] inicioAlarmasTarea = {LocalDateTime.parse("2018-10-10T14:30")};
+        String titulo2 = "Entrega TP";
+        String descripcion2 = "Fecha limite entrega TP Etapa 1";
+        LocalDateTime limite1 = LocalDateTime.parse("2023-04-24T23:59");
+        LocalDateTime[] inicioAlarmasTarea = {LocalDateTime.parse("2023-04-24T22:00")};
 
-        LocalDateTime inicioIntervaloBuscar = LocalDateTime.parse("2018-10-10T12:45");
-        LocalDateTime finIntervaloBuscar = LocalDateTime.parse("2018-10-10T23:45");
+        LocalDateTime inicioIntervaloBuscar = LocalDateTime.parse("2023-04-24T00:00");
+        LocalDateTime finIntervaloBuscar = LocalDateTime.parse("2023-05-07T00:00");
 
         Efecto[] efectoAlarmas = {Efecto.NOTIFICACION};
 
+        // Act
         nuevoCalendario.crearTarea(titulo2, descripcion2, false, limite1, inicioAlarmasTarea, efectoAlarmas);
 
         nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmasEvento, efectoAlarmas, repeticionEvento);
 
         ArrayList<Actividad> nuevaListaActividades = nuevoCalendario.buscarPorIntervalo(inicioIntervaloBuscar, finIntervaloBuscar);
+
+        // Assert
+        System.out.println(nuevaListaActividades);
     }
 }

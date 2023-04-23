@@ -4,10 +4,10 @@ import java.util.TreeSet;
 
 public class Actividad {
 
-    private String titulo;
-    private String descripcion;
-    private boolean diaCompleto;
-    private final ArrayList<Alarma> listaAlarmas;
+    protected String titulo;
+    protected String descripcion;
+    protected boolean diaCompleto;
+    protected final ArrayList<Alarma> listaAlarmas;
 
     public Actividad(String titulo, String descripcion, boolean diaCompleto) {
         if (titulo == null){
@@ -29,7 +29,7 @@ public class Actividad {
 
     public void setTitulo(String titulo) { this.titulo = titulo; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
-    public void setDiaCompleto(boolean diaCompleto) { this.diaCompleto = diaCompleto; }
+    public void setDiaCompleto(boolean esDiaCompleto) { this.diaCompleto = esDiaCompleto; }
 
 
     public void agregarAlarma(Alarma nuevaAlarma) { listaAlarmas.add(nuevaAlarma); }
