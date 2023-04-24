@@ -37,5 +37,4 @@ public class Alarma {
         this.inicio = inicio;
     }
     public void setEfecto(Efecto efecto) { this.efecto = efecto; }
-
 }

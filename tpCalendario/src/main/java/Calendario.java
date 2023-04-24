@@ -44,7 +44,7 @@ public class Calendario {
     // Metodo para cambiar arbitrariamente la fecha y hora actual del Calendario
     public void setTiempoActual(LocalDateTime tiempoActual) {this.tiempoActual = tiempoActual;}
 
-    /*
+
     // Metodo que actualiza las fechas de un evento repetido en caso de que este ya haya ocurrido.
     public void actualizarEventosRepetidos() {
         for (Evento evento : listaEventos) {
@@ -53,7 +53,7 @@ public class Calendario {
                 evento.actualizarSiguienteRepeticion();
             }
         }
-    }*/
+    }
 
     // METODOS DE BUSQUEDA
 
@@ -103,7 +103,6 @@ public class Calendario {
                 }
             }
         }
-
         eventosIntervalo.sort(new ComparadorBusqueda());
         return eventosIntervalo;
     }
@@ -368,16 +367,15 @@ public class Calendario {
         Alarma alarmaActual = obtenerProximaAlarma();
         Actividad actividad = alarmaActual.getActividad();
 
-        //obtenerAlarmaRepeticion(actividad, alarmaActual);
+        actualizarAlarmaRepeticion(actividad, alarmaActual);
 
         actividad.eliminarAlarma(alarmaActual);
         listaAlarmas.remove(alarmaActual);
         return actividad;
     }
 
-    /*
     // Metodo que se encarga de actualizar la alarma de un Evento dado el caso de que este deba repetirse.
-    public void obtenerAlarmaRepeticion(Actividad actividad, Alarma alarma) {
+    public void actualizarAlarmaRepeticion(Actividad actividad, Alarma alarma) {
         if (!listaEventos.contains(actividad)) { return;}
 
         int i = listaEventos.indexOf(actividad);
@@ -395,6 +393,5 @@ public class Calendario {
 
         eventoAlarma.agregarAlarma(alarmaRepeticion);
         listaAlarmas.add(alarmaRepeticion);
-    }*/
-
+    }
 }
