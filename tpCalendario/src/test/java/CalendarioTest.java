@@ -1,4 +1,3 @@
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.DayOfWeek;
@@ -10,7 +9,7 @@ import static org.junit.Assert.*;
 public class CalendarioTest {
 
     @Test
-    public void crearEvento() {
+    public void crearEvento() { // Crea un evento, se le pide al calendario dicho evento y su alarma y se corrobora que sus parametros sean correctos.
         var nuevoCalendario = new Calendario();
         String titulo = "Evento 1";
         String descripcion = "Primer evento a probar";
@@ -33,7 +32,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void modificarEvento() {
+    public void modificarEvento() { // Crea 1 evento en el calendario, lo busca y luego lo modifica con nuevos parametros.
         var nuevoCalendario = new Calendario();
 
         String titulo1 = "Evento 1";
@@ -62,7 +61,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void eliminarEvento() {
+    public void eliminarEvento() { // Crea un evento, lo busca, elimina y luego chequea que no persista en el calendario.
         var nuevoCalendario = new Calendario();
         String titulo = "Evento 3";
         String descripcion = "Tercer evento a probar";
@@ -81,7 +80,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void crearTarea() {
+    public void crearTarea() { // Crea una tarea, se le pide al calendario dicho evento y su alarma y se corrobora que sus parametros sean correctos.
         var nuevoCalendario = new Calendario();
         String titulo = "Tarea 1";
         String descripcion = "Primer tarea a probar";
@@ -102,7 +101,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void modificarTarea() {
+    public void modificarTarea() { // Crea una tarea, la busca y modifica en base a nuevos parametros y chequea que sean correctos al finalizar.
         var nuevoCalendario = new Calendario();
         String titulo = "Tarea 1";
         String descripcion = "Primer tarea a probar";
@@ -125,7 +124,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void eliminarTarea() {
+    public void eliminarTarea() { // Crea una tarea, la busca, elimina y luego chequea que no persista en el calendario.
         var nuevoCalendario = new Calendario();
         String titulo = "Tarea 3";
         String descripcion = "Tercer tarea a probar";
@@ -143,7 +142,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void crearEventosIdenticos() {
+    public void crearEventosIdenticos() { // Crea 2 eventos con los mismos parametros, luego los busca en base a dichos parametros y chequea que ambos tengan los mismos parametros.
         var nuevoCalendario = new Calendario();
         String titulo1 = "Evento A";
         String descripcion1 = "Desc. evento A";
@@ -182,7 +181,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void crearTareasIdenticas() {
+    public void crearTareasIdenticas() { // Crea 2 eventos con los mismos parametros, luego los busca en base a dichos parametros y chequea que ambos tengan los mismos parametros.
         var nuevoCalendario = new Calendario();
         String titulo1 = "Tarea A";
         String descripcion1 = "Desc. tarea A";
@@ -217,7 +216,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void crearAlarma(){
+    public void crearAlarma(){ // Crea un evento y tarea en el calendario con una alarma dada, luego busca esas actividades y les agrega una alarma nueva a cada uno
         var nuevoCalendario = new Calendario();
         String titulo1 = "Tarea/Evento A";
         String descripcion1 = "Desc tarea/evento A";
@@ -259,7 +258,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void modificarAlarma() {
+    public void modificarAlarma() { // Crea una tarea y la busca en el calendario para luego cambiarle la alarma con nuevos parametros.
         var nuevoCalendario = new Calendario();
         String titulo1 = "Tarea A";
         String descripcion1 = "Desc. tarea A";
@@ -285,7 +284,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void eliminarAlarma() {
+    public void eliminarAlarma() { // Crea una tarea y la busca en el calendario para eliminar su alarma y luego chequear que dicha alarma efectivamente dejo de existir.
         var nuevoCalendario = new Calendario();
         String titulo1 = "Tarea A";
         String descripcion1 = "Desc. tarea A";
@@ -304,7 +303,7 @@ public class CalendarioTest {
         assertNull(alarmaTareaPostBorrado);
     }
     @Test
-    public void tareaCompletaIncompleta(){
+    public void tareaCompletaIncompleta(){ // Crea una tarea y corrobora si su comportamiento de TareaCompleta es el esperado (Inicia en false, es true luego de ser marcada).
         var nuevoCalendario = new Calendario();
         String titulo1 = "Tarea A";
         String descripcion1 = "Desc. tarea A";
@@ -324,7 +323,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void crearTareasMasa(){
+    public void crearTareasMasa(){ // Crea 1000 tareas con limites distintos y corrobora que esten en el calendario como corresponde.
         var nuevoCalendario = new Calendario();
         String titulo1 = "Tarea A";
         String descripcion1 = "Desc. tarea A";
@@ -350,7 +349,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void crearEventosMasa(){
+    public void crearEventosMasa(){ // Crea 1000 eventos con inicio y fin diferentes, corroborando que esten agregados de manera correcta al calendario.
         var nuevoCalendario = new Calendario();
         String titulo1 = "Evento A";
         String descripcion1 = "Desc. evento A";
@@ -378,7 +377,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void modificarTareasMasa(){
+    public void modificarTareasMasa(){ // Crea 1000 tareas, las modifica y corrobora que sus parametros sean correctos.
         var nuevoCalendario = new Calendario();
         String titulo1 = "Tarea A";
         String descripcion1 = "Desc. tarea A";
@@ -409,7 +408,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void modificarEventosMasa(){
+    public void modificarEventosMasa(){ // Crea 1000 eventos, los modifica y corrobora que sus parametros sean correctos.
         var nuevoCalendario = new Calendario();
         String titulo1 = "Evento A";
         String descripcion1 = "Desc. evento A";
@@ -443,7 +442,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void eliminarTareasMasa(){
+    public void eliminarTareasMasa(){ // Crea 1000 tareas, luego las elimina y luego chequea que efectivamente el calendario no tiene ninguna de esas 1000 tareas al final.
         var nuevoCalendario = new Calendario();
         String titulo1 = "Tarea A";
         String descripcion1 = "Desc. tarea A";
@@ -471,7 +470,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void eliminarEventosMasa(){
+    public void eliminarEventosMasa(){ // Crea 1000 eventos, los elimina y luego chequea que el calendario no tiene ninguno de esos 1000 eventos al final.
         var nuevoCalendario = new Calendario();
         String titulo1 = "Evento A";
         String descripcion1 = "Desc. evento A";
@@ -500,7 +499,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void testProximaDisparoAlarma(){
+    public void testProximaDisparoAlarma(){ // Chequea manualmente con un evento y una tarea que las alarmas se dispararian en el orden esperado.
         var nuevoCalendario = new Calendario();
         String titulo1 = "Evento A";
         String descripcion1 = "Desc. evento A";
@@ -520,34 +519,34 @@ public class CalendarioTest {
 
         Efecto[] efectoAlarmas = {Efecto.NOTIFICACION};
 
-        nuevoCalendario.setTiempoActual(LocalDateTime.parse("2018-10-10T12:00"));
+        nuevoCalendario.setTiempoActual(LocalDateTime.parse("2018-10-10T12:00")); // Tiempo inicial del calendario.
 
-        nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmasEvento, efectoAlarmas, null);
+        nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmasEvento, efectoAlarmas, null); // Evento creado con su primera alarma.
         ArrayList<Evento> nuevaListaEventos = nuevoCalendario.buscarEvento(titulo1, descripcion1, inicio1, fin1);
         Evento eventoBuscado = nuevaListaEventos.get(0);
 
-        nuevoCalendario.agregarAlarma(eventoBuscado, inicioAlarmaEvento2, efectoAlarmas[0]);
-        nuevoCalendario.agregarAlarma(eventoBuscado, inicioAlarmaEvento3, efectoAlarmas[0]);
+        nuevoCalendario.agregarAlarma(eventoBuscado, inicioAlarmaEvento2, efectoAlarmas[0]); // Se agrega alarma a evento con tiempo = inicioAlarmaEvento2
+        nuevoCalendario.agregarAlarma(eventoBuscado, inicioAlarmaEvento3, efectoAlarmas[0]); // Se agrega alarma a evento con tiempo = inicioAlarmaEvento3
 
-        nuevoCalendario.crearTarea(titulo2, descripcion2, false, limite1, inicioAlarmasTarea, efectoAlarmas);
+        nuevoCalendario.crearTarea(titulo2, descripcion2, false, limite1, inicioAlarmasTarea, efectoAlarmas); // Tarea creada con su alarma original
         ArrayList<Tarea> nuevaListaTareas = nuevoCalendario.buscarTarea(titulo2, descripcion2, limite1);
         Tarea tareaBuscada = nuevaListaTareas.get(0);
 
-        nuevoCalendario.agregarAlarma(tareaBuscada, inicioAlarmaTarea2, efectoAlarmas[0]);
+        nuevoCalendario.agregarAlarma(tareaBuscada, inicioAlarmaTarea2, efectoAlarmas[0]); // Se agrega alarma a tarea con tiempo = inicioAlarmaTarea2
 
         Alarma alarmaEvento1 = eventoBuscado.buscarAlarma(inicioAlarmasEvento[0], efectoAlarmas[0]);
         Alarma alarmaEvento2 = eventoBuscado.buscarAlarma(inicioAlarmaEvento2, efectoAlarmas[0]);
         Alarma alarmaEvento3 = eventoBuscado.buscarAlarma(inicioAlarmaEvento3, efectoAlarmas[0]);
 
         Alarma alarmaTarea1 = tareaBuscada.buscarAlarma(inicioAlarmasTarea[0], efectoAlarmas[0]);
-        Alarma alarmaTarea2 = tareaBuscada.buscarAlarma(inicioAlarmaTarea2, efectoAlarmas[0]);
+        Alarma alarmaTarea2 = tareaBuscada.buscarAlarma(inicioAlarmaTarea2, efectoAlarmas[0]); // Alarmas buscadas y traidas a variables para comprobar
 
         assertEquals(alarmaEvento1, nuevoCalendario.obtenerProximaAlarma());
         assertEquals(alarmaEvento1, nuevoCalendario.obtenerProximaAlarma()); // A proposito, chequea que la proxima alarma siga siendo la misma a pesar de que no cambio nada.
 
         assertFalse(nuevoCalendario.iniciaProximaAlarma());
 
-        assertEquals(nuevoCalendario.dispararProximaAlarma(), eventoBuscado); // Primera alarma deberia en teoria haber sido removida.
+        assertEquals(nuevoCalendario.dispararProximaAlarma(), eventoBuscado); // Primera alarma es removida al ejecutar .dispararProximaAlarma()
 
         assertEquals(alarmaTarea1, nuevoCalendario.obtenerProximaAlarma());
         assertEquals(alarmaTarea1, nuevoCalendario.obtenerProximaAlarma());
@@ -570,12 +569,12 @@ public class CalendarioTest {
 
         assertEquals(nuevoCalendario.dispararProximaAlarma(), tareaBuscada); // Cuarta removida.
 
-        nuevoCalendario.setTiempoActual(LocalDateTime.parse("2018-10-10T16:00"));
+        nuevoCalendario.setTiempoActual(LocalDateTime.parse("2018-10-10T16:00")); // Fijamos el tiempo del calendario a la quinta alarma para chequear que de true
 
         assertEquals(alarmaEvento3, nuevoCalendario.obtenerProximaAlarma());
         assertEquals(alarmaEvento3, nuevoCalendario.obtenerProximaAlarma());
 
-        assertTrue(nuevoCalendario.iniciaProximaAlarma());
+        assertTrue(nuevoCalendario.iniciaProximaAlarma()); // Chequeo de que el tiempo del calendario y la alarma que viene coinciden
 
         assertEquals(nuevoCalendario.dispararProximaAlarma(), eventoBuscado); // Quinta y ultima alarma removida.
 
@@ -584,7 +583,8 @@ public class CalendarioTest {
     }
 
     @Test
-    public void testBusquedaActividadesMixtasConReps(){
+    public void testBusquedaActividadesMixtasConReps(){ // Crea un evento que se repite y una tarea. Se usa el metodo de buscarActividadesPorIntervalo
+        //y se corrobora que dicha busqueda de intervalo devuelve la lista de actividades ordenada de manera ascendente segun las fechas.
 
         // Arrange
         var nuevoCalendario = new Calendario();
@@ -594,15 +594,15 @@ public class CalendarioTest {
         LocalDateTime fin1 = LocalDateTime.parse("2023-03-13T17:00");
         LocalDateTime[] inicioAlarmasEvento = {LocalDateTime.parse("2023-03-13T13:00")};
 
-        Repeticion repeticionEvento = new RepeticionSemanalDias(inicio1, LocalDateTime.parse("2023-06-29T17:00"), new DayOfWeek[] {DayOfWeek.MONDAY, DayOfWeek.THURSDAY});
+        Repeticion repeticionEvento = new RepeticionSemanalDias(inicio1, LocalDateTime.parse("2023-06-29T17:00"), new DayOfWeek[] {DayOfWeek.MONDAY, DayOfWeek.THURSDAY}); // Se repite todos los Lunes y Jueves
 
         String titulo2 = "Entrega TP";
         String descripcion2 = "Fecha limite entrega TP Etapa 1";
         LocalDateTime limite1 = LocalDateTime.parse("2023-04-24T23:59");
         LocalDateTime[] inicioAlarmasTarea = {LocalDateTime.parse("2023-04-24T22:00")};
 
-        LocalDateTime inicioIntervaloBuscar = LocalDateTime.parse("2023-04-24T00:00");
-        LocalDateTime finIntervaloBuscar = LocalDateTime.parse("2023-05-07T00:00");
+        LocalDateTime inicioIntervaloBuscar = LocalDateTime.parse("2023-04-24T00:00"); // Inicio intervalo a buscar
+        LocalDateTime finIntervaloBuscar = LocalDateTime.parse("2023-05-07T00:00"); // Fin intervalo a buscar
 
         Efecto[] efectoAlarmas = {Efecto.NOTIFICACION};
 
@@ -611,9 +611,9 @@ public class CalendarioTest {
 
         nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmasEvento, efectoAlarmas, repeticionEvento);
 
-        ArrayList<Actividad> nuevaListaActividades = nuevoCalendario.buscarPorIntervalo(inicioIntervaloBuscar, finIntervaloBuscar);
+        ArrayList<Actividad> nuevaListaActividades = nuevoCalendario.buscarPorIntervalo(inicioIntervaloBuscar, finIntervaloBuscar); // Intervalo buscado
 
-        assertEquals(nuevaListaActividades.size(), 5);
+        assertEquals(nuevaListaActividades.size(), 5); // Deberia tener 5 actividades dentro de este intervalo
 
         Evento eventoPrimera = (Evento) nuevaListaActividades.get(0);
         Tarea tareaPrimera = (Tarea) nuevaListaActividades.get(1);
@@ -649,7 +649,8 @@ public class CalendarioTest {
     }
 
     @Test
-    public void testBusquedaMezclada(){
+    public void testBusquedaMezclada(){ // Crea 2 tareas y 2 eventos en el calendario (1 evento se repite, el otro no) y los busca con los metodos
+        // buscarTareaPorIntervalo y buscarEventoPorIntervalo respectivamente, chequeando que devuelven las listas esperadas.
         var nuevoCalendario = new Calendario();
         String tituloEvento1 = "Algoritmos 3";
         String descripcionEvento1 = "Clase de Algo3";
@@ -688,8 +689,8 @@ public class CalendarioTest {
         // Ayuda memoria, eventos: evento1, evento1, evento2, evento1
         // tareas: tarea1, tarea2
 
-        assertEquals(listaEventos.size(), 4);
-        assertEquals(listaTareas.size(), 2);
+        assertEquals(listaEventos.size(), 4); // Se esperan 4 eventos dentro del intervalo dado, debido al evento repetido
+        assertEquals(listaTareas.size(), 2); // Se esperan 2 tareas dentro del intervalo dado
 
         Evento primerEventoLista = listaEventos.get(0);
         Evento segundoEventoLista = listaEventos.get(1);
@@ -729,7 +730,8 @@ public class CalendarioTest {
     }
 
     @Test
-    public void testEventoDiaCompleto(){
+    public void testEventoDiaCompleto(){ // Crea un evento con un dado inicio y fin pero indicando que es de dia completo y chequea que sus valores de inicio y fin son los
+        // que corresponden al ser marcado como dia completo
         var nuevoCalendario = new Calendario();
         String tituloEvento1 = "Algoritmos 3";
         String descripcionEvento1 = "Clase de Algo3";
@@ -747,7 +749,8 @@ public class CalendarioTest {
     }
 
     @Test
-    public void testEventoConvertidoDiaCompleto(){
+    public void testEventoConvertidoDiaCompleto(){ // Crea un evento con un dado inicio y fin, marcada como NO de dia completo, y luego se la modifica para ser de dia
+        // completo, chequeando que su inicio y fin son los que corresponden luego de ser marcada como de dia completo
         var nuevoCalendario = new Calendario();
         String tituloEvento1 = "Algoritmos 3";
         String descripcionEvento1 = "Clase de Algo3";
@@ -766,7 +769,8 @@ public class CalendarioTest {
     }
 
     @Test
-    public void testTareaDiaCompleto(){
+    public void testTareaDiaCompleto(){ // Crea una tarea con un limite dado y marcada como de dia completo, chequeando que su limite es el que corresponde si es de dia
+        // completo
         var nuevoCalendario = new Calendario();
         String tituloTarea1 = "Algoritmos 3";
         String descripcionTarea1 = "Clase de Algo3";
@@ -782,7 +786,8 @@ public class CalendarioTest {
     }
 
     @Test
-    public void testTareaConvertidaDiaCompleto(){
+    public void testTareaConvertidaDiaCompleto(){ // Crea una tarea con un limite dado y marcada como NO de dia completo y luego se la modifica para que sea de dia completo
+        // chequeando que su limite es el que corresponde para una tarea de dia completo
         var nuevoCalendario = new Calendario();
         String tituloTarea1 = "Algoritmos 3";
         String descripcionTarea1 = "Clase de Algo3";
