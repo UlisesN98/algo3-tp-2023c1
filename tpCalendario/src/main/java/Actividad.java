@@ -73,11 +73,4 @@ public class Actividad {
         }
         return null;
     }
-
-    /*
-    public void actualizarAlarmas() {
-        for (Alarma alarma: listaAlarmas) {
-            alarma.setInicio(this.inicio.minusSeconds(ChronoUnit.SECONDS.between(alarma.getInicio(), this.inicio)));
-        }
-    }*/
 }
