@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 public class Alarma {
 
     private final Actividad actividad; // Actividad que cuenta con esta Alarma
-    private LocalDateTime inicio; // Fecha y hora de inicio de la ALarma
-    private Efecto efecto; // Tipo de efecto que producira la Alarma
+    private final LocalDateTime inicio; // Fecha y hora de inicio de la ALarma
+    private final Efecto efecto; // Tipo de efecto que producira la Alarma
 
     // Constructor para el caso donde el tiempo de inicio de la Alarma se indica con una hora absoluta.
     public Alarma(Actividad actividad, LocalDateTime inicio, Efecto efecto) {
@@ -31,10 +31,4 @@ public class Alarma {
     }
     public Efecto getEfecto() { return efecto; }
 
-    // Setters
-
-    public void setInicio(LocalDateTime inicio) {
-        this.inicio = inicio;
-    }
-    public void setEfecto(Efecto efecto) { this.efecto = efecto; }
 }
