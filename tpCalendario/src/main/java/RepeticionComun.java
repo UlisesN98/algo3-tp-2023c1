@@ -3,8 +3,8 @@ import java.util.TreeSet;
 
 public class RepeticionComun extends Repeticion {
 
-    private Frecuencia frecuencia; // Frecuencia que puede tomar una repeticion
-    private LocalDateTime fin; // Fecha limite de la repeticion
+    private final Frecuencia frecuencia; // Frecuencia que puede tomar una repeticion
+    private final LocalDateTime fin; // Fecha limite de la repeticion
 
     // Constructor para repeticiones sin limite
     public RepeticionComun(LocalDateTime inicio, Frecuencia frecuencia) {

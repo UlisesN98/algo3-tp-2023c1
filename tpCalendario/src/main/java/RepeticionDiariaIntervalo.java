@@ -3,8 +3,8 @@ import java.util.TreeSet;
 
 public class RepeticionDiariaIntervalo extends Repeticion {
 
-    private Integer intervalo; // Intervalo de dias en los que ocurre una repeticion
-    private LocalDateTime fin; // Fecha limite de la repeticion
+    private final Integer intervalo; // Intervalo de dias en los que ocurre una repeticion
+    private final LocalDateTime fin; // Fecha limite de la repeticion
 
     // Constructor para repeticiones sin limite
     public RepeticionDiariaIntervalo(LocalDateTime inicio, Integer intervalo) {

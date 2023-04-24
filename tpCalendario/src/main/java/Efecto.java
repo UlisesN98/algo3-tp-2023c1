@@ -1,11 +1,8 @@
 public enum Efecto {
+
+    // Tipos de efecto que puede tomar una Alarma.
     NOTIFICACION,
     SONIDO,
-    MAIL;
-
-    public int getValue() {
-        return ordinal() + 1;
-    }
-
+    MAIL
 }
 

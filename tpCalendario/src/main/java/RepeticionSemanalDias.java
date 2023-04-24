@@ -4,8 +4,8 @@ import java.util.TreeSet;
 
 public class RepeticionSemanalDias extends Repeticion {
 
-    private DayOfWeek[] dias; // Arreglo con los dias de la semana donde ocurre una repeticion
-    private LocalDateTime fin; // Fecha limite de la repeticion
+    private final DayOfWeek[] dias; // Arreglo con los dias de la semana donde ocurre una repeticion
+    private final LocalDateTime fin; // Fecha limite de la repeticion
 
     // Constructor para repeticiones sin limite
     public RepeticionSemanalDias(LocalDateTime inicio, DayOfWeek[] dias) {

@@ -16,5 +16,6 @@ public abstract class Repeticion {
     // Devuelve un treeset con las fechas de las repeticiones que ocurren dentro del intervalo de
     // tiempo pasado por parametro
     public abstract TreeSet<LocalDateTime> calcularRepeticionesPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo);
+
 }
 

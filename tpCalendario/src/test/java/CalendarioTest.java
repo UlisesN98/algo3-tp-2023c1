@@ -1,3 +1,4 @@
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.DayOfWeek;
@@ -271,14 +272,16 @@ public class CalendarioTest {
         nuevoCalendario.crearTarea(titulo1, descripcion1, false, limite1, inicioAlarmas, efectoAlarmas);
         ArrayList<Tarea> nuevaListaTarea1 = nuevoCalendario.buscarTarea(titulo1, descripcion1, limite1);
         Tarea tareaBuscada = nuevaListaTarea1.get(0);
-        Alarma alarmaTarea1 = tareaBuscada.buscarAlarma(inicioAlarmas[0], efectoAlarmas[0]);
 
         nuevoCalendario.modificarAlarma(tareaBuscada, inicioAlarmas[0], efectoAlarmas[0], inicioAlarmasNuevo);
-
         nuevoCalendario.modificarAlarma(tareaBuscada, inicioAlarmasNuevo, efectoAlarmas[0], efectoAlarmaNuevo);
 
-        assertEquals(inicioAlarmasNuevo, alarmaTarea1.getInicio());
-        assertEquals(efectoAlarmaNuevo, alarmaTarea1.getEfecto());
+        Alarma alarmaTarea1 = tareaBuscada.buscarAlarma(inicioAlarmas[0], efectoAlarmas[0]);
+        Alarma alarmaTarea2 = tareaBuscada.buscarAlarma(inicioAlarmasNuevo, efectoAlarmaNuevo);
+        // COMO CAMBIE LA IMPLEMENTACION ESTA PRUEBA SE TUVO QUE MODIFICAR
+        assertNull(alarmaTarea1);
+        assertEquals(inicioAlarmasNuevo, alarmaTarea2.getInicio());
+        assertEquals(efectoAlarmaNuevo, alarmaTarea2.getEfecto());
     }
 
     @Test
@@ -794,4 +797,138 @@ public class CalendarioTest {
 
         assertEquals(tareaBuscada.getFin(), LocalDateTime.parse("2023-03-14T00:00"));
     }
+
+    /*
+    @Test
+    public void testAlarmasEventosRepetidos() {
+        // Arrange
+
+        var nuevoCalendario = new Calendario();
+        nuevoCalendario.setTiempoActual(LocalDateTime.parse("2023-04-21T00:00"));
+
+        String tituloEvento1 = "Estructuras y Organizaciones";
+        String descripcionEvento1 = "Clase de EyO";
+        LocalDateTime inicio1 = LocalDateTime.parse("2023-04-21T18:00");
+        LocalDateTime fin1 = LocalDateTime.parse("2023-04-21T22:00");
+        LocalDateTime[] inicioAlarmasEvento = {LocalDateTime.parse("2023-04-21T16:00"), LocalDateTime.parse("2023-04-21T17:00")};
+        Efecto[] efectoAlarmas = {Efecto.NOTIFICACION, Efecto.SONIDO};
+        var repeticion1 = new RepeticionComun(inicio1, 3, Frecuencia.SEMANAL);
+
+        var inicioEsperado1 = LocalDateTime.parse("2023-04-21T16:00");
+        var inicioEsperado2 = LocalDateTime.parse("2023-04-21T17:00");
+        var inicioEsperado3 = LocalDateTime.parse("2023-04-28T16:00");
+        var inicioEsperado4 = LocalDateTime.parse("2023-04-28T17:00");
+        var inicioEsperado5 = LocalDateTime.parse("2023-05-05T16:00");
+        var inicioEsperado6 = LocalDateTime.parse("2023-05-05T17:00");
+
+        var inicioEventoEsp1 = LocalDateTime.parse("2023-04-21T18:00");
+        var inicioEventoEsp2 = LocalDateTime.parse("2023-04-28T18:00");
+        var inicioEventoEsp3 = LocalDateTime.parse("2023-05-05T18:00");
+
+        var finEventoEsp1 = LocalDateTime.parse("2023-04-21T22:00");
+        var finEventoEsp2 = LocalDateTime.parse("2023-04-28T22:00");
+        var finEventoEsp3 = LocalDateTime.parse("2023-05-05T22:00");
+
+        // Act
+
+        nuevoCalendario.crearEvento(tituloEvento1, descripcionEvento1, false, inicio1, fin1, inicioAlarmasEvento, efectoAlarmas, repeticion1);
+
+        // Primera ocurrencia
+        Alarma alarma1 = nuevoCalendario.obtenerProximaAlarma();
+        Actividad evento1 = nuevoCalendario.dispararProximaAlarma();
+
+        assertEquals(inicioEventoEsp1, evento1.getInicio());
+        assertEquals(finEventoEsp1, evento1.getFin());
+
+        Alarma alarma2 = nuevoCalendario.obtenerProximaAlarma();
+        Actividad evento2 = nuevoCalendario.dispararProximaAlarma();
+        assertEquals(inicioEventoEsp1, evento2.getInicio());
+        assertEquals(finEventoEsp1, evento2.getFin());
+
+        nuevoCalendario.setTiempoActual(LocalDateTime.parse("2023-04-21T22:01"));
+
+        nuevoCalendario.actualizarEventosRepetidos();
+
+        // Segunda ocurrencia
+        Alarma alarma3 = nuevoCalendario.obtenerProximaAlarma();
+        Actividad evento3 = nuevoCalendario.dispararProximaAlarma();
+
+        assertEquals(inicioEventoEsp2, evento3.getInicio());
+        assertEquals(finEventoEsp2, evento3.getFin());
+
+        Alarma alarma4 = nuevoCalendario.obtenerProximaAlarma();
+        Actividad evento4 = nuevoCalendario.dispararProximaAlarma();
+
+        assertEquals(inicioEventoEsp2, evento4.getInicio());
+        assertEquals(finEventoEsp2, evento4.getFin());
+
+        nuevoCalendario.setTiempoActual(LocalDateTime.parse("2023-04-28T22:01"));
+
+        nuevoCalendario.actualizarEventosRepetidos();
+
+        // Tercera ocurrencia
+        Alarma alarma5 = nuevoCalendario.obtenerProximaAlarma();
+        Actividad evento5 = nuevoCalendario.dispararProximaAlarma();
+
+        assertEquals(inicioEventoEsp3, evento5.getInicio());
+        assertEquals(finEventoEsp3, evento5.getFin());
+
+        Alarma alarma6 = nuevoCalendario.obtenerProximaAlarma();
+        Actividad evento6 = nuevoCalendario.dispararProximaAlarma();
+
+        assertEquals(inicioEventoEsp3, evento6.getInicio());
+        assertEquals(finEventoEsp3, evento6.getFin());
+
+        nuevoCalendario.setTiempoActual(LocalDateTime.parse("2023-05-05T22:01"));
+
+        nuevoCalendario.actualizarEventosRepetidos();
+
+        // Chequeo que ya no haya alarmas
+        Alarma alarma7 = nuevoCalendario.obtenerProximaAlarma();
+
+        // Assert
+
+        assertEquals(inicioEsperado1, alarma1.getInicio());
+        assertEquals(Efecto.NOTIFICACION, alarma1.getEfecto());
+
+        assertEquals(inicioEsperado2, alarma2.getInicio());
+        assertEquals(Efecto.SONIDO, alarma2.getEfecto());
+
+        assertEquals(inicioEsperado3, alarma3.getInicio());
+        assertEquals(Efecto.NOTIFICACION, alarma3.getEfecto());
+
+        assertEquals(inicioEsperado4, alarma4.getInicio());
+        assertEquals(Efecto.SONIDO, alarma4.getEfecto());
+
+        assertEquals(inicioEsperado5, alarma5.getInicio());
+        assertEquals(Efecto.NOTIFICACION, alarma5.getEfecto());
+
+        assertEquals(inicioEsperado6, alarma6.getInicio());
+        assertEquals(Efecto.SONIDO, alarma6.getEfecto());
+
+        assertNull(alarma7);
+    }
+
+    @Test
+    public void name() {
+        var Calendario = new Calendario();
+
+        LocalDateTime[] inicioAlarmas = {LocalDateTime.parse("2020-04-24T11:00"), LocalDateTime.parse("2020-04-24T09:00")};
+        Efecto[] efectoAlarmas = {Efecto.NOTIFICACION, Efecto.MAIL};
+
+        Calendario.crearTarea("HOLA", "SOY RUSELL", false, LocalDateTime.of(2020, 4,24, 12,0), inicioAlarmas, efectoAlarmas);
+
+        System.out.println(Calendario.obtenerProximaAlarma());
+
+        ArrayList<Tarea> t = Calendario.buscarTarea("HOLA", "SOY RUSELL", LocalDateTime.of(2020, 4,24, 12,0));
+        Tarea t1 = t.get(0);
+        Alarma a = t1.getListaAlarmas().get(0);
+        //a.setInicio(LocalDateTime.parse("2020-04-24T07:00"));
+
+        //t1.modificarAlarma(a, LocalDateTime.parse("2020-04-24T07:00"));
+        System.out.println(t1.getListaAlarmas());
+        Calendario.modificarAlarma(t1, a.getInicio(), a.getEfecto(), LocalDateTime.parse("2020-04-24T07:00"));
+        System.out.println(t1.getListaAlarmas());
+        System.out.println(Calendario.obtenerProximaAlarma());
+    }*/
 }
