@@ -27,7 +27,13 @@ public class Evento extends Actividad {
     }
 
     // Cambia el tipo de Repeticion del Evento por el el indicado.
+    // Actualiza la siguiente repeticion.
     public void setRepeticion(Repeticion repeticion) {
+        if (repeticion == null) {
+            siguienteRepeticion = null;
+        } else {
+            siguienteRepeticion = repeticion.calcularSiguienteRepeticion(inicio);
+        }
         this.repeticion = repeticion;
     }
 

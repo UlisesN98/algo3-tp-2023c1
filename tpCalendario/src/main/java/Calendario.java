@@ -313,7 +313,6 @@ public class Calendario {
     }
 
     // Recibe una instancia de Evento o Tarea y modifica la alarma, que tiene las caracteristicas indicadas, con el parametro pasado.
-    // No modifica la alarma en si, si no que crea una nueva.
     public void modificarAlarma(Actividad actividad, LocalDateTime inicio, Efecto efecto, LocalDateTime nuevoInicio) {
         Alarma alarma = actividad.buscarAlarma(inicio, efecto);
         actividad.eliminarAlarma(alarma);
@@ -323,7 +322,6 @@ public class Calendario {
     }
 
     // Recibe una instancia de Evento o Tarea y modifica la alarma, que tiene las caracteristicas indicadas, con el parametro pasado.
-    // No modifica la alarma en si, si no que crea una nueva.
     public void modificarAlarma(Actividad actividad, LocalDateTime inicio, Efecto efecto, Duration nuevoInicio) {
         Alarma alarma = actividad.buscarAlarma(inicio, efecto);
         actividad.eliminarAlarma(alarma);

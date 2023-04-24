@@ -878,6 +878,45 @@ public class CalendarioTest {
         assertEquals(segundaTareaLista.getFin(), limite2);
     }
 
+    @Test
+    public void modificarRepeticion() {
+        // Arrange
+
+        var nuevoCalendario = new Calendario();
+
+        String titulo1 = "Evento";
+        String descripcion1 = "Evento a probar";
+        LocalDateTime inicio1 = LocalDateTime.parse("2023-04-24T14:00");
+        LocalDateTime fin1 = LocalDateTime.parse("2023-04-24T17:00");
+        LocalDateTime[] inicioAlarmas1 = {LocalDateTime.parse("2023-04-24T13:00")};
+        Efecto[] efectoAlarmas1 = {Efecto.NOTIFICACION};
+        Repeticion repeticion1 = new RepeticionDiariaIntervalo(inicio1, 5, 3);
+
+        Repeticion repeticion2 = new RepeticionComun(inicio1, Frecuencia.SEMANAL);
+
+        // Act
+
+        nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmas1, efectoAlarmas1, repeticion1);
+        ArrayList<Evento> listaEventos = nuevoCalendario.buscarEvento(titulo1, descripcion1, inicio1, fin1);
+        Evento eventoBuscado = listaEventos.get(0);
+
+        LocalDateTime siguienteRepeticion1 = eventoBuscado.getSiguienteRepeticion();
+
+        // Modifico la repeticion
+        nuevoCalendario.modificar(eventoBuscado, repeticion2);
+        LocalDateTime siguienteRepeticion2 = eventoBuscado.getSiguienteRepeticion();
+
+        nuevoCalendario.modificar(eventoBuscado, null);
+        LocalDateTime siguienteRepeticion3 = eventoBuscado.getSiguienteRepeticion();
+
+        // Assert
+
+        // Chequeo que la siguiente repeticion sea correcta y se actualice
+        assertEquals(LocalDateTime.parse("2023-04-27T14:00"), siguienteRepeticion1);
+        assertEquals(LocalDateTime.parse("2023-05-01T14:00"), siguienteRepeticion2);
+        assertNull(siguienteRepeticion3);
+    }
+
     // Crea un evento con un dado inicio y fin pero indicando que es de dia completo y chequea que sus valores de inicio y fin son los
     // que corresponden al ser marcado como dia completo
     @Test
@@ -974,10 +1013,11 @@ public class CalendarioTest {
         ArrayList<Tarea> listaTareas = nuevoCalendario.buscarTareaPorIntervalo(LocalDateTime.parse("2023-03-11T12:00"), LocalDateTime.parse("2023-03-20T12:00"));
         Tarea tareaBuscada = listaTareas.get(0);
         nuevoCalendario.modificar(tareaBuscada, true);
+        nuevoCalendario.modificar(tareaBuscada, LocalDateTime.parse("2023-06-15T18:00")); // Le cambio el fin a modo de chequear que esta fecha se adaptara al dia completo
 
         // Assert
 
-        assertEquals(tareaBuscada.getFin(), LocalDateTime.parse("2023-03-14T00:00"));
+        assertEquals(tareaBuscada.getFin(), LocalDateTime.parse("2023-06-16T00:00"));
     }
 
     // Chequea que si un evento se repite sus alarmas acompañen esa repeticion
