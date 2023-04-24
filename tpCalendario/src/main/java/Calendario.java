@@ -10,7 +10,7 @@ public class Calendario {
     private LocalDateTime tiempoActual;  // Fecha y hora actual
     private final ArrayList<Evento> listaEventos; // ArrayList que contiene Eventos
     private final ArrayList<Tarea> listaTareas; // ArrayList que contiene Tareas
-    private final TreeSet<Alarma> listaAlarmas; // Treeset que contiena las Alarmas existentes ordenadas por orden aparicion
+    private final TreeSet<Alarma> listaAlarmas; // Treeset que contiene las Alarmas existentes ordenadas por orden aparicion
 
     public Calendario() {
         this.tiempoActual = LocalDateTime.now();
@@ -331,7 +331,6 @@ public class Calendario {
     }
 
     // Recibe una instancia de Evento o Tarea y modifica la alarma, que tiene las caracteristicas indicadas, con el parametro pasado.
-    // No modifica la alarma en si, si no que crea una nueva.
     public void modificarAlarma(Actividad actividad, LocalDateTime inicio, Efecto efecto, Efecto nuevoEfecto) {
         Alarma alarma = actividad.buscarAlarma(inicio, efecto);
         actividad.eliminarAlarma(alarma);
