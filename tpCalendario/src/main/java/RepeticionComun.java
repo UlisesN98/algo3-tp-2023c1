@@ -62,7 +62,7 @@ public class RepeticionComun extends Repeticion {
         return repeticiones;
     }
 
-    // Indica si la fecha pasada por parametro supero la fecha limite
+    // Calcula en base a una frecuencia y una cantidad la siguiente fecha
     private LocalDateTime sumarTiempo(LocalDateTime fecha, int cantidad) {
         if (frecuencia.equals(Frecuencia.DIARIA)) {
             return fecha.plusDays(cantidad);
