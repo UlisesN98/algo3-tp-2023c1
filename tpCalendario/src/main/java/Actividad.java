@@ -1,5 +1,6 @@
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class Actividad {
 
@@ -72,5 +73,19 @@ public class Actividad {
             if (alarma.getInicio().equals(inicio) && alarma.getEfecto().equals((efecto))) { return alarma; }
         }
         return null;
+    }
+
+    // Metodo requerido para hacer comparaciones que permitan ordenar Eventos y Tareas temporalmente
+    public static class ComparadorActividad implements Comparator<Actividad> {
+        @Override
+        public int compare(Actividad o1, Actividad o2) {
+            if (o1.getInicio().isBefore(o2.getInicio())){
+                return -1;
+            }
+            if (o1.getInicio().isAfter(o2.getInicio())){
+                return 1;
+            }
+            return 0;
+        }
     }
 }

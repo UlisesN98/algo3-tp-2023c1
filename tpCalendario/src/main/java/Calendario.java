@@ -2,51 +2,24 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.TreeSet;
 
 public class Calendario {
 
-    private LocalDateTime tiempoActual;  // Fecha y hora actual
     private final ArrayList<Evento> listaEventos; // ArrayList que contiene Eventos
     private final ArrayList<Tarea> listaTareas; // ArrayList que contiene Tareas
     private final TreeSet<Alarma> listaAlarmas; // Treeset que contiene las Alarmas existentes ordenadas por orden aparicion
 
     public Calendario() {
-        this.tiempoActual = LocalDateTime.now();
         this.listaEventos = new ArrayList<>();
         this.listaTareas = new ArrayList<>();
-        this.listaAlarmas = new TreeSet<>((o1, o2) -> {
-            if (o1.getInicio().isBefore(o2.getInicio())) {
-                return -1;
-            }
-            if (o1.getInicio().isAfter(o2.getInicio())) {
-                return 1;
-            }
-            return 0;
-        });
+        this.listaAlarmas = new TreeSet<>(new Alarma.ComparadorAlarma());
     }
 
-    // Metodo requerido para hacer comparaciones que permitan ordenar Eventos y Tareas temporalmente
-    public static class ComparadorBusqueda implements Comparator<Actividad> {
-        @Override
-        public int compare(Actividad o1, Actividad o2){
-            if (o1.getInicio().isBefore(o2.getInicio())){
-                return -1;
-            }
-            if (o1.getInicio().isAfter(o2.getInicio())){
-                return 1;
-            }
-            return 0;
-        }
-    }
 
-    // Metodo para cambiar arbitrariamente la fecha y hora actual del Calendario
-    public void setTiempoActual(LocalDateTime tiempoActual) {this.tiempoActual = tiempoActual;}
-
-
-    // Metodo que actualiza las fechas de un evento repetido en caso de que este ya haya ocurrido.
-    public void actualizarEventosRepetidos() {
+    // Recibe una fecha y hora y actualiza el inicio y fin
+    // de un evento repetido en caso de que este ya haya ocurrido.
+    public void actualizarEventosRepetidos(LocalDateTime tiempoActual) {
         for (Evento evento : listaEventos) {
             if (!evento.esRepetido()) {continue;}
             if (evento.getFin().isBefore(tiempoActual)) {
@@ -103,7 +76,7 @@ public class Calendario {
                 }
             }
         }
-        eventosIntervalo.sort(new ComparadorBusqueda());
+        eventosIntervalo.sort(new Actividad.ComparadorActividad());
         return eventosIntervalo;
     }
 
@@ -116,7 +89,7 @@ public class Calendario {
                 tareasIntervalo.add(tarea);
             }
         }
-        tareasIntervalo.sort(new ComparadorBusqueda());
+        tareasIntervalo.sort(new Actividad.ComparadorActividad());
         return tareasIntervalo;
     }
 
@@ -131,7 +104,7 @@ public class Calendario {
         listaActividades.addAll(eventosIntervalo);
         listaActividades.addAll(tareasIntervalo);
 
-        listaActividades.sort(new ComparadorBusqueda());
+        listaActividades.sort(new Actividad.ComparadorActividad());
         return listaActividades;
     }
 
@@ -145,13 +118,7 @@ public class Calendario {
     // instancia de Evento que se guardara en la lista de Eventos. A su vez, guarda las alarmas del Evento en el treeset de Alarmas.
     public void crearEvento(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio, LocalDateTime fin, LocalDateTime[] inicioAlarmas, Efecto[] efectoAlarmas, Repeticion repeticion) {
         var nuevoEvento = new Evento(titulo, descripcion, diaCompleto, inicio, fin, repeticion);
-        if (inicioAlarmas.length != 0) {
-            for (int i = 0; i < inicioAlarmas.length; i++) {
-                var nuevaAlarma = new Alarma(nuevoEvento, inicioAlarmas[i], efectoAlarmas[i]);
-                nuevoEvento.agregarAlarma(nuevaAlarma);
-                listaAlarmas.add(nuevaAlarma);
-            }
-        }
+        agregarAlarmas(nuevoEvento, inicioAlarmas, efectoAlarmas);
         listaEventos.add(nuevoEvento);
     }
 
@@ -162,13 +129,7 @@ public class Calendario {
     // instancia de Evento que se guardara en la lista de Eventos. A su vez, guarda las alarmas del Evento en el treeset de Alarmas.
     public void crearEvento(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio, LocalDateTime fin, Duration[] inicioAlarmas, Efecto[] efectoAlarmas, Repeticion repeticion) {
         var nuevoEvento = new Evento(titulo, descripcion, diaCompleto, inicio, fin, repeticion);
-        if (inicioAlarmas.length != 0) {
-            for (int i = 0; i < inicioAlarmas.length; i++) {
-                var nuevaAlarma = new Alarma(nuevoEvento, inicioAlarmas[i], efectoAlarmas[i]);
-                nuevoEvento.agregarAlarma(nuevaAlarma);
-                listaAlarmas.add(nuevaAlarma);
-            }
-        }
+        agregarAlarmas(nuevoEvento, inicioAlarmas, efectoAlarmas);
         listaEventos.add(nuevoEvento);
     }
 
@@ -178,13 +139,7 @@ public class Calendario {
     // instancia de Tarea que se guardara en la lista de Tareas. A su vez, guarda las alarmas de la Tarea en el treeset de Alarmas.
     public void crearTarea(String titulo, String descripcion, boolean diaCompleto, LocalDateTime limite, LocalDateTime[] inicioAlarmas, Efecto[] efectoAlarmas) {
         var nuevaTarea = new Tarea(titulo, descripcion, diaCompleto, limite, limite);
-        if (inicioAlarmas.length != 0) {
-            for (int i = 0; i < inicioAlarmas.length; i++) {
-                var nuevaAlarma = new Alarma(nuevaTarea, inicioAlarmas[i], efectoAlarmas[i]);
-                nuevaTarea.agregarAlarma(nuevaAlarma);
-                listaAlarmas.add(nuevaAlarma);
-            }
-        }
+        agregarAlarmas(nuevaTarea, inicioAlarmas, efectoAlarmas);
         listaTareas.add(nuevaTarea);
     }
 
@@ -194,16 +149,32 @@ public class Calendario {
     // instancia de Tarea que se guardara en la lista de Tareas. A su vez, guarda las alarmas de la Tarea en el treeset de Alarmas.
     public void crearTarea(String titulo, String descripcion, boolean diaCompleto, LocalDateTime limite, Duration[] inicioAlarmas, Efecto[] efectoAlarmas) {
         var nuevaTarea = new Tarea(titulo, descripcion, diaCompleto, limite, limite);
-        if (inicioAlarmas.length != 0) {
-            for (int i = 0; i < inicioAlarmas.length; i++) {
-                var nuevaAlarma = new Alarma(nuevaTarea, inicioAlarmas[i], efectoAlarmas[i]);
-                nuevaTarea.agregarAlarma(nuevaAlarma);
-                listaAlarmas.add(nuevaAlarma);
-            }
-        }
+        agregarAlarmas(nuevaTarea, inicioAlarmas, efectoAlarmas);
         listaTareas.add(nuevaTarea);
     }
 
+    // Crea y agrega las alarmas indicadas a un evento o tarea. El inicio de las alarmas lo determina una fecha
+    // y hora definida
+    private void agregarAlarmas(Actividad nuevaActividad, LocalDateTime[] inicioAlarmas, Efecto[] efectoAlarmas) {
+        if (inicioAlarmas.length != 0) {
+            for (int i = 0; i < inicioAlarmas.length; i++) {
+                var nuevaAlarma = new Alarma(nuevaActividad, inicioAlarmas[i], efectoAlarmas[i]);
+                nuevaActividad.agregarAlarma(nuevaAlarma);
+                listaAlarmas.add(nuevaAlarma);
+            }
+        }
+    }
+
+    // Crea y agrega las alarmas indicadas a un evento o tarea. El inicio de las alarmas lo determina una intervalo previo
+    private void agregarAlarmas(Actividad nuevaActividad, Duration[] inicioAlarmas, Efecto[] efectoAlarmas) {
+        if (inicioAlarmas.length != 0) {
+            for (int i = 0; i < inicioAlarmas.length; i++) {
+                var nuevaAlarma = new Alarma(nuevaActividad, inicioAlarmas[i], efectoAlarmas[i]);
+                nuevaActividad.agregarAlarma(nuevaAlarma);
+                listaAlarmas.add(nuevaAlarma);
+            }
+        }
+    }
 
     // METODOS DE MODIFICACION
 
@@ -352,8 +323,9 @@ public class Calendario {
         return listaAlarmas.isEmpty()? null : listaAlarmas.first();
     }
 
-    // Metodo que indica en base al tiempo actual si debe sonar la proxima alarma.
-    public boolean iniciaProximaAlarma () {
+    // Metodo que muestra, en base a una fecha y hora indicada,
+    // si debe sonar la proxima alarma.
+    public boolean iniciaProximaAlarma (LocalDateTime tiempoActual) {
         return tiempoActual.equals(obtenerProximaAlarma().getInicio());
     }
 

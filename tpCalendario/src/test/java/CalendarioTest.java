@@ -659,8 +659,6 @@ public class CalendarioTest {
 
         // Act & Assert
 
-        nuevoCalendario.setTiempoActual(LocalDateTime.parse("2018-10-10T12:00")); // Tiempo inicial del calendario.
-
         nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmasEvento, efectoAlarmas, null); // Evento creado con su primera alarma.
         ArrayList<Evento> nuevaListaEventos = nuevoCalendario.buscarEvento(titulo1, descripcion1, inicio1, fin1);
         Evento eventoBuscado = nuevaListaEventos.get(0);
@@ -684,37 +682,35 @@ public class CalendarioTest {
         assertEquals(alarmaEvento1, nuevoCalendario.obtenerProximaAlarma());
         assertEquals(alarmaEvento1, nuevoCalendario.obtenerProximaAlarma()); // A proposito, chequea que la proxima alarma siga siendo la misma a pesar de que no cambio nada.
 
-        assertFalse(nuevoCalendario.iniciaProximaAlarma());
+        assertFalse(nuevoCalendario.iniciaProximaAlarma(LocalDateTime.parse("2018-10-10T12:00")));
 
         assertEquals(nuevoCalendario.dispararProximaAlarma(), eventoBuscado); // Primera alarma es removida al ejecutar .dispararProximaAlarma()
 
         assertEquals(alarmaTarea1, nuevoCalendario.obtenerProximaAlarma());
         assertEquals(alarmaTarea1, nuevoCalendario.obtenerProximaAlarma());
 
-        assertFalse(nuevoCalendario.iniciaProximaAlarma());
+        assertFalse(nuevoCalendario.iniciaProximaAlarma(LocalDateTime.parse("2018-10-10T12:00")));
 
         assertEquals(nuevoCalendario.dispararProximaAlarma(), tareaBuscada); // Segunda alarma removida.
 
         assertEquals(alarmaEvento2, nuevoCalendario.obtenerProximaAlarma());
         assertEquals(alarmaEvento2, nuevoCalendario.obtenerProximaAlarma());
 
-        assertFalse(nuevoCalendario.iniciaProximaAlarma());
+        assertFalse(nuevoCalendario.iniciaProximaAlarma(LocalDateTime.parse("2018-10-10T12:00")));
 
         assertEquals(nuevoCalendario.dispararProximaAlarma(), eventoBuscado); // Tercera removida.
 
         assertEquals(alarmaTarea2, nuevoCalendario.obtenerProximaAlarma());
         assertEquals(alarmaTarea2, nuevoCalendario.obtenerProximaAlarma());
 
-        assertFalse(nuevoCalendario.iniciaProximaAlarma());
+        assertFalse(nuevoCalendario.iniciaProximaAlarma(LocalDateTime.parse("2018-10-10T12:00")));
 
         assertEquals(nuevoCalendario.dispararProximaAlarma(), tareaBuscada); // Cuarta removida.
 
-        nuevoCalendario.setTiempoActual(LocalDateTime.parse("2018-10-10T16:00")); // Fijamos el tiempo del calendario a la quinta alarma para chequear que de true
-
         assertEquals(alarmaEvento3, nuevoCalendario.obtenerProximaAlarma());
         assertEquals(alarmaEvento3, nuevoCalendario.obtenerProximaAlarma());
 
-        assertTrue(nuevoCalendario.iniciaProximaAlarma()); // Chequeo de que el tiempo del calendario y la alarma que viene coinciden
+        assertTrue(nuevoCalendario.iniciaProximaAlarma(LocalDateTime.parse("2018-10-10T16:00"))); // Chequeo de que el tiempo del calendario y la alarma que viene coinciden
 
         assertEquals(nuevoCalendario.dispararProximaAlarma(), eventoBuscado); // Quinta y ultima alarma removida.
 
@@ -1026,7 +1022,6 @@ public class CalendarioTest {
         // Arrange
 
         var nuevoCalendario = new Calendario();
-        nuevoCalendario.setTiempoActual(LocalDateTime.parse("2023-04-21T00:00"));
 
         String tituloEvento1 = "Estructuras y Organizaciones";
         String descripcionEvento1 = "Clase de EyO";
@@ -1068,9 +1063,8 @@ public class CalendarioTest {
         assertEquals(inicioEventoEsp1, evento2.getInicio()); // Chequeo que las fechas del evento de la alarma que sono sean las esperadas
         assertEquals(finEventoEsp1, evento2.getFin());
 
-        nuevoCalendario.setTiempoActual(LocalDateTime.parse("2023-04-21T22:01"));
         // Actualizo las fechas de los eventos
-        nuevoCalendario.actualizarEventosRepetidos();
+        nuevoCalendario.actualizarEventosRepetidos(LocalDateTime.parse("2023-04-21T22:01"));
 
         // Segunda ocurrencia del evento
         Alarma alarma3 = nuevoCalendario.obtenerProximaAlarma(); // Obtengo y disparo la tercer alarma
@@ -1085,9 +1079,7 @@ public class CalendarioTest {
         assertEquals(inicioEventoEsp2, evento4.getInicio());
         assertEquals(finEventoEsp2, evento4.getFin());
 
-        nuevoCalendario.setTiempoActual(LocalDateTime.parse("2023-04-28T22:01"));
-
-        nuevoCalendario.actualizarEventosRepetidos();
+        nuevoCalendario.actualizarEventosRepetidos(LocalDateTime.parse("2023-04-28T22:01"));
 
         // Tercera ocurrencia
         Alarma alarma5 = nuevoCalendario.obtenerProximaAlarma();
@@ -1102,9 +1094,7 @@ public class CalendarioTest {
         assertEquals(inicioEventoEsp3, evento6.getInicio());
         assertEquals(finEventoEsp3, evento6.getFin());
 
-        nuevoCalendario.setTiempoActual(LocalDateTime.parse("2023-05-05T22:01"));
-
-        nuevoCalendario.actualizarEventosRepetidos();
+        nuevoCalendario.actualizarEventosRepetidos(LocalDateTime.parse("2023-05-05T22:01"));
 
         // Chequeo que ya no haya alarmas
         Alarma alarma7 = nuevoCalendario.obtenerProximaAlarma();

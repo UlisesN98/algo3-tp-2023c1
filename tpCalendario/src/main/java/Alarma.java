@@ -1,5 +1,6 @@
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 
 public class Alarma {
 
@@ -31,4 +32,17 @@ public class Alarma {
     }
     public Efecto getEfecto() { return efecto; }
 
+    // Metodo requerido para hacer comparaciones que permitan ordenar Alarmas temporalmente
+    public static class ComparadorAlarma implements Comparator<Alarma> {
+        @Override
+        public int compare(Alarma o1, Alarma o2) {
+            if (o1.getInicio().isBefore(o2.getInicio())) {
+                return -1;
+            }
+            if (o1.getInicio().isAfter(o2.getInicio())) {
+                return 1;
+            }
+            return 0;
+        }
+    }
 }
