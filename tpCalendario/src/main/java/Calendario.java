@@ -29,7 +29,7 @@ public class Calendario {
 
     // Busca Eventos a partir sus caracteristicas principales (titulo, descripcion, fecha de inicio y fecha de fin)
     // y devuelve un ArrayList con aquellos que las tienen
-    public ArrayList<Evento> buscarEvento(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
+    public ArrayList<Evento> buscarEventos(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
         var eventos = new ArrayList<Evento>();
         for (Evento evento : listaEventos) {
             if (evento.getTitulo().equals(titulo) && evento.getDescripcion().equals(descripcion) && evento.getInicio().equals(inicio) && evento.getFin().equals(fin)) {
@@ -41,10 +41,10 @@ public class Calendario {
 
     // Busca Tareas a partir sus caracteristicas principales (titulo, descripcion y fecha limite)
     // y devuelve un ArrayList con aquellas que las tienen
-    public ArrayList<Tarea> buscarTarea(String titulo, String descripcion, LocalDateTime limite) {
+    public ArrayList<Tarea> buscarTareas(String titulo, String descripcion, LocalDateTime limite) {
         var tareas = new ArrayList<Tarea>();
         for (Tarea tarea : listaTareas) {
-            if (tarea.getTitulo().equals(titulo) && tarea.getDescripcion().equals(descripcion) && tarea.getFin().equals(limite)) {
+            if (tarea.getTitulo().equals(titulo) && tarea.getDescripcion().equals(descripcion) && tarea.getInicio().equals(limite)) {
                 tareas.add(tarea);
             }
         }
@@ -82,7 +82,7 @@ public class Calendario {
     public ArrayList<Tarea> buscarTareaPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
         var tareasIntervalo = new ArrayList<Tarea>();
         for (Tarea tarea : listaTareas) {
-            if ((tarea.getFin().isAfter(inicioIntervalo) || tarea.getFin().isEqual(inicioIntervalo)) && (tarea.getFin().isBefore(finIntervalo))) {
+            if ((tarea.getInicio().isAfter(inicioIntervalo) || tarea.getInicio().isEqual(inicioIntervalo)) && (tarea.getInicio().isBefore(finIntervalo))) {
                 tareasIntervalo.add(tarea);
             }
         }
@@ -135,7 +135,7 @@ public class Calendario {
     // de la misma longitud que el anterior que indique el efecto de estas alarmas. A partir de estas caracterisiticas se crea una
     // instancia de Tarea que se guardara en la lista de Tareas. A su vez, guarda las alarmas de la Tarea en el treeset de Alarmas.
     public void crearTarea(String titulo, String descripcion, boolean diaCompleto, LocalDateTime limite, LocalDateTime[] inicioAlarmas, Efecto[] efectoAlarmas) {
-        var nuevaTarea = new Tarea(titulo, descripcion, diaCompleto, limite, limite);
+        var nuevaTarea = new Tarea(titulo, descripcion, diaCompleto, limite);
         agregarAlarmas(nuevaTarea, inicioAlarmas, efectoAlarmas);
         listaTareas.add(nuevaTarea);
     }
@@ -145,7 +145,7 @@ public class Calendario {
     // de la misma longitud que el anterior que indique el efecto de estas alarmas. A partir de estas caracterisiticas se crea una
     // instancia de Tarea que se guardara en la lista de Tareas. A su vez, guarda las alarmas de la Tarea en el treeset de Alarmas.
     public void crearTarea(String titulo, String descripcion, boolean diaCompleto, LocalDateTime limite, Duration[] inicioAlarmas, Efecto[] efectoAlarmas) {
-        var nuevaTarea = new Tarea(titulo, descripcion, diaCompleto, limite, limite);
+        var nuevaTarea = new Tarea(titulo, descripcion, diaCompleto, limite);
         agregarAlarmas(nuevaTarea, inicioAlarmas, efectoAlarmas);
         listaTareas.add(nuevaTarea);
     }
@@ -195,7 +195,7 @@ public class Calendario {
 
     // Recibe una instancia de Tarea y modifica su limite.
     public void modificar(Tarea tarea, LocalDateTime nuevoLimite){
-        tarea.setFin(nuevoLimite);
+        tarea.setInicio(nuevoLimite);
     }
 
     // Recibe una instancia de Evento y modifica su titulo, descripcion, inicio y fin, o unicamente los parametros pasados distintos de null.

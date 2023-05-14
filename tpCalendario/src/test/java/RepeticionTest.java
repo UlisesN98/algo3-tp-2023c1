@@ -3,6 +3,7 @@ import org.junit.Test;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.TreeSet;
 
 import static org.junit.Assert.*;
@@ -19,17 +20,20 @@ public class RepeticionTest {
         // Creo los tres tipos de repeticion para el caso limite de una fecha
         var rep1 = new RepeticionComun(fechaInicial, LocalDateTime.parse("2023-04-24T23:59"), Frecuencia.MENSUAL);
         var rep2 = new RepeticionDiariaIntervalo(fechaInicial, LocalDateTime.parse("2023-04-24T23:59"), 3);
-        var rep3 = new RepeticionSemanalDias(fechaInicial, LocalDateTime.parse("2023-04-24T23:59"), new DayOfWeek[] {DayOfWeek.TUESDAY, DayOfWeek.FRIDAY});
+        var dias = new HashSet<DayOfWeek>();
+        dias.add(DayOfWeek.TUESDAY);
+        dias.add(DayOfWeek.FRIDAY);
+        var rep3 = new RepeticionSemanalDias(fechaInicial, LocalDateTime.parse("2023-04-24T23:59"), dias);
 
         // Creo los tres tipos de repeticion para el caso limite de una cantidad
         var rep4 = new RepeticionComun(fechaInicial, 3, Frecuencia.MENSUAL);
         var rep5 = new RepeticionDiariaIntervalo(fechaInicial, 5, 3);
-        var rep6 = new RepeticionSemanalDias(fechaInicial, 5, new DayOfWeek[] {DayOfWeek.TUESDAY, DayOfWeek.FRIDAY});
+        var rep6 = new RepeticionSemanalDias(fechaInicial, 5, dias);
 
         // Creo los tres tipos de repeticion para el caso sin limite
         var rep7 = new RepeticionComun(fechaInicial, Frecuencia.MENSUAL);
         var rep8 = new RepeticionDiariaIntervalo(fechaInicial,3);
-        var rep9 = new RepeticionSemanalDias(fechaInicial, new DayOfWeek[] {DayOfWeek.TUESDAY, DayOfWeek.FRIDAY});
+        var rep9 = new RepeticionSemanalDias(fechaInicial, dias);
 
         // Determino las fechas esperadas para ejecucion
         var repEsperada1 = LocalDateTime.parse("2023-04-01T12:00");
@@ -105,12 +109,18 @@ public class RepeticionTest {
         // Creo los tres tipos de repeticion para casos que entren en el intervalo
         var rep1 = new RepeticionComun(fechaInicial, 10, Frecuencia.SEMANAL);
         var rep2 = new RepeticionDiariaIntervalo(fechaInicial, LocalDateTime.parse("2023-04-20T12:00"), 5);
-        var rep3 = new RepeticionSemanalDias(fechaInicial, 13, new DayOfWeek[] {DayOfWeek.TUESDAY, DayOfWeek.THURSDAY});
+        var dias1 = new HashSet<DayOfWeek>();
+        dias1.add(DayOfWeek.TUESDAY);
+        dias1.add(DayOfWeek.THURSDAY);
+        var rep3 = new RepeticionSemanalDias(fechaInicial, 13, dias1);
 
         // Creo los tres tipos para casos que no entren en el intervalo
         var rep4 = new RepeticionComun(fechaInicial, LocalDateTime.parse("2025-03-01T12:00"), Frecuencia.ANUAL);
         var rep5 = new RepeticionDiariaIntervalo(fechaInicial, LocalDateTime.parse("2023-03-31T12:00"), 10);
-        var rep6 = new RepeticionSemanalDias(LocalDateTime.parse("2023-05-01T00:00"), 8, new DayOfWeek[] {DayOfWeek.MONDAY, DayOfWeek.SATURDAY});
+        var dias2 = new HashSet<DayOfWeek>();
+        dias2.add(DayOfWeek.MONDAY);
+        dias2.add(DayOfWeek.SATURDAY);
+        var rep6 = new RepeticionSemanalDias(LocalDateTime.parse("2023-05-01T00:00"), 8, dias2);
 
         // Determino las fechas que se esperan esten dentro del intervalo para cada caso
         var fechasEsperadas1 = new LocalDateTime[] {LocalDateTime.parse("2023-04-05T12:00"), LocalDateTime.parse("2023-04-12T12:00"), LocalDateTime.parse("2023-04-19T12:00"), LocalDateTime.parse("2023-04-26T12:00")};

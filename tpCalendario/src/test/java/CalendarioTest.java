@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import static org.junit.Assert.*;
 
@@ -37,11 +38,11 @@ public class CalendarioTest {
         nuevoCalendario.crearEvento(titulo2, descripcion2, false, inicio2, fin2, inicioAlarmas2, efectoAlarmas2, null);
 
         // Busco en el calendario cada evento
-        ArrayList<Evento> nuevaListaEventos1 = nuevoCalendario.buscarEvento(titulo1, descripcion1, inicio1, fin1);
+        ArrayList<Evento> nuevaListaEventos1 = nuevoCalendario.buscarEventos(titulo1, descripcion1, inicio1, fin1);
         Evento eventoBuscado1 = nuevaListaEventos1.get(0);
         Alarma alarmaEvento1 = eventoBuscado1.buscarAlarma(inicioAlarmas1[0], efectoAlarmas1[0]);
 
-        ArrayList<Evento> nuevaListaEventos2 = nuevoCalendario.buscarEvento(titulo2, descripcion2, inicio2, fin2);
+        ArrayList<Evento> nuevaListaEventos2 = nuevoCalendario.buscarEventos(titulo2, descripcion2, inicio2, fin2);
         Evento eventoBuscado2 = nuevaListaEventos2.get(0);
         // Como para buscar necesito la hora de la alarma, no un intervalo, y ambos tienen una alarma a la misma hora, uso la hora del primer evento
         Alarma alarmaEvento2 = eventoBuscado2.buscarAlarma(inicioAlarmas1[0], efectoAlarmas2[0]);
@@ -87,14 +88,14 @@ public class CalendarioTest {
 
         nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmas, efectoAlarmas, null);
 
-        ArrayList<Evento> nuevaListaEventos1 = nuevoCalendario.buscarEvento(titulo1, descripcion1, inicio1, fin1);
+        ArrayList<Evento> nuevaListaEventos1 = nuevoCalendario.buscarEventos(titulo1, descripcion1, inicio1, fin1);
         Evento eventoBuscado1 = nuevaListaEventos1.get(0);
 
         // Modifico el evento
         nuevoCalendario.modificar(eventoBuscado1, titulo2, descripcion2, inicio2, fin2);
 
         // Vuelvo a buscarlo
-        ArrayList<Evento> nuevaListaEventos2 = nuevoCalendario.buscarEvento(titulo2, descripcion2, inicio2, fin2);
+        ArrayList<Evento> nuevaListaEventos2 = nuevoCalendario.buscarEventos(titulo2, descripcion2, inicio2, fin2);
         Evento eventoBuscado2 = nuevaListaEventos2.get(0);
 
         // Assert
@@ -122,14 +123,14 @@ public class CalendarioTest {
         // Act
 
         nuevoCalendario.crearEvento(titulo, descripcion, false, inicio, fin, inicioAlarmas, efectoAlarmas, null);
-        ArrayList<Evento> nuevaListaEventos1 = nuevoCalendario.buscarEvento(titulo, descripcion, inicio, fin);
+        ArrayList<Evento> nuevaListaEventos1 = nuevoCalendario.buscarEventos(titulo, descripcion, inicio, fin);
         Evento eventoBuscado1 = nuevaListaEventos1.get(0);
 
         // Elimino el evento
         nuevoCalendario.eliminarEvento(eventoBuscado1);
 
         // Lo busco con el objetivo de recibir una lista vacia
-        ArrayList<Evento> listaEventosPostBorrado = nuevoCalendario.buscarEvento(titulo, descripcion, inicio, fin);
+        ArrayList<Evento> listaEventosPostBorrado = nuevoCalendario.buscarEventos(titulo, descripcion, inicio, fin);
 
         // Assert
 
@@ -160,11 +161,11 @@ public class CalendarioTest {
         nuevoCalendario.crearTarea(titulo, descripcion, false, limite, inicioAlarmas, efectoAlarmas);
         nuevoCalendario.crearTarea(titulo2, descripcion2, false, limite2, inicioAlarmas2, efectoAlarmas2);
 
-        ArrayList<Tarea> nuevaListaTareas = nuevoCalendario.buscarTarea(titulo, descripcion, limite);
+        ArrayList<Tarea> nuevaListaTareas = nuevoCalendario.buscarTareas(titulo, descripcion, limite);
         Tarea tareaBuscada = nuevaListaTareas.get(0);
         Alarma alarmaTarea = tareaBuscada.buscarAlarma(inicioAlarmas[0], efectoAlarmas[0]);
 
-        ArrayList<Tarea> nuevaListaTareas2 = nuevoCalendario.buscarTarea(titulo2, descripcion2, limite2);
+        ArrayList<Tarea> nuevaListaTareas2 = nuevoCalendario.buscarTareas(titulo2, descripcion2, limite2);
         Tarea tareaBuscada2 = nuevaListaTareas2.get(0);
         Alarma alarmaTarea2 = tareaBuscada2.buscarAlarma(inicioAlarmas[0], efectoAlarmas2[0]);
 
@@ -172,13 +173,13 @@ public class CalendarioTest {
 
         assertEquals(titulo, tareaBuscada.getTitulo());
         assertEquals(descripcion, tareaBuscada.getDescripcion());
-        assertEquals(limite, tareaBuscada.getFin());
+        assertEquals(limite, tareaBuscada.getInicio());
         assertEquals(inicioAlarmas[0], alarmaTarea.getInicio());
         assertEquals(efectoAlarmas[0], alarmaTarea.getEfecto());
 
         assertEquals(titulo2, tareaBuscada2.getTitulo());
         assertEquals(descripcion2, tareaBuscada2.getDescripcion());
-        assertEquals(limite2, tareaBuscada2.getFin());
+        assertEquals(limite2, tareaBuscada2.getInicio());
         assertEquals(inicioAlarmas[0], alarmaTarea2.getInicio());
         assertEquals(efectoAlarmas2[0], alarmaTarea2.getEfecto());
     }
@@ -201,19 +202,19 @@ public class CalendarioTest {
         // Act
 
         nuevoCalendario.crearTarea(titulo, descripcion, false, limite, inicioAlarmas, efectoAlarmas);
-        ArrayList<Tarea> nuevaListaTareas = nuevoCalendario.buscarTarea(titulo, descripcion, limite);
+        ArrayList<Tarea> nuevaListaTareas = nuevoCalendario.buscarTareas(titulo, descripcion, limite);
         Tarea tareaBuscada = nuevaListaTareas.get(0);
 
         nuevoCalendario.modificar(tareaBuscada, titulo2, descripcion2, limite2);
 
-        ArrayList<Tarea> nuevaListaTareas2 = nuevoCalendario.buscarTarea(titulo2, descripcion2, limite2);
+        ArrayList<Tarea> nuevaListaTareas2 = nuevoCalendario.buscarTareas(titulo2, descripcion2, limite2);
         Tarea tareaBuscada2 = nuevaListaTareas2.get(0);
 
         // Assert
 
         assertEquals(titulo2, tareaBuscada.getTitulo());
         assertEquals(descripcion2, tareaBuscada.getDescripcion());
-        assertEquals(limite2, tareaBuscada.getFin());
+        assertEquals(limite2, tareaBuscada.getInicio());
         assertEquals(tareaBuscada, tareaBuscada2);
     }
 
@@ -231,12 +232,12 @@ public class CalendarioTest {
         // Act
 
         nuevoCalendario.crearTarea(titulo, descripcion, false, limite, inicioAlarmas, efectoAlarmas);
-        ArrayList<Tarea> nuevaListaTareas1 = nuevoCalendario.buscarTarea(titulo, descripcion, limite);
+        ArrayList<Tarea> nuevaListaTareas1 = nuevoCalendario.buscarTareas(titulo, descripcion, limite);
         Tarea tareaBuscada1 = nuevaListaTareas1.get(0);
 
         nuevoCalendario.eliminarTarea(tareaBuscada1);
 
-        ArrayList<Tarea> listaTareasPostBorrado = nuevoCalendario.buscarTarea(titulo, descripcion, limite);
+        ArrayList<Tarea> listaTareasPostBorrado = nuevoCalendario.buscarTareas(titulo, descripcion, limite);
 
         // Assert
 
@@ -261,7 +262,7 @@ public class CalendarioTest {
         nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmas, efectoAlarmas, null);
         nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmas, efectoAlarmas, null);
 
-        ArrayList<Evento> nuevaListaEventos = nuevoCalendario.buscarEvento(titulo1, descripcion1, inicio1, fin1);
+        ArrayList<Evento> nuevaListaEventos = nuevoCalendario.buscarEventos(titulo1, descripcion1, inicio1, fin1);
 
         // Assert
 
@@ -288,14 +289,14 @@ public class CalendarioTest {
         nuevoCalendario.crearTarea(titulo1, descripcion1, false, limite1, inicioAlarmas, efectoAlarmas);
         nuevoCalendario.crearTarea(titulo1, descripcion1, false, limite1, inicioAlarmas, efectoAlarmas);
 
-        ArrayList<Tarea> nuevaListaTareas = nuevoCalendario.buscarTarea(titulo1, descripcion1, limite1);
+        ArrayList<Tarea> nuevaListaTareas = nuevoCalendario.buscarTareas(titulo1, descripcion1, limite1);
 
         // Assert
 
         assertEquals(2, nuevaListaTareas.size());
         assertNotEquals(nuevaListaTareas.get(0), nuevaListaTareas.get(1));
         assertEquals(nuevaListaTareas.get(0).getTitulo(), nuevaListaTareas.get(1).getTitulo());
-        assertEquals(nuevaListaTareas.get(0).getFin(), nuevaListaTareas.get(1).getFin());
+        assertEquals(nuevaListaTareas.get(0).getInicio(), nuevaListaTareas.get(1).getInicio());
         assertEquals(nuevaListaTareas.get(0).getListaAlarmas().first().getInicio(), nuevaListaTareas.get(1).getListaAlarmas().first().getInicio());
     }
 
@@ -325,8 +326,8 @@ public class CalendarioTest {
         nuevoCalendario.crearTarea(titulo1, descripcion1, false, limite1, inicioAlarmas, efectoAlarmas);
         nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmas, efectoAlarmas, null);
 
-        ArrayList<Tarea> nuevaListaTarea1 = nuevoCalendario.buscarTarea(titulo1, descripcion1, limite1);
-        ArrayList<Evento> nuevaListaEvento1 = nuevoCalendario.buscarEvento(titulo1, descripcion1, inicio1, fin1);
+        ArrayList<Tarea> nuevaListaTarea1 = nuevoCalendario.buscarTareas(titulo1, descripcion1, limite1);
+        ArrayList<Evento> nuevaListaEvento1 = nuevoCalendario.buscarEventos(titulo1, descripcion1, inicio1, fin1);
 
         Tarea tareaBuscada = nuevaListaTarea1.get(0);
         Evento eventoBuscado = nuevaListaEvento1.get(0);
@@ -374,7 +375,7 @@ public class CalendarioTest {
         // Act
 
         nuevoCalendario.crearTarea(titulo1, descripcion1, false, limite1, inicioAlarmas, efectoAlarmas);
-        ArrayList<Tarea> nuevaListaTarea1 = nuevoCalendario.buscarTarea(titulo1, descripcion1, limite1);
+        ArrayList<Tarea> nuevaListaTarea1 = nuevoCalendario.buscarTareas(titulo1, descripcion1, limite1);
         Tarea tareaBuscada = nuevaListaTarea1.get(0);
 
         // Modifico las alarmas con distintos parametros
@@ -417,7 +418,7 @@ public class CalendarioTest {
         // Act
 
         nuevoCalendario.crearTarea(titulo1, descripcion1, false, limite1, inicioAlarmas, efectoAlarmas);
-        ArrayList<Tarea> nuevaListaTarea1 = nuevoCalendario.buscarTarea(titulo1, descripcion1, limite1);
+        ArrayList<Tarea> nuevaListaTarea1 = nuevoCalendario.buscarTareas(titulo1, descripcion1, limite1);
         Tarea tareaBuscada = nuevaListaTarea1.get(0);
 
         nuevoCalendario.eliminarAlarma(tareaBuscada, inicioAlarmas[0], efectoAlarmas[0]);
@@ -444,7 +445,7 @@ public class CalendarioTest {
         // Act & Assert
 
         nuevoCalendario.crearTarea(titulo1, descripcion1, false, limite1, inicioAlarmas, efectoAlarmas);
-        ArrayList<Tarea> nuevaListaTarea1 = nuevoCalendario.buscarTarea(titulo1, descripcion1, limite1);
+        ArrayList<Tarea> nuevaListaTarea1 = nuevoCalendario.buscarTareas(titulo1, descripcion1, limite1);
         Tarea tareaBuscada = nuevaListaTarea1.get(0);
 
         // La tarea comienza incompleta
@@ -477,7 +478,7 @@ public class CalendarioTest {
             Alarma alarmaActual = tareaActual.buscarAlarma(inicioAlarmas[0], efectoAlarmas[0]);
             assertEquals(titulo1, tareaActual.getTitulo());
             assertEquals(descripcion1, tareaActual.getDescripcion());
-            assertEquals(limite1.plusMinutes(i), tareaActual.getFin());
+            assertEquals(limite1.plusMinutes(i), tareaActual.getInicio());
             assertEquals(inicioAlarmas[0], alarmaActual.getInicio());
             assertEquals(efectoAlarmas[0], alarmaActual.getEfecto());
         }
@@ -536,7 +537,7 @@ public class CalendarioTest {
             Alarma alarmaActual = tareaActual.buscarAlarma(inicioAlarmas[0], efectoAlarmas[0]);
             assertEquals(titulo2, tareaActual.getTitulo());
             assertEquals(descripcion2, tareaActual.getDescripcion());
-            assertEquals(limite2.plusMinutes(i), tareaActual.getFin());
+            assertEquals(limite2.plusMinutes(i), tareaActual.getInicio());
             assertEquals(inicioAlarmas[0], alarmaActual.getInicio());
             assertEquals(efectoAlarmas[0], alarmaActual.getEfecto());
         }
@@ -660,14 +661,14 @@ public class CalendarioTest {
         // Act & Assert
 
         nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmasEvento, efectoAlarmas, null); // Evento creado con su primera alarma.
-        ArrayList<Evento> nuevaListaEventos = nuevoCalendario.buscarEvento(titulo1, descripcion1, inicio1, fin1);
+        ArrayList<Evento> nuevaListaEventos = nuevoCalendario.buscarEventos(titulo1, descripcion1, inicio1, fin1);
         Evento eventoBuscado = nuevaListaEventos.get(0);
 
         nuevoCalendario.agregarAlarma(eventoBuscado, inicioAlarmaEvento2, efectoAlarmas[0]); // Se agrega alarma a evento con tiempo = inicioAlarmaEvento2
         nuevoCalendario.agregarAlarma(eventoBuscado, inicioAlarmaEvento3, efectoAlarmas[0]); // Se agrega alarma a evento con tiempo = inicioAlarmaEvento3
 
         nuevoCalendario.crearTarea(titulo2, descripcion2, false, limite1, inicioAlarmasTarea, efectoAlarmas); // Tarea creada con su alarma original
-        ArrayList<Tarea> nuevaListaTareas = nuevoCalendario.buscarTarea(titulo2, descripcion2, limite1);
+        ArrayList<Tarea> nuevaListaTareas = nuevoCalendario.buscarTareas(titulo2, descripcion2, limite1);
         Tarea tareaBuscada = nuevaListaTareas.get(0);
 
         nuevoCalendario.agregarAlarma(tareaBuscada, inicioAlarmaTarea2, efectoAlarmas[0]); // Se agrega alarma a tarea con tiempo = inicioAlarmaTarea2
@@ -732,7 +733,10 @@ public class CalendarioTest {
         LocalDateTime fin1 = LocalDateTime.parse("2023-03-13T17:00");
         LocalDateTime[] inicioAlarmasEvento = {LocalDateTime.parse("2023-03-13T13:00")};
 
-        Repeticion repeticionEvento = new RepeticionSemanalDias(inicio1, LocalDateTime.parse("2023-06-29T17:00"), new DayOfWeek[] {DayOfWeek.MONDAY, DayOfWeek.THURSDAY}); // Se repite todos los Lunes y Jueves
+        var dias = new HashSet<DayOfWeek>();
+        dias.add(DayOfWeek.MONDAY);
+        dias.add(DayOfWeek.THURSDAY);
+        Repeticion repeticionEvento = new RepeticionSemanalDias(inicio1, LocalDateTime.parse("2023-06-29T17:00"), dias); // Se repite todos los Lunes y Jueves
 
         String titulo2 = "Entrega TP";
         String descripcion2 = "Fecha limite entrega TP Etapa 1";
@@ -768,7 +772,7 @@ public class CalendarioTest {
 
         assertEquals(tareaPrimera.getTitulo(), titulo2);
         assertEquals(tareaPrimera.getDescripcion(), descripcion2);
-        assertEquals(tareaPrimera.getFin(), limite1);
+        assertEquals(tareaPrimera.getInicio(), limite1);
 
         assertEquals(eventoSegunda.getTitulo(), titulo1);
         assertEquals(eventoSegunda.getDescripcion(), descripcion1);
@@ -799,7 +803,10 @@ public class CalendarioTest {
         LocalDateTime fin1 = LocalDateTime.parse("2023-03-13T17:00");
         LocalDateTime[] inicioAlarmasEvento = {LocalDateTime.parse("2023-03-13T13:00")};
 
-        Repeticion repeticionEvento = new RepeticionSemanalDias(inicio1, LocalDateTime.parse("2023-06-29T17:00"), new DayOfWeek[] {DayOfWeek.MONDAY, DayOfWeek.THURSDAY});
+        var dias = new HashSet<DayOfWeek>();
+        dias.add(DayOfWeek.MONDAY);
+        dias.add(DayOfWeek.THURSDAY);
+        Repeticion repeticionEvento = new RepeticionSemanalDias(inicio1, LocalDateTime.parse("2023-06-29T17:00"), dias);
 
         String tituloEvento2 = "Torneo Local";
         String descripcionEvento2 = "Cosas";
@@ -867,11 +874,11 @@ public class CalendarioTest {
 
         assertEquals(primerTareaLista.getTitulo(), tituloTarea1);
         assertEquals(primerTareaLista.getDescripcion(), descripcionTarea1);
-        assertEquals(primerTareaLista.getFin(), limite1);
+        assertEquals(primerTareaLista.getInicio(), limite1);
 
         assertEquals(segundaTareaLista.getTitulo(), tituloTarea2);
         assertEquals(segundaTareaLista.getDescripcion(), descripcionTarea2);
-        assertEquals(segundaTareaLista.getFin(), limite2);
+        assertEquals(segundaTareaLista.getInicio(), limite2);
     }
 
     @Test
@@ -893,7 +900,7 @@ public class CalendarioTest {
         // Act
 
         nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmas1, efectoAlarmas1, repeticion1);
-        ArrayList<Evento> listaEventos = nuevoCalendario.buscarEvento(titulo1, descripcion1, inicio1, fin1);
+        ArrayList<Evento> listaEventos = nuevoCalendario.buscarEventos(titulo1, descripcion1, inicio1, fin1);
         Evento eventoBuscado = listaEventos.get(0);
 
         LocalDateTime siguienteRepeticion1 = eventoBuscado.getSiguienteRepeticion();
@@ -935,8 +942,8 @@ public class CalendarioTest {
 
         // Assert
 
-        assertEquals(eventoBuscado.getInicio(), LocalDateTime.parse("2023-03-13T00:00"));
-        assertEquals(eventoBuscado.getFin(), LocalDateTime.parse("2023-03-17T00:00"));
+        assertEquals(LocalDateTime.parse("2023-03-13T00:00"), eventoBuscado.getInicio());
+        assertEquals(LocalDateTime.parse("2023-03-17T00:00"), eventoBuscado.getFin());
     }
 
     // Crea un evento con un dado inicio y fin, marcada como NO de dia completo, y luego se la modifica para ser de dia
@@ -987,7 +994,7 @@ public class CalendarioTest {
 
         // Assert
 
-        assertEquals(tareaBuscada.getFin(), LocalDateTime.parse("2023-03-14T00:00"));
+        assertEquals(tareaBuscada.getInicio(), LocalDateTime.parse("2023-03-14T00:00"));
     }
 
     // Crea una tarea con un limite dado y marcada como NO de dia completo y luego se la modifica para que sea de dia completo
@@ -1013,7 +1020,7 @@ public class CalendarioTest {
 
         // Assert
 
-        assertEquals(tareaBuscada.getFin(), LocalDateTime.parse("2023-06-16T00:00"));
+        assertEquals(tareaBuscada.getInicio(), LocalDateTime.parse("2023-06-16T00:00"));
     }
 
     // Chequea que si un evento se repite sus alarmas acompañen esa repeticion
@@ -1042,10 +1049,6 @@ public class CalendarioTest {
         var inicioEventoEsp2 = LocalDateTime.parse("2023-04-28T18:00");
         var inicioEventoEsp3 = LocalDateTime.parse("2023-05-05T18:00");
 
-        var finEventoEsp1 = LocalDateTime.parse("2023-04-21T22:00");
-        var finEventoEsp2 = LocalDateTime.parse("2023-04-28T22:00");
-        var finEventoEsp3 = LocalDateTime.parse("2023-05-05T22:00");
-
         // Act
 
         nuevoCalendario.crearEvento(tituloEvento1, descripcionEvento1, false, inicio1, fin1, inicioAlarmasEvento, efectoAlarmas, repeticion1);
@@ -1055,13 +1058,11 @@ public class CalendarioTest {
         Actividad evento1 = nuevoCalendario.dispararProximaAlarma();
 
         assertEquals(inicioEventoEsp1, evento1.getInicio()); // Chequeo que las fechas del evento de la alarma que sono sean las esperadas
-        assertEquals(finEventoEsp1, evento1.getFin());
 
         Alarma alarma2 = nuevoCalendario.obtenerProximaAlarma(); // Obtengo y disparo la segunda alarma
         Actividad evento2 = nuevoCalendario.dispararProximaAlarma();
 
         assertEquals(inicioEventoEsp1, evento2.getInicio()); // Chequeo que las fechas del evento de la alarma que sono sean las esperadas
-        assertEquals(finEventoEsp1, evento2.getFin());
 
         // Actualizo las fechas de los eventos
         nuevoCalendario.actualizarEventosRepetidos(LocalDateTime.parse("2023-04-21T22:01"));
@@ -1071,13 +1072,11 @@ public class CalendarioTest {
         Actividad evento3 = nuevoCalendario.dispararProximaAlarma();
 
         assertEquals(inicioEventoEsp2, evento3.getInicio());  // Chequeo que las fechas del evento de la alarma que sono sean las esperadas
-        assertEquals(finEventoEsp2, evento3.getFin());
 
         Alarma alarma4 = nuevoCalendario.obtenerProximaAlarma();
         Actividad evento4 = nuevoCalendario.dispararProximaAlarma();
 
         assertEquals(inicioEventoEsp2, evento4.getInicio());
-        assertEquals(finEventoEsp2, evento4.getFin());
 
         nuevoCalendario.actualizarEventosRepetidos(LocalDateTime.parse("2023-04-28T22:01"));
 
@@ -1086,13 +1085,11 @@ public class CalendarioTest {
         Actividad evento5 = nuevoCalendario.dispararProximaAlarma();
 
         assertEquals(inicioEventoEsp3, evento5.getInicio());
-        assertEquals(finEventoEsp3, evento5.getFin());
 
         Alarma alarma6 = nuevoCalendario.obtenerProximaAlarma();
         Actividad evento6 = nuevoCalendario.dispararProximaAlarma();
 
         assertEquals(inicioEventoEsp3, evento6.getInicio());
-        assertEquals(finEventoEsp3, evento6.getFin());
 
         nuevoCalendario.actualizarEventosRepetidos(LocalDateTime.parse("2023-05-05T22:01"));
 

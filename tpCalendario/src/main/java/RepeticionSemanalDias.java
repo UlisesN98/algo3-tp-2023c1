@@ -1,28 +1,29 @@
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.TreeSet;
 
 public class RepeticionSemanalDias extends Repeticion {
 
-    private final DayOfWeek[] dias; // Arreglo con los dias de la semana donde ocurre una repeticion
+    private final Set<DayOfWeek> dias; // Arreglo con los dias de la semana donde ocurre una repeticion
     private final LocalDateTime fin; // Fecha limite de la repeticion
 
     // Constructor para repeticiones sin limite
-    public RepeticionSemanalDias(LocalDateTime inicio, DayOfWeek[] dias) {
+    public RepeticionSemanalDias(LocalDateTime inicio, Set<DayOfWeek> dias) {
         super(inicio);
         this.dias = dias;
         this.fin = null;
     }
 
     // Constructor para repeticiones con fecha limite
-    public RepeticionSemanalDias(LocalDateTime inicio, LocalDateTime fin, DayOfWeek[] dias) {
+    public RepeticionSemanalDias(LocalDateTime inicio, LocalDateTime fin, Set<DayOfWeek> dias) {
         super(inicio);
         this.dias = dias;
         this.fin = fin;
     }
 
     // Constructor para repeticiones con cantidad limite
-    public RepeticionSemanalDias(LocalDateTime inicio, Integer fin,  DayOfWeek[] dias) {
+    public RepeticionSemanalDias(LocalDateTime inicio, Integer fin,  Set<DayOfWeek> dias) {
         super(inicio);
         this.dias = dias;
         this.fin = calcularFechaFin(fin - 1);

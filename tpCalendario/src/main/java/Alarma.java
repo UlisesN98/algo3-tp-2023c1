@@ -5,7 +5,7 @@ import java.util.Comparator;
 public class Alarma {
 
     private final Actividad actividad; // Actividad que cuenta con esta Alarma
-    private final LocalDateTime inicio; // Fecha y hora de inicio de la ALarma
+    private final LocalDateTime inicio;
     private final Efecto efecto; // Tipo de efecto que producira la Alarma
 
     // Constructor para el caso donde el tiempo de inicio de la Alarma se indica con una hora absoluta.

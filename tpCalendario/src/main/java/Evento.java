@@ -4,14 +4,24 @@ import java.util.TreeSet;
 
 public class Evento extends Actividad {
 
+    protected LocalDateTime fin;
     private Repeticion repeticion; // Instancia de Repeticion con los datos de que como se repetira el Evento. Si el Evento no se repite lleva null.
     private LocalDateTime siguienteRepeticion; // Fecha de la siguiente repeticion del Evento. Si el Evento no se repite lleva null.
 
     public Evento(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio, LocalDateTime fin, Repeticion repeticion) {
-        super(titulo, descripcion, diaCompleto, inicio, fin);
+        super(titulo, descripcion, diaCompleto, inicio);
+
+        if (diaCompleto) {
+            this.inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 0, 0);
+            fin = LocalDateTime.of(fin.getYear(), fin.getMonth(), fin.getDayOfMonth(), 0, 0).plusDays(1);
+        }
+
+        this.fin = fin;
         this.repeticion = repeticion;
         this.siguienteRepeticion = repeticion != null ? repeticion.calcularSiguienteRepeticion(inicio) : null;
     }
+
+    public LocalDateTime getFin() { return fin; }
 
     // Recibe una nueva fecha de inicio, que en caso de ser el Evento de dia completo se adaptara al formato antes de asignarse.
     public void setInicio(LocalDateTime inicio) {
@@ -19,6 +29,23 @@ public class Evento extends Actividad {
             inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 0, 0);
         }
         this.inicio = inicio;
+    }
+
+    // Recibe una nueva fecha de fin, que en caso de ser la Actividad de dia completo se adaptara al formato antes de asignarse.
+    public void setFin(LocalDateTime fin) {
+        if (diaCompleto) {
+            fin = fin.getHour() == 0 && fin.getMinute() == 0? fin : LocalDateTime.of(fin.getYear(), fin.getMonth(), fin.getDayOfMonth(), 0, 0).plusDays(1);
+        }
+        this.fin = fin;
+    }
+
+    // Modifica el estado de dia completo por el que indica el parametro y adapta de ser necesario las fechas de inicio y fin.
+    public void setDiaCompleto(boolean esDiaCompleto) {
+        if (!diaCompleto && esDiaCompleto) {
+            inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 0, 0);
+            fin = fin.getHour() == 0 && fin.getMinute() == 0? fin : LocalDateTime.of(fin.getYear(), fin.getMonth(), fin.getDayOfMonth(), 0, 0).plusDays(1);
+        }
+        this.diaCompleto = esDiaCompleto;
     }
 
     // Devuelve la instancia de Repeticion del Evento;
