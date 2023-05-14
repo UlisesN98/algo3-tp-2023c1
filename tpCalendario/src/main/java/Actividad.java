@@ -1,15 +1,16 @@
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.TreeSet;
 
 public class Actividad {
 
     protected String titulo; // Titulo de la actividad. En caso de que este atributo no se indique, se le asignara "Sin titulo".
     protected String descripcion; // Descripcion de la actividad. En caso de que este atributo no se indique, se le asignara "Sin descripcion".
-    protected boolean diaCompleto; // Boolean que indica si es de dia completo
+    protected boolean diaCompleto;
     protected LocalDateTime inicio; // Fecha y hora de inicio
     protected LocalDateTime fin; // Fecha y hora de fin
-    protected final ArrayList<Alarma> listaAlarmas; // Lista con sus alarmas designadas
+    protected final TreeSet<Alarma> listaAlarmas;
 
     public Actividad(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio, LocalDateTime fin) {
 
@@ -24,7 +25,7 @@ public class Actividad {
 
         this.inicio = inicio;
         this.fin = fin;
-        this.listaAlarmas = new ArrayList<>();
+        this.listaAlarmas = new TreeSet<>(new Alarma.ComparadorAlarma());
     }
 
     // Getters
@@ -34,7 +35,7 @@ public class Actividad {
     public boolean isDiaCompleto() { return diaCompleto; }
     public LocalDateTime getInicio() { return inicio; }
     public LocalDateTime getFin() { return fin; }
-    public ArrayList<Alarma> getListaAlarmas() { return listaAlarmas; }
+    public TreeSet<Alarma> getListaAlarmas() { return listaAlarmas; }
 
     // Setters
 
@@ -60,8 +61,19 @@ public class Actividad {
 
     // Metodos relativos a alarmas
 
-    // Recibe una instancia de Alarma y la agrega a su lista.
-    public void agregarAlarma(Alarma nuevaAlarma) { listaAlarmas.add(nuevaAlarma); }
+    // Recibe los datos necesarios para crear una instancia de Alarma
+    // y la agrega a su lista.
+    public void agregarAlarma(LocalDateTime inicio, Efecto efecto) {
+        var nuevaAlarma = new Alarma(this, inicio, efecto);
+        listaAlarmas.add(nuevaAlarma);
+    }
+
+    // Recibe los datos necesarios para crear una instancia de Alarma
+    // y la agrega a su lista.
+    public void agregarAlarma(Duration inicio, Efecto efecto) {
+        var nuevaAlarma = new Alarma(this, inicio, efecto);
+        listaAlarmas.add(nuevaAlarma);
+    }
 
     // Recibe una instancia de Alarma y la quita de su lista.
     public void eliminarAlarma(Alarma alarma) { listaAlarmas.remove(alarma); }
@@ -73,6 +85,11 @@ public class Actividad {
             if (alarma.getInicio().equals(inicio) && alarma.getEfecto().equals((efecto))) { return alarma; }
         }
         return null;
+    }
+
+    // Devuelve la siguiente alarma que deberia sonar. Devuelve null si no hay ninguna alarma.
+    public Alarma obtenerProximaAlarma() {
+        return listaAlarmas.isEmpty()? null : listaAlarmas.first();
     }
 
     // Metodo requerido para hacer comparaciones que permitan ordenar Eventos y Tareas temporalmente

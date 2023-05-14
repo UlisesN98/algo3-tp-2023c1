@@ -6,16 +6,13 @@ import java.util.TreeSet;
 
 public class Calendario {
 
-    private final ArrayList<Evento> listaEventos; // ArrayList que contiene Eventos
-    private final ArrayList<Tarea> listaTareas; // ArrayList que contiene Tareas
-    private final TreeSet<Alarma> listaAlarmas; // Treeset que contiene las Alarmas existentes ordenadas por orden aparicion
+    private final ArrayList<Evento> listaEventos;
+    private final ArrayList<Tarea> listaTareas;
 
     public Calendario() {
         this.listaEventos = new ArrayList<>();
         this.listaTareas = new ArrayList<>();
-        this.listaAlarmas = new TreeSet<>(new Alarma.ComparadorAlarma());
     }
-
 
     // Recibe una fecha y hora y actualiza el inicio y fin
     // de un evento repetido en caso de que este ya haya ocurrido.
@@ -158,9 +155,7 @@ public class Calendario {
     private void agregarAlarmas(Actividad nuevaActividad, LocalDateTime[] inicioAlarmas, Efecto[] efectoAlarmas) {
         if (inicioAlarmas.length != 0) {
             for (int i = 0; i < inicioAlarmas.length; i++) {
-                var nuevaAlarma = new Alarma(nuevaActividad, inicioAlarmas[i], efectoAlarmas[i]);
-                nuevaActividad.agregarAlarma(nuevaAlarma);
-                listaAlarmas.add(nuevaAlarma);
+                nuevaActividad.agregarAlarma(inicioAlarmas[i], efectoAlarmas[i]);
             }
         }
     }
@@ -169,9 +164,7 @@ public class Calendario {
     private void agregarAlarmas(Actividad nuevaActividad, Duration[] inicioAlarmas, Efecto[] efectoAlarmas) {
         if (inicioAlarmas.length != 0) {
             for (int i = 0; i < inicioAlarmas.length; i++) {
-                var nuevaAlarma = new Alarma(nuevaActividad, inicioAlarmas[i], efectoAlarmas[i]);
-                nuevaActividad.agregarAlarma(nuevaAlarma);
-                listaAlarmas.add(nuevaAlarma);
+                nuevaActividad.agregarAlarma(inicioAlarmas[i], efectoAlarmas[i]);
             }
         }
     }
@@ -237,17 +230,11 @@ public class Calendario {
 
     // Recibe una instancia de Evento y la quita de la lista de Eventos. A su vez, quita las alarmas del Evento del treeset de Alarmas.
     public void eliminarEvento(Evento evento) {
-        for (Alarma alarma : evento.getListaAlarmas()) {
-            listaAlarmas.remove(alarma);
-        }
         listaEventos.remove(evento);
     }
 
     // Recibe una instancia de Tarea y la quita de la lista de Tareas. A su vez, quita las alarmas de la Tarea del treeset de Alarmas.
     public void eliminarTarea(Tarea tarea) {
-        for (Alarma alarma : tarea.getListaAlarmas()) {
-            listaAlarmas.remove(alarma);
-        }
         listaTareas.remove(tarea);
     }
 
@@ -268,46 +255,36 @@ public class Calendario {
     // METODOS RELATIVOS A ALARMAS
 
     // Recibe una instancia de Evento o Tarea y agrega le agrega una alarma con las
-    // caracteristicas pasadas por parametro. Tambien la agrega al treeset de Alarmas.
+    // caracteristicas pasadas por parametro.
     public void agregarAlarma(Actividad actividad, LocalDateTime inicio, Efecto efecto) {
-        var nuevaAlarma = new Alarma(actividad, inicio, efecto);
-        actividad.agregarAlarma(nuevaAlarma);
-        listaAlarmas.add(nuevaAlarma);
+        actividad.agregarAlarma(inicio, efecto);
     }
 
     // Recibe una instancia de Evento o Tarea y agrega le agrega una alarma con las
-    // caracteristicas pasadas por parametro. Tambien la agrega al treeset de Alarmas.
+    // caracteristicas pasadas por parametro.
     public void agregarAlarma(Actividad actividad, Duration inicio, Efecto efecto) {
-        var nuevaAlarma = new Alarma(actividad, inicio, efecto);
-        actividad.agregarAlarma(nuevaAlarma);
-        listaAlarmas.add(nuevaAlarma);
+        actividad.agregarAlarma(inicio, efecto);
     }
 
     // Recibe una instancia de Evento o Tarea y modifica la alarma, que tiene las caracteristicas indicadas, con el parametro pasado.
     public void modificarAlarma(Actividad actividad, LocalDateTime inicio, Efecto efecto, LocalDateTime nuevoInicio) {
         Alarma alarma = actividad.buscarAlarma(inicio, efecto);
         actividad.eliminarAlarma(alarma);
-        listaAlarmas.remove(alarma);
-
-        this.agregarAlarma(actividad, nuevoInicio, efecto);
+        actividad.agregarAlarma(nuevoInicio, efecto);
     }
 
     // Recibe una instancia de Evento o Tarea y modifica la alarma, que tiene las caracteristicas indicadas, con el parametro pasado.
     public void modificarAlarma(Actividad actividad, LocalDateTime inicio, Efecto efecto, Duration nuevoInicio) {
         Alarma alarma = actividad.buscarAlarma(inicio, efecto);
         actividad.eliminarAlarma(alarma);
-        listaAlarmas.remove(alarma);
-
-        this.agregarAlarma(actividad, nuevoInicio, efecto);
+        actividad.agregarAlarma(nuevoInicio, efecto);
     }
 
     // Recibe una instancia de Evento o Tarea y modifica la alarma, que tiene las caracteristicas indicadas, con el parametro pasado.
     public void modificarAlarma(Actividad actividad, LocalDateTime inicio, Efecto efecto, Efecto nuevoEfecto) {
         Alarma alarma = actividad.buscarAlarma(inicio, efecto);
         actividad.eliminarAlarma(alarma);
-        listaAlarmas.remove(alarma);
-
-        this.agregarAlarma(actividad, inicio, nuevoEfecto);
+        actividad.agregarAlarma(inicio, nuevoEfecto);
     }
 
     // Recibe una instancia de Evento o Tarea y le elimina la alarma que tiene las caracteristicas indicadas.
@@ -315,12 +292,32 @@ public class Calendario {
     public void eliminarAlarma(Actividad actividad, LocalDateTime inicio, Efecto efecto) {
         Alarma alarma = actividad.buscarAlarma(inicio, efecto);
         actividad.eliminarAlarma(alarma);
-        listaAlarmas.remove(alarma);
     }
 
     // Devuelve la siguiente alarma que deberia sonar. Devuelve null si no hay ninguna alarma.
     public Alarma obtenerProximaAlarma() {
-        return listaAlarmas.isEmpty()? null : listaAlarmas.first();
+        Alarma proximaAlarma = null;
+        for (Evento evento : listaEventos) {
+            proximaAlarma = actualizarProximaAlarma(evento, proximaAlarma);
+        }
+        for (Tarea tarea : listaTareas) {
+            proximaAlarma = actualizarProximaAlarma(tarea, proximaAlarma);
+        }
+        return proximaAlarma;
+    }
+
+    private Alarma actualizarProximaAlarma(Actividad actividad, Alarma proximaAlarma) {
+        Alarma alarma = actividad.obtenerProximaAlarma();
+        if (alarma == null) {
+            return proximaAlarma;
+        }
+        if (proximaAlarma == null) {
+            return alarma;
+        }
+        if (alarma.esAnterior(proximaAlarma)) {
+            return alarma;
+        }
+        return proximaAlarma;
     }
 
     // Metodo que muestra, en base a una fecha y hora indicada,
@@ -339,7 +336,6 @@ public class Calendario {
         actualizarAlarmaRepeticion(actividad, alarmaActual);
 
         actividad.eliminarAlarma(alarmaActual);
-        listaAlarmas.remove(alarmaActual);
         return actividad;
     }
 
@@ -358,9 +354,6 @@ public class Calendario {
 
         LocalDateTime fechaSiguienteAlarma = eventoAlarma.getRepeticion().calcularSiguienteRepeticion(alarma.getInicio());
 
-        var alarmaRepeticion = new Alarma(eventoAlarma, fechaSiguienteAlarma, alarma.getEfecto());
-
-        eventoAlarma.agregarAlarma(alarmaRepeticion);
-        listaAlarmas.add(alarmaRepeticion);
+        eventoAlarma.agregarAlarma(fechaSiguienteAlarma, alarma.getEfecto());
     }
 }

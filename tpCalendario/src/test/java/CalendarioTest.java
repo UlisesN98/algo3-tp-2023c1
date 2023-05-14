@@ -269,7 +269,7 @@ public class CalendarioTest {
         assertNotEquals(nuevaListaEventos.get(0), nuevaListaEventos.get(1));
         assertEquals(nuevaListaEventos.get(0).getTitulo(), nuevaListaEventos.get(1).getTitulo());
         assertEquals(nuevaListaEventos.get(0).getInicio(), nuevaListaEventos.get(1).getInicio());
-        assertEquals(nuevaListaEventos.get(0).getListaAlarmas().get(0).getInicio(), nuevaListaEventos.get(1).getListaAlarmas().get(0).getInicio());
+        assertEquals(nuevaListaEventos.get(0).getListaAlarmas().first().getInicio(), nuevaListaEventos.get(1).getListaAlarmas().first().getInicio());
     }
 
     @Test
@@ -296,7 +296,7 @@ public class CalendarioTest {
         assertNotEquals(nuevaListaTareas.get(0), nuevaListaTareas.get(1));
         assertEquals(nuevaListaTareas.get(0).getTitulo(), nuevaListaTareas.get(1).getTitulo());
         assertEquals(nuevaListaTareas.get(0).getFin(), nuevaListaTareas.get(1).getFin());
-        assertEquals(nuevaListaTareas.get(0).getListaAlarmas().get(0).getInicio(), nuevaListaTareas.get(1).getListaAlarmas().get(0).getInicio());
+        assertEquals(nuevaListaTareas.get(0).getListaAlarmas().first().getInicio(), nuevaListaTareas.get(1).getListaAlarmas().first().getInicio());
     }
 
     @Test

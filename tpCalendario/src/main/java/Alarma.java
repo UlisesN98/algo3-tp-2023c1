@@ -32,6 +32,10 @@ public class Alarma {
     }
     public Efecto getEfecto() { return efecto; }
 
+    public boolean esAnterior(Alarma alarma) {
+        return this.getInicio().isBefore(alarma.getInicio());
+    }
+
     // Metodo requerido para hacer comparaciones que permitan ordenar Alarmas temporalmente
     public static class ComparadorAlarma implements Comparator<Alarma> {
         @Override
