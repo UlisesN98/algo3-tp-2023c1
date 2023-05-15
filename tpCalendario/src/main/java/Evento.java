@@ -4,7 +4,7 @@ import java.util.TreeSet;
 
 public class Evento extends Actividad {
 
-    protected LocalDateTime fin;
+    private LocalDateTime fin;
     private Repeticion repeticion; // Instancia de Repeticion con los datos de que como se repetira el Evento. Si el Evento no se repite lleva null.
     private LocalDateTime siguienteRepeticion; // Fecha de la siguiente repeticion del Evento. Si el Evento no se repite lleva null.
 
@@ -87,4 +87,11 @@ public class Evento extends Actividad {
     public TreeSet<LocalDateTime> repeticionesPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
         return repeticion.calcularRepeticionesPorIntervalo(inicioIntervalo, finIntervalo);
     }
+
+    /*
+    public static Evento deserializar(InputStream is) throws IOException, ClassNotFoundException {
+        ObjectInputStream objectInStream = new ObjectInputStream(is);
+        return (Evento) objectInStream.readObject();
+    }*/
+
 }

@@ -1,5 +1,6 @@
 import org.junit.Test;
 
+import java.io.*;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -1118,5 +1119,30 @@ public class CalendarioTest {
         assertEquals(Efecto.SONIDO, alarma6.getEfecto());
 
         assertNull(alarma7);
+    }
+
+    @Test
+    public void testPersistencia() throws IOException, ClassNotFoundException {
+        Calendario nuevoCalendario = new Calendario();
+        // [...] inicializar el estado del objeto
+        nuevoCalendario.crearTarea("Nueva tarea", "descripcion tarea", false, LocalDateTime.parse("2023-05-12T19:00"), new LocalDateTime[] {LocalDateTime.parse("2023-05-12T18:00")}, new Efecto[] {Efecto.SONIDO});
+        nuevoCalendario.crearEvento("Nuevo evento", "descripcion evento", true, LocalDateTime.parse("2023-05-12T19:00"), LocalDateTime.parse("2023-05-12T20:00"), new Duration[] {Duration.ofHours(4)}, new Efecto[] {Efecto.NOTIFICACION}, new RepeticionComun(LocalDateTime.parse("2023-05-12T00:00"), 5, Frecuencia.SEMANAL));
+
+        // serializar el objeto
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        nuevoCalendario.serializar(bytes);
+
+        // deserializar
+        Calendario calendarioDeserializado = Calendario.deserializar(new ByteArrayInputStream(bytes.toByteArray()));
+
+        assertNotNull(calendarioDeserializado);
+        // [...] verificar que `objeto` y `objetoDeserializado` son iguales
+
+        var lista = calendarioDeserializado.buscarTareas("Nueva tarea", "descripcion tarea", LocalDateTime.parse("2023-05-12T19:00"));
+        Tarea tarea = lista.get(0);
+
+        assertEquals(1, lista.size());
+        assertEquals("Nueva tarea", tarea.getTitulo());
+        assertEquals(LocalDateTime.parse("2023-05-12T19:00"), tarea.getInicio());
     }
 }

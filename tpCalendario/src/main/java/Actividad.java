@@ -1,9 +1,10 @@
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.TreeSet;
 
-public class Actividad {
+public class Actividad implements Serializable {
 
     protected String titulo; // Titulo de la actividad. En caso de que este atributo no se indique, se le asignara "Sin titulo".
     protected String descripcion; // Descripcion de la actividad. En caso de que este atributo no se indique, se le asignara "Sin descripcion".
@@ -80,4 +81,11 @@ public class Actividad {
             return 0;
         }
     }
+
+    /*
+    public void serializar(OutputStream os) throws IOException {
+        ObjectOutputStream objectOutStream = new ObjectOutputStream(os);
+        objectOutStream.writeObject(this);
+        objectOutStream.flush();
+    }*/
 }

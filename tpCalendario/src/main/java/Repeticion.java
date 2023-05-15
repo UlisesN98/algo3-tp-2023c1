@@ -1,7 +1,8 @@
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.TreeSet;
 
-public abstract class Repeticion {
+public abstract class Repeticion implements Serializable {
 
     protected LocalDateTime inicio; // Fecha inicial a partir de la cual una repeticion comienza
 

@@ -1,10 +1,11 @@
+import java.io.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
-public class Calendario {
+public class Calendario implements Serializable {
 
     private final ArrayList<Evento> listaEventos;
     private final ArrayList<Tarea> listaTareas;
@@ -356,4 +357,16 @@ public class Calendario {
 
         eventoAlarma.agregarAlarma(fechaSiguienteAlarma, alarma.getEfecto());
     }
+
+    public void serializar(OutputStream os) throws IOException {
+        ObjectOutputStream objectOutStream = new ObjectOutputStream(os);
+        objectOutStream.writeObject(this);
+        objectOutStream.flush();
+    }
+
+    public static Calendario deserializar(InputStream is) throws IOException, ClassNotFoundException {
+        ObjectInputStream objectInStream = new ObjectInputStream(is);
+        return (Calendario) objectInStream.readObject();
+    }
+
 }

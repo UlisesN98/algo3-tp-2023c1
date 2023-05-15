@@ -1,8 +1,9 @@
+import java.io.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 
-public class Alarma {
+public class Alarma implements Serializable {
 
     private final Actividad actividad; // Actividad que cuenta con esta Alarma
     private final LocalDateTime inicio;
@@ -37,7 +38,7 @@ public class Alarma {
     }
 
     // Metodo requerido para hacer comparaciones que permitan ordenar Alarmas temporalmente
-    public static class ComparadorAlarma implements Comparator<Alarma> {
+    public static class ComparadorAlarma implements Comparator<Alarma>, Serializable {
         @Override
         public int compare(Alarma o1, Alarma o2) {
             if (o1.getInicio().isBefore(o2.getInicio())) {
@@ -49,4 +50,17 @@ public class Alarma {
             return 0;
         }
     }
+
+    /*
+    public void serializar(OutputStream os) throws IOException {
+        ObjectOutputStream objectOutStream = new ObjectOutputStream(os);
+        objectOutStream.writeObject(this);
+        objectOutStream.flush();
+    }
+
+    public static Alarma deserializar(InputStream is) throws IOException, ClassNotFoundException {
+        ObjectInputStream objectInStream = new ObjectInputStream(is);
+        return (Alarma) objectInStream.readObject();
+    }*/
+
 }

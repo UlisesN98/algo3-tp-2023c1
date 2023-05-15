@@ -37,4 +37,10 @@ public class Tarea extends Actividad {
     // Cambia el estado de incompleta a completada y viceversa.
     public void cambiarEstadoTarea() { this.completada = !completada; }
 
+    /*
+    public static Tarea deserializar(InputStream is) throws IOException, ClassNotFoundException {
+        ObjectInputStream objectInStream = new ObjectInputStream(is);
+        return (Tarea) objectInStream.readObject();
+    }*/
+
 }
