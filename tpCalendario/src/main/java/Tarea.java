@@ -14,7 +14,7 @@ public class Tarea extends Actividad {
         this.completada = false;
     }
 
-    // Recibe una nueva fecha de fin, que en caso de ser la Tarea de dia completo se adaptara al formato antes de asignarse.
+    // Recibe una nueva fecha de inicio, que en caso de ser la Tarea de dia completo se adaptara al formato antes de asignarse.
     public void setInicio(LocalDateTime inicio) {
         if (diaCompleto) {
             this.inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 0, 0).plusDays(1);
@@ -23,7 +23,7 @@ public class Tarea extends Actividad {
         }
     }
 
-    // Modifica el estado de dia completo por el que indica el parametro y adapta de ser necesario las fechas de inicio y fin.
+    // Modifica el estado de dia completo por el que indica el parametro y adapta de ser necesario la fecha de inicio.
     public void setDiaCompleto(boolean esDiaCompleto) {
         if (!diaCompleto && esDiaCompleto) {
             inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 0, 0).plusDays(1);
@@ -36,11 +36,5 @@ public class Tarea extends Actividad {
 
     // Cambia el estado de incompleta a completada y viceversa.
     public void cambiarEstadoTarea() { this.completada = !completada; }
-
-    /*
-    public static Tarea deserializar(InputStream is) throws IOException, ClassNotFoundException {
-        ObjectInputStream objectInStream = new ObjectInputStream(is);
-        return (Tarea) objectInStream.readObject();
-    }*/
 
 }

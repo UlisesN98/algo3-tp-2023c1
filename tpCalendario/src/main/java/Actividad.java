@@ -82,10 +82,4 @@ public class Actividad implements Serializable {
         }
     }
 
-    /*
-    public void serializar(OutputStream os) throws IOException {
-        ObjectOutputStream objectOutStream = new ObjectOutputStream(os);
-        objectOutStream.writeObject(this);
-        objectOutStream.flush();
-    }*/
 }

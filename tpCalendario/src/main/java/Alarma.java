@@ -33,6 +33,7 @@ public class Alarma implements Serializable {
     }
     public Efecto getEfecto() { return efecto; }
 
+    // Devuelve true si la instancia de Alarma se inicia antes que la pasada por parametro
     public boolean esAnterior(Alarma alarma) {
         return this.getInicio().isBefore(alarma.getInicio());
     }
@@ -50,17 +51,5 @@ public class Alarma implements Serializable {
             return 0;
         }
     }
-
-    /*
-    public void serializar(OutputStream os) throws IOException {
-        ObjectOutputStream objectOutStream = new ObjectOutputStream(os);
-        objectOutStream.writeObject(this);
-        objectOutStream.flush();
-    }
-
-    public static Alarma deserializar(InputStream is) throws IOException, ClassNotFoundException {
-        ObjectInputStream objectInStream = new ObjectInputStream(is);
-        return (Alarma) objectInStream.readObject();
-    }*/
 
 }

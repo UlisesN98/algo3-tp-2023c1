@@ -3,12 +3,13 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeSet;
 
 public class Calendario implements Serializable {
 
-    private final ArrayList<Evento> listaEventos;
-    private final ArrayList<Tarea> listaTareas;
+    private final List<Evento> listaEventos;
+    private final List<Tarea> listaTareas;
 
     public Calendario() {
         this.listaEventos = new ArrayList<>();
@@ -29,8 +30,8 @@ public class Calendario implements Serializable {
     // METODOS DE BUSQUEDA
 
     // Busca Eventos a partir sus caracteristicas principales (titulo, descripcion, fecha de inicio y fecha de fin)
-    // y devuelve un ArrayList con aquellos que las tienen
-    public ArrayList<Evento> buscarEventos(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
+    // y devuelve un Lista con aquellos que las tienen
+    public List<Evento> buscarEventos(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
         var eventos = new ArrayList<Evento>();
         for (Evento evento : listaEventos) {
             if (evento.getTitulo().equals(titulo) && evento.getDescripcion().equals(descripcion) && evento.getInicio().equals(inicio) && evento.getFin().equals(fin)) {
@@ -41,8 +42,8 @@ public class Calendario implements Serializable {
     }
 
     // Busca Tareas a partir sus caracteristicas principales (titulo, descripcion y fecha limite)
-    // y devuelve un ArrayList con aquellas que las tienen
-    public ArrayList<Tarea> buscarTareas(String titulo, String descripcion, LocalDateTime limite) {
+    // y devuelve un Lista con aquellas que las tienen
+    public List<Tarea> buscarTareas(String titulo, String descripcion, LocalDateTime limite) {
         var tareas = new ArrayList<Tarea>();
         for (Tarea tarea : listaTareas) {
             if (tarea.getTitulo().equals(titulo) && tarea.getDescripcion().equals(descripcion) && tarea.getInicio().equals(limite)) {
@@ -52,9 +53,9 @@ public class Calendario implements Serializable {
         return tareas;
     }
 
-    // Dado un intervalo de tiempo devuelve un ArrayList con los Eventos que ocurren en este.
-    // El ArrayList esta ordenado.
-    public ArrayList<Evento> buscarEventoPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
+    // Dado un intervalo de tiempo devuelve un Lista con los Eventos que ocurren en este.
+    // El Lista esta ordenado.
+    public List<Evento> buscarEventoPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
         var eventosIntervalo = new ArrayList<Evento>();
 
         for (Evento evento : listaEventos) {
@@ -78,9 +79,9 @@ public class Calendario implements Serializable {
         return eventosIntervalo;
     }
 
-    // Dado un intervalo de tiempo devuelve un ArrayList con las Tareas que ocurren en este.
-    // El ArrayList esta ordenado.
-    public ArrayList<Tarea> buscarTareaPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
+    // Dado un intervalo de tiempo devuelve un Lista con las Tareas que ocurren en este.
+    // El Lista esta ordenado.
+    public List<Tarea> buscarTareaPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
         var tareasIntervalo = new ArrayList<Tarea>();
         for (Tarea tarea : listaTareas) {
             if ((tarea.getInicio().isAfter(inicioIntervalo) || tarea.getInicio().isEqual(inicioIntervalo)) && (tarea.getInicio().isBefore(finIntervalo))) {
@@ -91,13 +92,13 @@ public class Calendario implements Serializable {
         return tareasIntervalo;
     }
 
-    // Dado un intervalo de tiempo devuelve un ArrayList con los Eventos y Tareas que ocurren en este.
-    // El ArrayList esta ordenado.
-    public ArrayList<Actividad> buscarPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
+    // Dado un intervalo de tiempo devuelve un Lista con los Eventos y Tareas que ocurren en este.
+    // El Lista esta ordenado.
+    public List<Actividad> buscarPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
         var listaActividades = new ArrayList<Actividad>();
 
-        ArrayList<Evento> eventosIntervalo = buscarEventoPorIntervalo(inicioIntervalo, finIntervalo);
-        ArrayList<Tarea> tareasIntervalo = buscarTareaPorIntervalo(inicioIntervalo, finIntervalo);
+        List<Evento> eventosIntervalo = buscarEventoPorIntervalo(inicioIntervalo, finIntervalo);
+        List<Tarea> tareasIntervalo = buscarTareaPorIntervalo(inicioIntervalo, finIntervalo);
 
         listaActividades.addAll(eventosIntervalo);
         listaActividades.addAll(tareasIntervalo);
@@ -113,7 +114,7 @@ public class Calendario implements Serializable {
     // un LocalDateTime que indique su fecha y hora de inicio, un LocalDateTime que indique su fecha y hora de fin, un array que
     // indique la fecha y hora absoluta de sus alarmas, un array de la misma longitud que el anterior que indique el efecto de estas
     // alarmas y una instancia de Repeticion que indique de que modo se repite. A partir de estas caracterisiticas se crea una
-    // instancia de Evento que se guardara en la lista de Eventos. A su vez, guarda las alarmas del Evento en el treeset de Alarmas.
+    // instancia de Evento que se guardara en la lista de Eventos.
     public void crearEvento(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio, LocalDateTime fin, LocalDateTime[] inicioAlarmas, Efecto[] efectoAlarmas, Repeticion repeticion) {
         var nuevoEvento = new Evento(titulo, descripcion, diaCompleto, inicio, fin, repeticion);
         agregarAlarmas(nuevoEvento, inicioAlarmas, efectoAlarmas);
@@ -124,7 +125,7 @@ public class Calendario implements Serializable {
     // un LocalDateTime que indique su fecha y hora de inicio, un LocalDateTime que indique su fecha y hora de fin, un array que
     // indique el intervalo de tiempo previo de sus alarmas , un array de la misma longitud que el anterior que indique el efecto de estas
     // alarmas y una instancia de Repeticion que indique de que modo se repite. A partir de estas caracterisiticas se crea una
-    // instancia de Evento que se guardara en la lista de Eventos. A su vez, guarda las alarmas del Evento en el treeset de Alarmas.
+    // instancia de Evento que se guardara en la lista de Eventos.
     public void crearEvento(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio, LocalDateTime fin, Duration[] inicioAlarmas, Efecto[] efectoAlarmas, Repeticion repeticion) {
         var nuevoEvento = new Evento(titulo, descripcion, diaCompleto, inicio, fin, repeticion);
         agregarAlarmas(nuevoEvento, inicioAlarmas, efectoAlarmas);
@@ -134,7 +135,7 @@ public class Calendario implements Serializable {
     // Recibe un String que indique su titulo, un String que indique una descripcion, un boolean que indique si es de dia completo,
     // un LocalDateTime que indique su fecha y hora limite, un array que indique la fecha y hora absoluta de sus alarmas, un array
     // de la misma longitud que el anterior que indique el efecto de estas alarmas. A partir de estas caracterisiticas se crea una
-    // instancia de Tarea que se guardara en la lista de Tareas. A su vez, guarda las alarmas de la Tarea en el treeset de Alarmas.
+    // instancia de Tarea que se guardara en la lista de Tareas.
     public void crearTarea(String titulo, String descripcion, boolean diaCompleto, LocalDateTime limite, LocalDateTime[] inicioAlarmas, Efecto[] efectoAlarmas) {
         var nuevaTarea = new Tarea(titulo, descripcion, diaCompleto, limite);
         agregarAlarmas(nuevaTarea, inicioAlarmas, efectoAlarmas);
@@ -144,7 +145,7 @@ public class Calendario implements Serializable {
     // Recibe un String que indique su titulo, un String que indique una descripcion, un boolean que indique si es de dia completo,
     // un LocalDateTime que indique su fecha y hora limite, un array que indique el intervalo de tiempo previo de sus alarmas, un array
     // de la misma longitud que el anterior que indique el efecto de estas alarmas. A partir de estas caracterisiticas se crea una
-    // instancia de Tarea que se guardara en la lista de Tareas. A su vez, guarda las alarmas de la Tarea en el treeset de Alarmas.
+    // instancia de Tarea que se guardara en la lista de Tareas.
     public void crearTarea(String titulo, String descripcion, boolean diaCompleto, LocalDateTime limite, Duration[] inicioAlarmas, Efecto[] efectoAlarmas) {
         var nuevaTarea = new Tarea(titulo, descripcion, diaCompleto, limite);
         agregarAlarmas(nuevaTarea, inicioAlarmas, efectoAlarmas);
@@ -229,12 +230,12 @@ public class Calendario implements Serializable {
 
     // METODOS DE ELIMINACION
 
-    // Recibe una instancia de Evento y la quita de la lista de Eventos. A su vez, quita las alarmas del Evento del treeset de Alarmas.
+    // Recibe una instancia de Evento y la quita de la lista de Eventos.
     public void eliminarEvento(Evento evento) {
         listaEventos.remove(evento);
     }
 
-    // Recibe una instancia de Tarea y la quita de la lista de Tareas. A su vez, quita las alarmas de la Tarea del treeset de Alarmas.
+    // Recibe una instancia de Tarea y la quita de la lista de Tareas.
     public void eliminarTarea(Tarea tarea) {
         listaTareas.remove(tarea);
     }
@@ -289,7 +290,6 @@ public class Calendario implements Serializable {
     }
 
     // Recibe una instancia de Evento o Tarea y le elimina la alarma que tiene las caracteristicas indicadas.
-    // Tambien la elimina del treeset de Alarmas.
     public void eliminarAlarma(Actividad actividad, LocalDateTime inicio, Efecto efecto) {
         Alarma alarma = actividad.buscarAlarma(inicio, efecto);
         actividad.eliminarAlarma(alarma);
@@ -357,6 +357,8 @@ public class Calendario implements Serializable {
 
         eventoAlarma.agregarAlarma(fechaSiguienteAlarma, alarma.getEfecto());
     }
+
+    // METODOS DE SERIALIZACION
 
     public void serializar(OutputStream os) throws IOException {
         ObjectOutputStream objectOutStream = new ObjectOutputStream(os);

@@ -31,7 +31,7 @@ public class Evento extends Actividad {
         this.inicio = inicio;
     }
 
-    // Recibe una nueva fecha de fin, que en caso de ser la Actividad de dia completo se adaptara al formato antes de asignarse.
+    // Recibe una nueva fecha de fin, que en caso de ser el Evento de dia completo se adaptara al formato antes de asignarse.
     public void setFin(LocalDateTime fin) {
         if (diaCompleto) {
             fin = fin.getHour() == 0 && fin.getMinute() == 0? fin : LocalDateTime.of(fin.getYear(), fin.getMonth(), fin.getDayOfMonth(), 0, 0).plusDays(1);
@@ -87,11 +87,5 @@ public class Evento extends Actividad {
     public TreeSet<LocalDateTime> repeticionesPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
         return repeticion.calcularRepeticionesPorIntervalo(inicioIntervalo, finIntervalo);
     }
-
-    /*
-    public static Evento deserializar(InputStream is) throws IOException, ClassNotFoundException {
-        ObjectInputStream objectInStream = new ObjectInputStream(is);
-        return (Evento) objectInStream.readObject();
-    }*/
 
 }
