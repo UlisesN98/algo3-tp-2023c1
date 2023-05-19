@@ -1230,6 +1230,11 @@ public class CalendarioTest {
         LocalDateTime limiteTa1 = LocalDateTime.parse("2023-03-12T15:00");
         LocalDateTime[] inicioAlarmasTarea1 = {LocalDateTime.parse("2023-03-12T10:00"), LocalDateTime.parse("2023-03-12T11:00")};
 
+        String tituloTarea2 = "TP cinco";
+        String descripcionTarea2 = "ArrangementsV2";
+        LocalDateTime limiteTa2 = LocalDateTime.parse("2023-12-24T15:00");
+        LocalDateTime[] inicioAlarmasTarea2 = {LocalDateTime.parse("2023-12-24T10:00"), LocalDateTime.parse("2023-12-24T11:00")};
+
         Efecto[] efectoAlarmas = {Efecto.NOTIFICACION, Efecto.SONIDO};
 
         Calendario nuevoCalendario = new Calendario();
@@ -1254,19 +1259,34 @@ public class CalendarioTest {
         Alarma alarma3 = calendarioDeserializado.obtenerProximaAlarma(); // La alarma que sigue es la primera de Ev1 original
         Actividad actividadDeAlarma3 = calendarioDeserializado.dispararProximaAlarma(); // Deberia ser evento1
 
+        var archivo3 = new BufferedOutputStream(new FileOutputStream("calendario_2"));
+        nuevoCalendario.serializar(archivo3);
+
+        var archivo4 = new BufferedInputStream(new FileInputStream("calendario_2"));
+        Calendario calendarioDeserializado2 = Calendario.deserializar(archivo4);
+
         Alarma alarma4 = calendarioDeserializado.obtenerProximaAlarma(); // La alarma que sigue es la segunda de Ev1 original
-        Actividad actividadDeAlarma4 = calendarioDeserializado.dispararProximaAlarma(); // Deberia ser evento1
+        Actividad actividadDeAlarma4 = calendarioDeserializado2.dispararProximaAlarma(); // Deberia ser evento1
 
         Alarma alarma5 = calendarioDeserializado.obtenerProximaAlarma(); // La alarma que sigue es la primera de Ev2 original (y unico)
-        Actividad actividadDeAlarma5 = calendarioDeserializado.dispararProximaAlarma(); // Deberia ser evento2
+        Actividad actividadDeAlarma5 = calendarioDeserializado2.dispararProximaAlarma(); // Deberia ser evento2
 
         Alarma alarma6 = calendarioDeserializado.obtenerProximaAlarma(); // La alarma que sigue es la primera de Ev2 original (y unico)
-        Actividad actividadDeAlarma6 = calendarioDeserializado.dispararProximaAlarma(); // Deberia ser evento2
+        Actividad actividadDeAlarma6 = calendarioDeserializado2.dispararProximaAlarma(); // Deberia ser evento2
 
-        var listaTareas = calendarioDeserializado.buscarTareaPorIntervalo(LocalDateTime.parse("2023-03-01T00:00"), LocalDateTime.parse("2023-03-20T00:00"));
-        Tarea tarea = listaTareas.get(0);
+        calendarioDeserializado2.crearTarea(tituloTarea2, descripcionTarea2, false, limiteTa2, inicioAlarmasTarea2, efectoAlarmas);
 
-        var listaEventos = calendarioDeserializado.buscarEventoPorIntervalo(LocalDateTime.parse("2023-01-01T00:00"), LocalDateTime.parse("2023-12-12T00:00")); // Ev1, Ev1Rep, Ev2
+        var listaTareas = calendarioDeserializado2.buscarTareaPorIntervalo(LocalDateTime.parse("2023-03-01T00:00"), LocalDateTime.parse("2023-12-25T00:00"));
+        Tarea tarea1 = listaTareas.get(0);
+        Tarea tarea2 = listaTareas.get(1);
+
+        var archivo5 = new BufferedOutputStream(new FileOutputStream("calendario_3"));
+        nuevoCalendario.serializar(archivo5);
+
+        var archivo6 = new BufferedInputStream(new FileInputStream("calendario_3"));
+        Calendario calendarioDeserializado3 = Calendario.deserializar(archivo6);
+
+        var listaEventos = calendarioDeserializado3.buscarEventoPorIntervalo(LocalDateTime.parse("2023-01-01T00:00"), LocalDateTime.parse("2023-12-12T00:00")); // Ev1, Ev1Rep, Ev2
         Evento evento1 = listaEventos.get(0);
         Evento evento2 = listaEventos.get(1);
 
@@ -1291,9 +1311,13 @@ public class CalendarioTest {
         assertEquals(Efecto.SONIDO, alarma6.getEfecto());
 
         // Luego todas las instancias recuperadas de eventos y tareas...
-        assertEquals(tarea.getTitulo(), tituloTarea1);
-        assertEquals(tarea.getDescripcion(), descripcionTarea1);
-        assertEquals(tarea.getInicio(), limiteTa1);
+        assertEquals(tarea1.getTitulo(), tituloTarea1);
+        assertEquals(tarea1.getDescripcion(), descripcionTarea1);
+        assertEquals(tarea1.getInicio(), limiteTa1);
+
+        assertEquals(tarea2.getTitulo(), tituloTarea2);
+        assertEquals(tarea2.getDescripcion(), descripcionTarea2);
+        assertEquals(tarea2.getInicio(), limiteTa2);
 
         assertEquals(evento1.getTitulo(), tituloEvento1);
         assertEquals(evento1.getDescripcion(), descripcionEvento1);
@@ -1305,8 +1329,8 @@ public class CalendarioTest {
         assertEquals(evento2.getInicio(), inicioEv2);
         assertEquals(evento2.getFin(), finEv2);
 
-        assertEquals(actividadDeAlarma1.getTitulo(), tarea.getTitulo());
-        assertEquals(actividadDeAlarma2.getTitulo(), tarea.getTitulo());
+        assertEquals(actividadDeAlarma1.getTitulo(), tarea1.getTitulo());
+        assertEquals(actividadDeAlarma2.getTitulo(), tarea1.getTitulo());
 
         assertEquals(actividadDeAlarma3.getTitulo(), evento1.getTitulo());
         assertEquals(actividadDeAlarma4.getTitulo(), evento1.getTitulo());
