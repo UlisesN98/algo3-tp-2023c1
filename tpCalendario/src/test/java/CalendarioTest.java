@@ -1249,25 +1249,25 @@ public class CalendarioTest {
         var archivo2 = new BufferedInputStream(new FileInputStream("calendario"));
         Calendario calendarioDeserializado = Calendario.deserializar(archivo2);
 
-        Alarma alarma1 = nuevoCalendario.obtenerProximaAlarma(); // La alarma mas temprana es la de tarea1
-        Actividad actividadDeAlarma1 = nuevoCalendario.dispararProximaAlarma(); // Deberia ser tarea1
+        Alarma alarma1 = calendarioDeserializado.obtenerProximaAlarma(); // La alarma mas temprana es la de tarea1
+        Actividad actividadDeAlarma1 = calendarioDeserializado.dispararProximaAlarma(); // Deberia ser tarea1
 
-        Alarma alarma2 = nuevoCalendario.obtenerProximaAlarma(); // La alarma que sigue es la segunda de tarea1
-        Actividad actividadDeAlarma2 = nuevoCalendario.dispararProximaAlarma(); // Deberia ser tarea1
+        Alarma alarma2 = calendarioDeserializado.obtenerProximaAlarma(); // La alarma que sigue es la segunda de tarea1
+        Actividad actividadDeAlarma2 = calendarioDeserializado.dispararProximaAlarma(); // Deberia ser tarea1
 
-        Alarma alarma3 = nuevoCalendario.obtenerProximaAlarma(); // La alarma que sigue es la primera de Ev1 original
-        Actividad actividadDeAlarma3 = nuevoCalendario.dispararProximaAlarma(); // Deberia ser evento1
+        Alarma alarma3 = calendarioDeserializado.obtenerProximaAlarma(); // La alarma que sigue es la primera de Ev1 original
+        Actividad actividadDeAlarma3 = calendarioDeserializado.dispararProximaAlarma(); // Deberia ser evento1
 
-        Alarma alarma4 = nuevoCalendario.obtenerProximaAlarma(); // La alarma que sigue es la segunda de Ev1 original
-        Actividad actividadDeAlarma4 = nuevoCalendario.dispararProximaAlarma(); // Deberia ser evento1
+        Alarma alarma4 = calendarioDeserializado.obtenerProximaAlarma(); // La alarma que sigue es la segunda de Ev1 original
+        Actividad actividadDeAlarma4 = calendarioDeserializado.dispararProximaAlarma(); // Deberia ser evento1
 
-        nuevoCalendario.actualizarEventosRepetidos(LocalDateTime.parse("2023-06-12T23:01"));
+        calendarioDeserializado.actualizarEventosRepetidos(LocalDateTime.parse("2023-06-12T23:01"));
 
-        Alarma alarma5 = nuevoCalendario.obtenerProximaAlarma(); // La alarma que sigue es la primera de Ev2 original (y unico)
-        Actividad actividadDeAlarma5 = nuevoCalendario.dispararProximaAlarma(); // Deberia ser evento2
+        Alarma alarma5 = calendarioDeserializado.obtenerProximaAlarma(); // La alarma que sigue es la primera de Ev2 original (y unico)
+        Actividad actividadDeAlarma5 = calendarioDeserializado.dispararProximaAlarma(); // Deberia ser evento2
 
-        Alarma alarma6 = nuevoCalendario.obtenerProximaAlarma(); // La alarma que sigue es la primera de Ev2 original (y unico)
-        Actividad actividadDeAlarma6 = nuevoCalendario.dispararProximaAlarma(); // Deberia ser evento2
+        Alarma alarma6 = calendarioDeserializado.obtenerProximaAlarma(); // La alarma que sigue es la primera de Ev2 original (y unico)
+        Actividad actividadDeAlarma6 = calendarioDeserializado.dispararProximaAlarma(); // Deberia ser evento2
 
         var listaTareas = calendarioDeserializado.buscarTareaPorIntervalo(LocalDateTime.parse("2023-03-01T00:00"), LocalDateTime.parse("2023-03-20T00:00"));
         Tarea tarea = listaTareas.get(0);
