@@ -1259,11 +1259,9 @@ public class CalendarioTest {
         Alarma alarma3 = calendarioDeserializado.obtenerProximaAlarma(); // La alarma que sigue es la primera de Ev1 original
         Actividad actividadDeAlarma3 = calendarioDeserializado.dispararProximaAlarma(); // Deberia ser evento1
 
-        var archivo3 = new BufferedOutputStream(new FileOutputStream("calendario_2"));
-        calendarioDeserializado.serializar(archivo3);
+        calendarioDeserializado.serializar(archivo1);
 
-        var archivo4 = new BufferedInputStream(new FileInputStream("calendario_2"));
-        Calendario calendarioDeserializado2 = Calendario.deserializar(archivo4);
+        Calendario calendarioDeserializado2 = Calendario.deserializar(archivo2);
 
         Alarma alarma4 = calendarioDeserializado2.obtenerProximaAlarma(); // La alarma que sigue es la segunda de Ev1 original
         Actividad actividadDeAlarma4 = calendarioDeserializado2.dispararProximaAlarma(); // Deberia ser evento1
@@ -1285,11 +1283,9 @@ public class CalendarioTest {
 
         calendarioDeserializado2.modificar(evento2, true);
 
-        var archivo5 = new BufferedOutputStream(new FileOutputStream("calendario_3"));
-        calendarioDeserializado2.serializar(archivo5);
+        calendarioDeserializado2.serializar(archivo1);
 
-        var archivo6 = new BufferedInputStream(new FileInputStream("calendario_3"));
-        Calendario calendarioDeserializado3 = Calendario.deserializar(archivo6);
+        Calendario calendarioDeserializado3 = Calendario.deserializar(archivo2);
 
         var listaEventos2 = calendarioDeserializado3.buscarEventoPorIntervalo(LocalDateTime.parse("2023-01-01T00:00"), LocalDateTime.parse("2023-12-12T00:00"));
         Evento evento1 = listaEventos2.get(0);
