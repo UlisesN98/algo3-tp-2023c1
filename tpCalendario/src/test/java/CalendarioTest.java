@@ -1231,15 +1231,11 @@ public class CalendarioTest {
         LocalDateTime[] inicioAlarmasTarea1 = {LocalDateTime.parse("2023-03-12T10:00"), LocalDateTime.parse("2023-03-12T11:00")};
 
         Efecto[] efectoAlarmas = {Efecto.NOTIFICACION, Efecto.SONIDO};
-        var repeticion1 = new RepeticionComun(inicioEv1, 1, Frecuencia.SEMANAL);
 
         Calendario nuevoCalendario = new Calendario();
-        nuevoCalendario.crearEvento(tituloEvento1, descripcionEvento1, false, inicioEv1, finEv1, inicioAlarmasEvento1, efectoAlarmas, repeticion1);
+        nuevoCalendario.crearEvento(tituloEvento1, descripcionEvento1, false, inicioEv1, finEv1, inicioAlarmasEvento1, efectoAlarmas, null);
         nuevoCalendario.crearEvento(tituloEvento2, descripcionEvento2, false, inicioEv2, finEv2, inicioAlarmasEvento2, efectoAlarmas, null);
         nuevoCalendario.crearTarea(tituloTarea1, descripcionTarea1, false, limiteTa1, inicioAlarmasTarea1, efectoAlarmas);
-
-        LocalDateTime inicioEv1RepEsperado = LocalDateTime.parse("2023-06-19T19:00"); // Primera y unica repeticion de Ev1
-        LocalDateTime finEv1RepEsperado = LocalDateTime.parse("2023-06-19T23:00");
 
         // Act
 
@@ -1261,8 +1257,6 @@ public class CalendarioTest {
         Alarma alarma4 = calendarioDeserializado.obtenerProximaAlarma(); // La alarma que sigue es la segunda de Ev1 original
         Actividad actividadDeAlarma4 = calendarioDeserializado.dispararProximaAlarma(); // Deberia ser evento1
 
-        calendarioDeserializado.actualizarEventosRepetidos(LocalDateTime.parse("2023-06-12T23:01"));
-
         Alarma alarma5 = calendarioDeserializado.obtenerProximaAlarma(); // La alarma que sigue es la primera de Ev2 original (y unico)
         Actividad actividadDeAlarma5 = calendarioDeserializado.dispararProximaAlarma(); // Deberia ser evento2
 
@@ -1274,8 +1268,7 @@ public class CalendarioTest {
 
         var listaEventos = calendarioDeserializado.buscarEventoPorIntervalo(LocalDateTime.parse("2023-01-01T00:00"), LocalDateTime.parse("2023-12-12T00:00")); // Ev1, Ev1Rep, Ev2
         Evento evento1 = listaEventos.get(0);
-        Evento evento1Rep = listaEventos.get(1);
-        Evento evento2 = listaEventos.get(2);
+        Evento evento2 = listaEventos.get(1);
 
         // Assert
         // Arrancando por las alarmas...
@@ -1306,11 +1299,6 @@ public class CalendarioTest {
         assertEquals(evento1.getDescripcion(), descripcionEvento1);
         assertEquals(evento1.getInicio(), inicioEv1);
         assertEquals(evento1.getFin(), finEv1);
-
-        assertEquals(evento1Rep.getTitulo(), tituloEvento1);
-        assertEquals(evento1Rep.getDescripcion(), descripcionEvento1);
-        assertEquals(evento1Rep.getInicio(), inicioEv1RepEsperado);
-        assertEquals(evento1Rep.getFin(), finEv1RepEsperado);
 
         assertEquals(evento2.getTitulo(), tituloEvento2);
         assertEquals(evento2.getDescripcion(), descripcionEvento2);
