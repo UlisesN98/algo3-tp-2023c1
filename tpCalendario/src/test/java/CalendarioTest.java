@@ -1129,16 +1129,8 @@ public class CalendarioTest {
         Calendario nuevoCalendario = new Calendario();
         nuevoCalendario.crearTarea("Nueva tarea", "descripcion tarea", false, LocalDateTime.parse("2023-05-12T19:00"), new LocalDateTime[] {LocalDateTime.parse("2023-05-12T18:00")}, new Efecto[] {Efecto.SONIDO});
         nuevoCalendario.crearEvento("Nuevo evento", "descripcion evento", true, LocalDateTime.parse("2023-05-12T19:00"), LocalDateTime.parse("2023-05-12T20:00"), new Duration[] {Duration.ofHours(4)}, new Efecto[] {Efecto.NOTIFICACION}, new RepeticionComun(LocalDateTime.parse("2023-05-12T00:00"), 2, Frecuencia.SEMANAL));
+        nuevoCalendario.crearEvento("Estructuras y Organizaciones", "Clase de EyO", false, LocalDateTime.parse("2023-06-12T19:00"), LocalDateTime.parse("2023-06-12T23:00"), new LocalDateTime[] {LocalDateTime.parse("2023-06-12T14:00"), LocalDateTime.parse("2023-06-12T15:00")}, new Efecto[] {Efecto.NOTIFICACION, Efecto.SONIDO}, new RepeticionComun(LocalDateTime.parse("2023-06-12T19:00"), 1, Frecuencia.SEMANAL));
 
-        String tituloEvento2 = "Estructuras y Organizaciones";
-        String descripcionEvento2 = "Clase de EyO";
-        LocalDateTime inicioEv2 = LocalDateTime.parse("2023-06-12T19:00");
-        LocalDateTime finEv2 = LocalDateTime.parse("2023-06-12T23:00");
-        LocalDateTime[] inicioAlarmasEvento2 = {LocalDateTime.parse("2023-06-12T14:00"), LocalDateTime.parse("2023-06-12T15:00")};
-        Efecto[] efectoAlarmas = {Efecto.NOTIFICACION, Efecto.SONIDO};
-        var repeticion1 = new RepeticionComun(inicioEv2, 1, Frecuencia.SEMANAL);
-
-        nuevoCalendario.crearEvento(tituloEvento2, descripcionEvento2, false, inicioEv2, finEv2, inicioAlarmasEvento2, efectoAlarmas, repeticion1);
         // Act
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -1147,6 +1139,7 @@ public class CalendarioTest {
 
         var listaTareas = calendarioDeserializado.buscarTareas("Nueva tarea", "descripcion tarea", LocalDateTime.parse("2023-05-12T19:00"));
         Tarea tarea = listaTareas.get(0);
+
         var listaEventos = calendarioDeserializado.buscarEventoPorIntervalo(LocalDateTime.parse("2023-01-01T00:00"), LocalDateTime.parse("2023-12-29T00:00"));
         Evento evento1 = listaEventos.get(0);
         Evento evento2 = listaEventos.get(3); // Este es evento 2, indices 1 y 2 son repeticiones semanales de evento1
@@ -1164,11 +1157,10 @@ public class CalendarioTest {
         assertEquals(LocalDateTime.parse("2023-05-12T00:00"), evento1.getInicio());
         assertEquals(LocalDateTime.parse("2023-05-13T00:00"), evento1.getFin());
 
-        assertEquals(tituloEvento2, evento2.getTitulo());
-        assertEquals(descripcionEvento2, evento2.getDescripcion());
-        assertEquals(inicioEv2, evento2.getInicio());
-        assertEquals(finEv2, evento2.getFin());
-
+        assertEquals("Estructuras y Organizaciones", evento2.getTitulo());
+        assertEquals("Clase de EyO", evento2.getDescripcion());
+        assertEquals(LocalDateTime.parse("2023-06-12T19:00"), evento2.getInicio());
+        assertEquals(LocalDateTime.parse("2023-06-12T23:00"), evento2.getFin());
     }
 
     // Chequea que el calendario pueda guardar su estado y recuperarlo mediante la generacion de un archivo
@@ -1205,7 +1197,6 @@ public class CalendarioTest {
         assertEquals("descripcion evento", evento1.getDescripcion());
         assertEquals(LocalDateTime.parse("2023-05-12T00:00"), evento1.getInicio());
         assertEquals(LocalDateTime.parse("2023-05-13T00:00"), evento1.getFin());
-
     }
 
     // Chequea que el calendario mantenga el comportamiento esperado tras guardar y recuperar su estado varias veces
