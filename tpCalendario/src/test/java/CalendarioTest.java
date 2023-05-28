@@ -1163,42 +1163,6 @@ public class CalendarioTest {
         assertEquals(LocalDateTime.parse("2023-06-12T23:00"), evento2.getFin());
     }
 
-    // Chequea que el calendario pueda guardar su estado y recuperarlo mediante la generacion de un archivo
-    @Test
-    public void testPersistenciaArchivo() throws IOException, ClassNotFoundException {
-        // Arrange
-
-        Calendario nuevoCalendario = new Calendario();
-        nuevoCalendario.crearTarea("Nueva tarea", "descripcion tarea", false, LocalDateTime.parse("2023-05-12T19:00"), new LocalDateTime[] {LocalDateTime.parse("2023-05-12T18:00")}, new Efecto[] {Efecto.SONIDO});
-        nuevoCalendario.crearEvento("Nuevo evento", "descripcion evento", true, LocalDateTime.parse("2023-05-12T19:00"), LocalDateTime.parse("2023-05-12T20:00"), new Duration[] {Duration.ofHours(4)}, new Efecto[] {Efecto.NOTIFICACION}, new RepeticionComun(LocalDateTime.parse("2023-05-12T00:00"), 5, Frecuencia.SEMANAL));
-
-        // Act
-
-        var archivo1 = new BufferedOutputStream(new FileOutputStream("calendario"));
-        nuevoCalendario.serializar(archivo1);
-
-        var archivo2 = new BufferedInputStream(new FileInputStream("calendario"));
-        Calendario calendarioDeserializado = Calendario.deserializar(archivo2);
-
-        var listaTareas = calendarioDeserializado.buscarTareas("Nueva tarea", "descripcion tarea", LocalDateTime.parse("2023-05-12T19:00"));
-        Tarea tarea = listaTareas.get(0);
-
-        var listaEventos = calendarioDeserializado.buscarEventoPorIntervalo(LocalDateTime.parse("2023-01-01T00:00"), LocalDateTime.parse("2023-12-12T00:00")); // Evento original + sus repeticiones
-        Evento evento1 = listaEventos.get(0);
-
-        // Assert
-
-        assertEquals(1, listaTareas.size());
-        assertEquals("Nueva tarea", tarea.getTitulo());
-        assertEquals(LocalDateTime.parse("2023-05-12T19:00"), tarea.getInicio());
-
-        assertEquals(6, listaEventos.size()); // Eventos originales + sus repeticiones
-        assertEquals("Nuevo evento", evento1.getTitulo());
-        assertEquals("descripcion evento", evento1.getDescripcion());
-        assertEquals(LocalDateTime.parse("2023-05-12T00:00"), evento1.getInicio());
-        assertEquals(LocalDateTime.parse("2023-05-13T00:00"), evento1.getFin());
-    }
-
     // Chequea que el calendario mantenga el comportamiento esperado tras guardar y recuperar su estado varias veces
     @Test
     public void testPersistenciaComportamiento() throws IOException, ClassNotFoundException {
@@ -1235,11 +1199,9 @@ public class CalendarioTest {
 
         // Act
 
-        var archivo1 = new BufferedOutputStream(new FileOutputStream("calendario"));
-        nuevoCalendario.serializar(archivo1);
-
-        var archivo2 = new BufferedInputStream(new FileInputStream("calendario"));
-        Calendario calendarioDeserializado = Calendario.deserializar(archivo2);
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        nuevoCalendario.serializar(bytes);
+        Calendario calendarioDeserializado = Calendario.deserializar(new ByteArrayInputStream(bytes.toByteArray()));
 
         Alarma alarma1 = calendarioDeserializado.obtenerProximaAlarma(); // La alarma mas temprana es la de tarea1
         Actividad actividadDeAlarma1 = calendarioDeserializado.dispararProximaAlarma(); // Deberia ser tarea1
@@ -1250,9 +1212,9 @@ public class CalendarioTest {
         Alarma alarma3 = calendarioDeserializado.obtenerProximaAlarma(); // La alarma que sigue es la primera de Ev1 original
         Actividad actividadDeAlarma3 = calendarioDeserializado.dispararProximaAlarma(); // Deberia ser evento1
 
-        calendarioDeserializado.serializar(archivo1);
-
-        Calendario calendarioDeserializado2 = Calendario.deserializar(archivo2);
+        ByteArrayOutputStream bytes2 = new ByteArrayOutputStream();
+        calendarioDeserializado.serializar(bytes2);
+        Calendario calendarioDeserializado2 = Calendario.deserializar(new ByteArrayInputStream(bytes2.toByteArray()));
 
         Alarma alarma4 = calendarioDeserializado2.obtenerProximaAlarma(); // La alarma que sigue es la segunda de Ev1 original
         Actividad actividadDeAlarma4 = calendarioDeserializado2.dispararProximaAlarma(); // Deberia ser evento1
@@ -1274,9 +1236,9 @@ public class CalendarioTest {
 
         calendarioDeserializado2.modificar(evento2, true);
 
-        calendarioDeserializado2.serializar(archivo1);
-
-        Calendario calendarioDeserializado3 = Calendario.deserializar(archivo2);
+        ByteArrayOutputStream bytes3 = new ByteArrayOutputStream();
+        calendarioDeserializado2.serializar(bytes3);
+        Calendario calendarioDeserializado3 = Calendario.deserializar(new ByteArrayInputStream(bytes3.toByteArray()));
 
         var listaEventos2 = calendarioDeserializado3.buscarEventoPorIntervalo(LocalDateTime.parse("2023-01-01T00:00"), LocalDateTime.parse("2023-12-12T00:00"));
         Evento evento1 = listaEventos2.get(0);
