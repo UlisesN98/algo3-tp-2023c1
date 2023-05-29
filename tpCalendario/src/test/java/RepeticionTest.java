@@ -1,4 +1,8 @@
-import junit.framework.TestResult;
+import calendario.RepeticionComun;
+import calendario.RepeticionDiariaIntervalo;
+import calendario.RepeticionSemanalDias;
+import calendario.Frecuencia;
+
 import org.junit.Test;
 
 import java.time.DayOfWeek;
