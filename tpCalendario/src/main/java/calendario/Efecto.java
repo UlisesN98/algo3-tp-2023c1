@@ -1,3 +1,5 @@
+package calendario;
+
 public enum Efecto {
 
     // Tipos de efecto que puede tomar una Alarma.

@@ -1,10 +1,12 @@
+package calendario;
+
 import java.time.LocalDateTime;
 
 public class Tarea extends Actividad {
 
     private boolean completada;
 
-    public Tarea(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio) {
+    Tarea(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio) {
         super(titulo, descripcion, diaCompleto, inicio);
 
         if (diaCompleto) {
@@ -15,7 +17,7 @@ public class Tarea extends Actividad {
     }
 
     // Recibe una nueva fecha de inicio, que en caso de ser la Tarea de dia completo se adaptara al formato antes de asignarse.
-    public void setInicio(LocalDateTime inicio) {
+    void setInicio(LocalDateTime inicio) {
         if (diaCompleto) {
             this.inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 0, 0).plusDays(1);
         } else {
@@ -24,7 +26,7 @@ public class Tarea extends Actividad {
     }
 
     // Modifica el estado de dia completo por el que indica el parametro y adapta de ser necesario la fecha de inicio.
-    public void setDiaCompleto(boolean esDiaCompleto) {
+    void setDiaCompleto(boolean esDiaCompleto) {
         if (!diaCompleto && esDiaCompleto) {
             inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 0, 0).plusDays(1);
         }
@@ -32,9 +34,9 @@ public class Tarea extends Actividad {
     }
 
     // Indica si la Tarea esta completada.
-    public boolean isCompletada() { return completada; }
+    boolean isCompletada() { return completada; }
 
     // Cambia el estado de incompleta a completada y viceversa.
-    public void cambiarEstadoTarea() { this.completada = !completada; }
+    void cambiarEstadoTarea() { this.completada = !completada; }
 
 }

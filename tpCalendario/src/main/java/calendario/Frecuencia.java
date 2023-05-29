@@ -1,3 +1,5 @@
+package calendario;
+
 public enum Frecuencia {
 
     // Tipos de frecuencia que puede tomar una Repeticion comun.
