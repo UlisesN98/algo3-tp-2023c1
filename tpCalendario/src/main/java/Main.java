@@ -1,17 +1,34 @@
+import calendario.*;
+
 import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 public class Main extends Application {
         @Override
         public void start(Stage stage) throws Exception {
 
-            var label = new Label("Calendario");
-            var scene = new Scene(new VBox(label), 640, 480);
-            stage.setScene(scene);
-            stage.show();
+            Calendario calendario;
+            try {
+                var archivo = new BufferedInputStream(new FileInputStream("calendario"));
+                calendario = Calendario.deserializar(archivo);
+            }
+            catch (IOException error) {
+                calendario = new Calendario();
+            }
+
+            Vista vista = new Vista(stage, calendario);
+            Controlador controlador = new Controlador(calendario, vista);
+
+            controlador.iniciar();
         }
+
+        public static void main(String[] args) {
+            launch();
+        }
+
     }
 

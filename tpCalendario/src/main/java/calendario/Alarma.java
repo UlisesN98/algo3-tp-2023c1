@@ -1,3 +1,5 @@
+package calendario;
+
 import java.io.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -10,14 +12,14 @@ public class Alarma implements Serializable {
     private final Efecto efecto; // Tipo de efecto que producira la Alarma
 
     // Constructor para el caso donde el tiempo de inicio de la Alarma se indica con una hora absoluta.
-    public Alarma(Actividad actividad, LocalDateTime inicio, Efecto efecto) {
+    Alarma(Actividad actividad, LocalDateTime inicio, Efecto efecto) {
         this.actividad = actividad;
         this.inicio = inicio;
         this.efecto = efecto;
     }
 
     // Constructor para el caso donde el tiempo de inicio de la Alarma se indica con un intervalo previo al inicio de su actividad.
-    public Alarma(Actividad actividad, Duration intervaloPrevio, Efecto efecto) {
+    Alarma(Actividad actividad, Duration intervaloPrevio, Efecto efecto) {
         this.actividad = actividad;
         this.inicio = actividad.getInicio().minus(intervaloPrevio.getSeconds(), intervaloPrevio.getUnits().get(0));
         this.efecto = efecto;
@@ -34,7 +36,7 @@ public class Alarma implements Serializable {
     public Efecto getEfecto() { return efecto; }
 
     // Devuelve true si la instancia de Alarma se inicia antes que la pasada por parametro
-    public boolean esAnterior(Alarma alarma) {
+    boolean esAnterior(Alarma alarma) {
         return this.getInicio().isBefore(alarma.getInicio());
     }
 

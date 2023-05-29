@@ -1,3 +1,5 @@
+package calendario;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.TreeSet;
@@ -8,7 +10,7 @@ public class Evento extends Actividad {
     private Repeticion repeticion; // Instancia de Repeticion con los datos de que como se repetira el Evento. Si el Evento no se repite lleva null.
     private LocalDateTime siguienteRepeticion; // Fecha de la siguiente repeticion del Evento. Si el Evento no se repite lleva null.
 
-    public Evento(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio, LocalDateTime fin, Repeticion repeticion) {
+    Evento(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio, LocalDateTime fin, Repeticion repeticion) {
         super(titulo, descripcion, diaCompleto, inicio);
 
         if (diaCompleto) {
@@ -24,7 +26,7 @@ public class Evento extends Actividad {
     public LocalDateTime getFin() { return fin; }
 
     // Recibe una nueva fecha de inicio, que en caso de ser el Evento de dia completo se adaptara al formato antes de asignarse.
-    public void setInicio(LocalDateTime inicio) {
+    void setInicio(LocalDateTime inicio) {
         if (diaCompleto) {
             inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 0, 0);
         }
@@ -32,7 +34,7 @@ public class Evento extends Actividad {
     }
 
     // Recibe una nueva fecha de fin, que en caso de ser el Evento de dia completo se adaptara al formato antes de asignarse.
-    public void setFin(LocalDateTime fin) {
+    void setFin(LocalDateTime fin) {
         if (diaCompleto) {
             fin = fin.getHour() == 0 && fin.getMinute() == 0? fin : LocalDateTime.of(fin.getYear(), fin.getMonth(), fin.getDayOfMonth(), 0, 0).plusDays(1);
         }
@@ -40,7 +42,7 @@ public class Evento extends Actividad {
     }
 
     // Modifica el estado de dia completo por el que indica el parametro y adapta de ser necesario las fechas de inicio y fin.
-    public void setDiaCompleto(boolean esDiaCompleto) {
+    void setDiaCompleto(boolean esDiaCompleto) {
         if (!diaCompleto && esDiaCompleto) {
             inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 0, 0);
             fin = fin.getHour() == 0 && fin.getMinute() == 0? fin : LocalDateTime.of(fin.getYear(), fin.getMonth(), fin.getDayOfMonth(), 0, 0).plusDays(1);
@@ -49,13 +51,13 @@ public class Evento extends Actividad {
     }
 
     // Devuelve la instancia de Repeticion del Evento;
-    public Repeticion getRepeticion() {
+    Repeticion getRepeticion() {
         return repeticion;
     }
 
     // Cambia el tipo de Repeticion del Evento por el el indicado.
     // Actualiza la siguiente repeticion.
-    public void setRepeticion(Repeticion repeticion) {
+    void setRepeticion(Repeticion repeticion) {
         if (repeticion == null) {
             siguienteRepeticion = null;
         } else {
@@ -73,7 +75,7 @@ public class Evento extends Actividad {
     }
 
     // Actualiza las fechas del Evento por las de su siguiente repeticion.
-    public void actualizarSiguienteRepeticion() {
+    void actualizarSiguienteRepeticion() {
         if (siguienteRepeticion == null) {
             return;
         }
@@ -84,7 +86,7 @@ public class Evento extends Actividad {
     }
 
     // Devuelve un treeset de LocalDateTime con las fechas de la repeticiones que ocurren en el intervalo pasado por parametro.
-    public TreeSet<LocalDateTime> repeticionesPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
+    TreeSet<LocalDateTime> repeticionesPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
         return repeticion.calcularRepeticionesPorIntervalo(inicioIntervalo, finIntervalo);
     }
 

@@ -1,3 +1,5 @@
+package calendario;
+
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -12,7 +14,7 @@ public class Actividad implements Serializable {
     protected LocalDateTime inicio;
     protected final TreeSet<Alarma> listaAlarmas;
 
-    public Actividad(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio) {
+    Actividad(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio) {
 
         this.titulo = titulo == null? "Sin titulo" : titulo;
         this.descripcion = descripcion == null? "Sin descripcion" : descripcion;
@@ -28,31 +30,31 @@ public class Actividad implements Serializable {
     public String getDescripcion() { return descripcion; }
     public boolean isDiaCompleto() { return diaCompleto; }
     public LocalDateTime getInicio() { return inicio; }
-    public TreeSet<Alarma> getListaAlarmas() { return listaAlarmas; }
+    TreeSet<Alarma> getListaAlarmas() { return listaAlarmas; }
 
     // Setters
-    public void setTitulo(String titulo) { this.titulo = titulo; }
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    void setTitulo(String titulo) { this.titulo = titulo; }
+    void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
 
     // Metodos relativos a alarmas
 
     // Recibe los datos necesarios para crear una instancia de Alarma
     // y la agrega a su lista.
-    public void agregarAlarma(LocalDateTime inicio, Efecto efecto) {
+    void agregarAlarma(LocalDateTime inicio, Efecto efecto) {
         var nuevaAlarma = new Alarma(this, inicio, efecto);
         listaAlarmas.add(nuevaAlarma);
     }
 
     // Recibe los datos necesarios para crear una instancia de Alarma
     // y la agrega a su lista.
-    public void agregarAlarma(Duration inicio, Efecto efecto) {
+    void agregarAlarma(Duration inicio, Efecto efecto) {
         var nuevaAlarma = new Alarma(this, inicio, efecto);
         listaAlarmas.add(nuevaAlarma);
     }
 
     // Recibe una instancia de Alarma y la quita de su lista.
-    public void eliminarAlarma(Alarma alarma) { listaAlarmas.remove(alarma); }
+    void eliminarAlarma(Alarma alarma) { listaAlarmas.remove(alarma); }
 
     // Busca y devuelve la alarma que tiene las caracteristicas indicadas.
     // Devuelve null si esta no se encuentra en la lista.
@@ -64,7 +66,7 @@ public class Actividad implements Serializable {
     }
 
     // Devuelve la siguiente alarma que deberia sonar. Devuelve null si no hay ninguna alarma.
-    public Alarma obtenerProximaAlarma() {
+    Alarma obtenerProximaAlarma() {
         return listaAlarmas.isEmpty()? null : listaAlarmas.first();
     }
 
