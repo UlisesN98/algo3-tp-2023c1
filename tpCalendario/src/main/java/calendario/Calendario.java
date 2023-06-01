@@ -61,19 +61,19 @@ public class Calendario implements Serializable {
         var eventosIntervalo = new ArrayList<Evento>();
 
         for (Evento evento : listaEventos) {
-            if ((evento.getInicio().isAfter(inicioIntervalo) || evento.getInicio().isEqual(inicioIntervalo)) && evento.getInicio().isBefore(finIntervalo)) {
-                eventosIntervalo.add(evento);
-            } else if (evento.getFin().isAfter(inicioIntervalo) && evento.getFin().isBefore(finIntervalo)) {
-                eventosIntervalo.add(evento);
-            } else if (evento.getInicio().isBefore(inicioIntervalo) && evento.getFin().isAfter(finIntervalo)) {
-                eventosIntervalo.add(evento);
-            }
-
             if (evento.esRepetido()){
                 TreeSet<LocalDateTime> instanciasRepetidas = evento.repeticionesPorIntervalo(inicioIntervalo, finIntervalo);
                 for (LocalDateTime fecha : instanciasRepetidas){
                     Evento eventoCreado = new Evento(evento.getTitulo(), evento.getDescripcion(), evento.isDiaCompleto(), fecha, fecha.plusSeconds(ChronoUnit.SECONDS.between(evento.getInicio(), evento.getFin())), null);
                     eventosIntervalo.add(eventoCreado);
+                }
+            } else {
+                if ((evento.getInicio().isAfter(inicioIntervalo) || evento.getInicio().isEqual(inicioIntervalo)) && evento.getInicio().isBefore(finIntervalo)) {
+                    eventosIntervalo.add(evento);
+                } else if (evento.getFin().isAfter(inicioIntervalo) && evento.getFin().isBefore(finIntervalo)) {
+                    eventosIntervalo.add(evento);
+                } else if (evento.getInicio().isBefore(inicioIntervalo) && evento.getFin().isAfter(finIntervalo)) {
+                    eventosIntervalo.add(evento);
                 }
             }
         }

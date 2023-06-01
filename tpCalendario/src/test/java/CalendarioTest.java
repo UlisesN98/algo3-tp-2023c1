@@ -1142,7 +1142,7 @@ public class CalendarioTest {
 
         var listaEventos = calendarioDeserializado.buscarEventoPorIntervalo(LocalDateTime.parse("2023-01-01T00:00"), LocalDateTime.parse("2023-12-29T00:00"));
         Evento evento1 = listaEventos.get(0);
-        Evento evento2 = listaEventos.get(3); // Este es evento 2, indices 1 y 2 son repeticiones semanales de evento1
+        Evento evento2 = listaEventos.get(2);
 
         // Assert
 
@@ -1151,7 +1151,7 @@ public class CalendarioTest {
         assertEquals("descripcion tarea", tarea.getDescripcion());
         assertEquals(LocalDateTime.parse("2023-05-12T19:00"), tarea.getInicio());
 
-        assertEquals(5, listaEventos.size()); // Eventos originales + sus repeticiones
+        assertEquals(3, listaEventos.size()); // Eventos originales + sus repeticiones
         assertEquals("Nuevo evento", evento1.getTitulo());
         assertEquals("descripcion evento", evento1.getDescripcion());
         assertEquals(LocalDateTime.parse("2023-05-12T00:00"), evento1.getInicio());
