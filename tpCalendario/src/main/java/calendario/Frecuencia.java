@@ -2,9 +2,20 @@ package calendario;
 
 public enum Frecuencia {
 
-    // Tipos de frecuencia que puede tomar una Repeticion comun.
-    DIARIA,
-    SEMANAL,
-    MENSUAL,
-    ANUAL
+    DIARIA("Diario"),
+    SEMANAL("Semanal"),
+    MENSUAL("Mensual"),
+    ANUAL("Anual");
+
+    private final String descripcion;
+
+    Frecuencia(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    @Override
+    public String toString() {
+        return descripcion;
+    }
+
 }

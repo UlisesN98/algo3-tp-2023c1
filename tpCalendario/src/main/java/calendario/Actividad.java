@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.TreeSet;
 
-public class Actividad implements Serializable {
+public abstract class Actividad implements Serializable {
 
     protected String titulo; // Titulo de la actividad. En caso de que este atributo no se indique, se le asignara "Sin titulo".
     protected String descripcion; // Descripcion de la actividad. En caso de que este atributo no se indique, se le asignara "Sin descripcion".
@@ -83,5 +83,7 @@ public class Actividad implements Serializable {
             return 0;
         }
     }
+
+    public abstract void aceptar(ActividadVisitante visitante);
 
 }

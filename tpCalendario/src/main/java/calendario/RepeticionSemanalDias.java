@@ -63,7 +63,7 @@ public class RepeticionSemanalDias extends Repeticion {
 
         if (superoLimite(inicioIntervalo)) {return repeticiones;}
 
-        while (repeticion.isBefore(finIntervalo) || repeticion.equals(finIntervalo)) {
+        while (repeticion.isBefore(finIntervalo)) {
             TreeSet<LocalDateTime> repSemanales = obtenerRepeticionesSemana(repeticion);
             for (LocalDateTime rep : repSemanales) {
                 if (superoLimite(rep) || (rep.isAfter(finIntervalo))) {break;}

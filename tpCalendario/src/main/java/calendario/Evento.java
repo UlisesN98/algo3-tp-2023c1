@@ -15,7 +15,8 @@ public class Evento extends Actividad {
 
         if (diaCompleto) {
             this.inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 0, 0);
-            fin = fin.getHour() == 0 && fin.getMinute() == 0? fin : LocalDateTime.of(fin.getYear(), fin.getMonth(), fin.getDayOfMonth(), 0, 0).plusDays(1);
+            fin = LocalDateTime.of(fin.getYear(), fin.getMonth(), fin.getDayOfMonth(), 23, 59);
+            if (repeticion != null) { repeticion.setInicio(this.inicio); }
         }
 
         this.fin = fin;
@@ -31,12 +32,13 @@ public class Evento extends Actividad {
             inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 0, 0);
         }
         this.inicio = inicio;
+        if (repeticion != null) { repeticion.setInicio(this.inicio); }
     }
 
     // Recibe una nueva fecha de fin, que en caso de ser el Evento de dia completo se adaptara al formato antes de asignarse.
     void setFin(LocalDateTime fin) {
         if (diaCompleto) {
-            fin = fin.getHour() == 0 && fin.getMinute() == 0? fin : LocalDateTime.of(fin.getYear(), fin.getMonth(), fin.getDayOfMonth(), 0, 0).plusDays(1);
+            fin = LocalDateTime.of(fin.getYear(), fin.getMonth(), fin.getDayOfMonth(), 23, 59);
         }
         this.fin = fin;
     }
@@ -45,7 +47,8 @@ public class Evento extends Actividad {
     void setDiaCompleto(boolean esDiaCompleto) {
         if (!diaCompleto && esDiaCompleto) {
             inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 0, 0);
-            fin = fin.getHour() == 0 && fin.getMinute() == 0? fin : LocalDateTime.of(fin.getYear(), fin.getMonth(), fin.getDayOfMonth(), 0, 0).plusDays(1);
+            fin = LocalDateTime.of(fin.getYear(), fin.getMonth(), fin.getDayOfMonth(), 23, 59);
+            if (repeticion != null) { repeticion.setInicio(this.inicio); }
         }
         this.diaCompleto = esDiaCompleto;
     }
@@ -88,6 +91,10 @@ public class Evento extends Actividad {
     // Devuelve un treeset de LocalDateTime con las fechas de la repeticiones que ocurren en el intervalo pasado por parametro.
     TreeSet<LocalDateTime> repeticionesPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
         return repeticion.calcularRepeticionesPorIntervalo(inicioIntervalo, finIntervalo);
+    }
+
+    public void aceptar(ActividadVisitante visitante) {
+        visitante.visitarEvento(this);
     }
 
 }

@@ -10,7 +10,7 @@ public class Tarea extends Actividad {
         super(titulo, descripcion, diaCompleto, inicio);
 
         if (diaCompleto) {
-            this.inicio = inicio.getHour() == 0 && inicio.getMinute() == 0? inicio : LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 0, 0).plusDays(1);
+            this.inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 23, 59);
         }
 
         this.completada = false;
@@ -19,7 +19,7 @@ public class Tarea extends Actividad {
     // Recibe una nueva fecha de inicio, que en caso de ser la Tarea de dia completo se adaptara al formato antes de asignarse.
     void setInicio(LocalDateTime inicio) {
         if (diaCompleto) {
-            this.inicio = inicio.getHour() == 0 && inicio.getMinute() == 0? inicio : LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 0, 0).plusDays(1);
+            this.inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 23, 59);
         } else {
             this.inicio = inicio;
         }
@@ -28,7 +28,7 @@ public class Tarea extends Actividad {
     // Modifica el estado de dia completo por el que indica el parametro y adapta de ser necesario la fecha de inicio.
     void setDiaCompleto(boolean esDiaCompleto) {
         if (!diaCompleto && esDiaCompleto) {
-            inicio = inicio.getHour() == 0 && inicio.getMinute() == 0? inicio : LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 0, 0).plusDays(1);
+            inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 23, 59);
         }
         this.diaCompleto = esDiaCompleto;
     }
@@ -38,5 +38,9 @@ public class Tarea extends Actividad {
 
     // Cambia el estado de incompleta a completada y viceversa.
     void cambiarEstadoTarea() { this.completada = !completada; }
+
+    public void aceptar(ActividadVisitante visitante) {
+        visitante.visitarTarea(this);
+    }
 
 }

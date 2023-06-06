@@ -944,7 +944,7 @@ public class CalendarioTest {
         // Assert
 
         assertEquals(LocalDateTime.parse("2023-03-13T00:00"), eventoBuscado.getInicio());
-        assertEquals(LocalDateTime.parse("2023-03-17T00:00"), eventoBuscado.getFin());
+        assertEquals(LocalDateTime.parse("2023-03-16T23:59"), eventoBuscado.getFin());
     }
 
     // Crea un evento con un dado inicio y fin, marcada como NO de dia completo, y luego se la modifica para ser de dia
@@ -971,7 +971,7 @@ public class CalendarioTest {
         // Assert
 
         assertEquals(eventoBuscado.getInicio(), LocalDateTime.parse("2023-03-13T00:00"));
-        assertEquals(eventoBuscado.getFin(), LocalDateTime.parse("2023-03-17T00:00"));
+        assertEquals(eventoBuscado.getFin(), LocalDateTime.parse("2023-03-16T23:59"));
     }
 
     // Crea una tarea con un limite dado y marcada como de dia completo, chequeando que su limite es el
@@ -995,7 +995,7 @@ public class CalendarioTest {
 
         // Assert
 
-        assertEquals(tareaBuscada.getInicio(), LocalDateTime.parse("2023-03-14T00:00"));
+        assertEquals(tareaBuscada.getInicio(), LocalDateTime.parse("2023-03-13T23:59"));
     }
 
     // Crea una tarea con un limite dado y marcada como NO de dia completo y luego se la modifica para que sea de dia completo
@@ -1021,7 +1021,7 @@ public class CalendarioTest {
 
         // Assert
 
-        assertEquals(tareaBuscada.getInicio(), LocalDateTime.parse("2023-06-16T00:00"));
+        assertEquals(tareaBuscada.getInicio(), LocalDateTime.parse("2023-06-15T23:59"));
     }
 
     // Chequea que si un evento se repite sus alarmas acompañen esa repeticion
@@ -1155,7 +1155,7 @@ public class CalendarioTest {
         assertEquals("Nuevo evento", evento1.getTitulo());
         assertEquals("descripcion evento", evento1.getDescripcion());
         assertEquals(LocalDateTime.parse("2023-05-12T00:00"), evento1.getInicio());
-        assertEquals(LocalDateTime.parse("2023-05-13T00:00"), evento1.getFin());
+        assertEquals(LocalDateTime.parse("2023-05-12T23:59"), evento1.getFin());
 
         assertEquals("Estructuras y Organizaciones", evento2.getTitulo());
         assertEquals("Clase de EyO", evento2.getDescripcion());
@@ -1281,7 +1281,7 @@ public class CalendarioTest {
         assertEquals(evento2.getTitulo(), tituloEvento2);
         assertEquals(evento2.getDescripcion(), descripcionEvento2);
         assertEquals(evento2.getInicio(), LocalDateTime.parse("2023-10-12T00:00")); // Debido a la modificacion para que sea de dia completo
-        assertEquals(evento2.getFin(), LocalDateTime.parse("2023-10-13T00:00")); // Idem
+        assertEquals(evento2.getFin(), LocalDateTime.parse("2023-10-12T23:59")); // Idem
 
         assertEquals(actividadDeAlarma1.getTitulo(), tarea1.getTitulo());
         assertEquals(actividadDeAlarma2.getTitulo(), tarea1.getTitulo());

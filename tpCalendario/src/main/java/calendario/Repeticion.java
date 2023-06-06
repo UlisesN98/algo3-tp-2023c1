@@ -12,6 +12,10 @@ public abstract class Repeticion implements Serializable {
         this.inicio = inicio;
     }
 
+    public void setInicio(LocalDateTime inicio) {
+        this.inicio = inicio;
+    }
+
     // Recibe una fecha y devuelve, en base al tipo de repeticion, cual es la siguiente donde se repite.
     // Devuelve null en caso de que la siguiente fecha este fuera del limite de la repeticion
     public abstract LocalDateTime calcularSiguienteRepeticion(LocalDateTime fecha);

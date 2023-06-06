@@ -53,7 +53,7 @@ public class RepeticionComun extends Repeticion {
             return repeticiones;
         }
 
-        while (repeticion.isBefore(finIntervalo) || repeticion.equals(finIntervalo)) {
+        while (repeticion.isBefore(finIntervalo)) {
             if (repeticion.isAfter(inicioIntervalo) || repeticion.equals(inicioIntervalo)) {
                 repeticiones.add(repeticion);
             }
