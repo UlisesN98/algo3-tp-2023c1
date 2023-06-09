@@ -24,7 +24,7 @@ import java.time.temporal.TemporalAdjusters;
 public class Main extends Application {
 
     @FXML
-    private Label fecha;
+    private Label fechaTitulo;
     @FXML
     private VBox listaActividades;
     @FXML
@@ -32,15 +32,22 @@ public class Main extends Application {
     @FXML
     private Button anterior;
     @FXML
-    private ChoiceBox<String> opciones;
+    private ChoiceBox<String> opcionesIntervalo;
+
+    @FXML
+    private Button cancelarEvento;
+    @FXML
+    private VBox detalleEvento;
+
 
     private Calendario calendario;
     private LocalDate fechaActual;
     private Frecuencia intervalo;
+    private Stage escenario;
 
     public Main() throws Exception {
         fechaActual = LocalDate.now();
-        intervalo = Frecuencia.SEMANAL;
+        intervalo = Frecuencia.DIARIA;
 
         try {
             var archivo = new BufferedInputStream(new FileInputStream("calendario"));
@@ -52,6 +59,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        this.escenario = stage;
 
         calendario.crearTarea("Compras", "Comprar aceite, huevos y pan", false, LocalDateTime.parse("2023-06-01T19:00"), new LocalDateTime[]{LocalDateTime.parse("2023-06-01T18:00")}, new Efecto[]{Efecto.SONIDO});
         calendario.crearEvento("Cumpleaños", null, true, LocalDateTime.parse("2023-06-03T10:00"), LocalDateTime.parse("2023-06-03T22:00"), new Duration[]{Duration.ofHours(1)}, new Efecto[]{Efecto.NOTIFICACION}, null);
@@ -66,6 +74,12 @@ public class Main extends Application {
                 new RepeticionComun(LocalDateTime.parse("2023-03-17T18:00"), LocalDateTime.parse("2023-06-30T00:00"), Frecuencia.SEMANAL));
         calendario.crearTarea("TP Algo 3", null, true, LocalDateTime.parse("2023-06-15T22:00"), new LocalDateTime[]{}, null);
 
+        mostrarVistaActividades();
+    }
+
+    // METODOS RELATIVOS A VISTA DE ACTIVIDADES
+
+    private void mostrarVistaActividades() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().
                 getResource("scena1.fxml"));
         loader.setController(this);
@@ -80,10 +94,10 @@ public class Main extends Application {
         anterior.setOnAction(event -> retroceder());
         siguiente.setOnAction(event -> avanzar());
 
-        opciones.getItems().addAll(Frecuencia.DIARIA.toString(), Frecuencia.SEMANAL.toString(), Frecuencia.MENSUAL.toString());
-        opciones.setValue(intervalo.toString());
-        opciones.setOnAction(event -> {
-            String opcionSeleccionada = opciones.getValue();
+        opcionesIntervalo.getItems().addAll(Frecuencia.DIARIA.toString(), Frecuencia.SEMANAL.toString(), Frecuencia.MENSUAL.toString());
+        opcionesIntervalo.setValue(intervalo.toString());
+        opcionesIntervalo.setOnAction(event -> {
+            String opcionSeleccionada = opcionesIntervalo.getValue();
             if (opcionSeleccionada.equals(Frecuencia.DIARIA.toString())) {
                 intervalo = Frecuencia.DIARIA;
                 mostrarDia();
@@ -97,11 +111,31 @@ public class Main extends Application {
         });
 
         Scene scene = new Scene(vista);
-        stage.setScene(scene);
-        stage.show();
+        escenario.setScene(scene);
+        escenario.show();
     }
 
-    private void mostrarActividades(ObservableList<Actividad> actividades) {
+    // MOSTRAR LOS DISTINTOS INTERVALOS
+    public void mostrarDia() {
+        listaActividades.getChildren().clear();
+        fechaTitulo.setText(formatoFecha(fechaActual));
+        mostrarActividades(FXCollections.observableList(calendario.buscarPorIntervalo(fechaActual.atStartOfDay(), fechaActual.atStartOfDay().plusDays(1))));
+    }
+
+    public void mostrarSemana() {
+        listaActividades.getChildren().clear();
+        fechaTitulo.setText(formatoFecha(obtenerPrincipioSemana(fechaActual)) + " - " + formatoFecha(obtenerFinSemana(fechaActual)));
+        mostrarActividades(FXCollections.observableList(calendario.buscarPorIntervalo(obtenerPrincipioSemana(fechaActual).atStartOfDay(), obtenerFinSemana(fechaActual).atStartOfDay().plusDays(1))));
+    }
+
+    public void mostrarMes() {
+        listaActividades.getChildren().clear();
+        fechaTitulo.setText(fechaActual.getMonth().toString() + " " + fechaActual.getYear());
+        mostrarActividades(FXCollections.observableList(calendario.buscarPorIntervalo(obtenerPrincipioMes(fechaActual).atStartOfDay(), obtenerFinMes(fechaActual).atStartOfDay().plusDays(1))));
+    }
+
+    // MOSTRAR LAS DISTINTAS ACTIVIDADES
+    public void mostrarActividades(ObservableList<Actividad> actividades) {
         for (Actividad a : actividades) {
             a.aceptar(new ActividadVisitante() {
                 @Override
@@ -117,7 +151,7 @@ public class Main extends Application {
         }
     }
 
-    private void mostrarEvento(Actividad actividad) {
+    public void mostrarEvento(Actividad actividad) {
         Evento evento = (Evento) actividad;
 
         Label label = new Label();
@@ -132,9 +166,17 @@ public class Main extends Application {
         }
 
         listaActividades.getChildren().add(label);
+
+        label.setOnMouseClicked(event -> {
+            try {
+                mostrarVistaEvento(evento);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
-    private void mostrarTarea(Actividad actividad) {
+    public void mostrarTarea(Actividad actividad) {
         Tarea tarea = (Tarea) actividad;
 
         Label label = new Label();
@@ -155,21 +197,44 @@ public class Main extends Application {
         }
 
         listaActividades.getChildren().add(label);
+
+        label.setOnMouseClicked(event -> {
+            try {
+                mostrarVistaTarea(tarea);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
+    // OBTENER PRINCIPIOS Y FINES DE INTERVALOS
+    public static LocalDate obtenerPrincipioSemana(LocalDate fecha) {
+        return fecha.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
+    }
+    public static LocalDate obtenerFinSemana(LocalDate fecha) {
+        return fecha.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY));
+    }
+    public static LocalDate obtenerPrincipioMes(LocalDate fecha) {
+        return fecha.withDayOfMonth(1);
+    }
+    public static LocalDate obtenerFinMes(LocalDate fecha) {
+        int ultimoDiaMes = fecha.lengthOfMonth();
+        return fecha.withDayOfMonth(ultimoDiaMes);
+    }
+
+    // DARLE FORMATO A LOCALDATE
     public String formatoTiempo(LocalDateTime tiempo) {
         return String.format("%s - %s/%s/%s", tiempo.toLocalTime(), tiempo.getDayOfMonth(), tiempo.getMonthValue(), tiempo.getYear());
     }
-
     public String formatoFecha(LocalDateTime tiempo) {
         return String.format("%s/%s/%s", tiempo.getDayOfMonth(), tiempo.getMonthValue(), tiempo.getYear());
     }
-
     public String formatoFecha(LocalDate fecha) {
         return String.format("%s/%s/%s", fecha.getDayOfMonth(), fecha.getMonthValue(), fecha.getYear());
     }
 
-    private void retroceder() {
+    // AVANZAR Y RETROCEDER EN EL TIEMPO
+    public void retroceder() {
         if (intervalo.equals(Frecuencia.DIARIA)) {
             fechaActual = fechaActual.minusDays(1);
             mostrarDia();
@@ -182,7 +247,7 @@ public class Main extends Application {
         }
     }
 
-    private void avanzar() {
+    public void avanzar() {
         if (intervalo.equals(Frecuencia.DIARIA)) {
             fechaActual = fechaActual.plusDays(1);
             mostrarDia();
@@ -195,39 +260,133 @@ public class Main extends Application {
         }
     }
 
-    private void mostrarDia() {
-        listaActividades.getChildren().clear();
-        fecha.setText(formatoFecha(fechaActual));
-        mostrarActividades(FXCollections.observableList(calendario.buscarPorIntervalo(fechaActual.atStartOfDay(), fechaActual.atStartOfDay().plusDays(1))));
+    // METODOS RELATIVOS A LA VISTA DE EVENTO Y TAREAS
+
+    public void mostrarVistaEvento(Evento evento) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().
+                getResource("scena2.fxml"));
+        loader.setController(this);
+        AnchorPane vista = loader.load();
+
+        cancelarEvento.setOnAction(event -> {
+            try {
+                mostrarVistaActividades();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        mostrarDetalleEvento(evento);
+
+        Scene scene = new Scene(vista);
+        escenario.setScene(scene);
+        escenario.show();
     }
 
-    private void mostrarSemana() {
-        listaActividades.getChildren().clear();
-        fecha.setText(formatoFecha(obtenerPrincipioSemana(fechaActual)) + " - " + formatoFecha(obtenerFinSemana(fechaActual)));
-        mostrarActividades(FXCollections.observableList(calendario.buscarPorIntervalo(obtenerPrincipioSemana(fechaActual).atStartOfDay(), obtenerFinSemana(fechaActual).atStartOfDay().plusDays(1))));
+    private void mostrarDetalleEvento(Evento evento) {
+
+        Label titulo = new Label();
+        titulo.setText(evento.getTitulo());
+
+        Label descripcion = new Label();
+        descripcion.setText(evento.getDescripcion());
+
+        Label diaCompleto = new Label();
+        Label inicio = new Label();
+        Label fin = new Label();
+
+        if (evento.isDiaCompleto()) {
+            diaCompleto.setText("Dia completo ✅");
+            inicio.setText(formatoFecha(evento.getInicio()));
+            fin.setText(formatoFecha(evento.getFin()));
+        } else {
+            diaCompleto.setText("Dia completo ✗");
+            inicio.setText(formatoTiempo(evento.getInicio()));
+            fin.setText(formatoTiempo(evento.getFin()));
+        }
+
+        Label repeticion = new Label();
+        if (evento.esRepetido()) {
+            repeticion.setText("Repeticion ✅");
+        } else {
+            repeticion.setText("Repeticion ✗");
+        }
+
+        detalleEvento.getChildren().add(titulo);
+        detalleEvento.getChildren().add(descripcion);
+        detalleEvento.getChildren().add(diaCompleto);
+        detalleEvento.getChildren().add(inicio);
+        detalleEvento.getChildren().add(fin);
+        detalleEvento.getChildren().add(repeticion);
+
+        detalleEvento.getChildren().add(new Label("Alarmas"));
+        for (Alarma a: evento.getListaAlarmas()) {
+            Label alarma = new Label();
+            alarma.setText(String.format("Inicio: %s - Efecto: %s", formatoTiempo(a.getInicio()), a.getEfecto()));
+            detalleEvento.getChildren().add(alarma);
+        }
     }
 
-    private void mostrarMes() {
-        listaActividades.getChildren().clear();
-        fecha.setText(fechaActual.getMonth().toString() + " " + fechaActual.getYear());
-        mostrarActividades(FXCollections.observableList(calendario.buscarPorIntervalo(obtenerPrincipioMes(fechaActual).atStartOfDay(), obtenerFinMes(fechaActual).atStartOfDay().plusDays(1))));
+    public void mostrarVistaTarea(Tarea tarea) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().
+                getResource("scena2.fxml"));
+        loader.setController(this);
+        AnchorPane vista = loader.load();
+
+        cancelarEvento.setOnAction(event -> {
+            try {
+                mostrarVistaActividades();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        mostrarDetalleTarea(tarea);
+
+        Scene scene = new Scene(vista);
+        escenario.setScene(scene);
+        escenario.show();
     }
 
-    public static LocalDate obtenerPrincipioSemana(LocalDate fecha) {
-        return fecha.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
-    }
+    private void mostrarDetalleTarea(Tarea tarea) {
 
-    public static LocalDate obtenerFinSemana(LocalDate fecha) {
-        return fecha.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY));
-    }
+        Label titulo = new Label();
+        titulo.setText(tarea.getTitulo());
 
-    public static LocalDate obtenerPrincipioMes(LocalDate fecha) {
-        return fecha.withDayOfMonth(1);
-    }
+        Label descripcion = new Label();
+        descripcion.setText(tarea.getDescripcion());
 
-    public static LocalDate obtenerFinMes(LocalDate fecha) {
-        int ultimoDiaMes = fecha.lengthOfMonth();
-        return fecha.withDayOfMonth(ultimoDiaMes);
-    }
+        Label diaCompleto = new Label();
+        Label inicio = new Label();
+        Label fin = new Label();
 
+        if (tarea.isDiaCompleto()) {
+            diaCompleto.setText("Dia completo ✅");
+            inicio.setText(formatoFecha(tarea.getInicio()));
+        } else {
+            diaCompleto.setText("Dia completo ✗");
+            inicio.setText(formatoTiempo(tarea.getInicio()));
+        }
+
+        Label completada = new Label();
+        if (tarea.isCompletada()) {
+            completada.setText("Completada: ✅");
+        } else {
+            completada.setText("Completada: ✗");
+        }
+
+        detalleEvento.getChildren().add(titulo);
+        detalleEvento.getChildren().add(descripcion);
+        detalleEvento.getChildren().add(diaCompleto);
+        detalleEvento.getChildren().add(inicio);
+        detalleEvento.getChildren().add(fin);
+        detalleEvento.getChildren().add(completada);
+
+        detalleEvento.getChildren().add(new Label("Alarmas"));
+        for (Alarma a: tarea.getListaAlarmas()) {
+            Label alarma = new Label();
+            alarma.setText(String.format("Inicio: %s - Efecto: %s", formatoTiempo(a.getInicio()), a.getEfecto()));
+            detalleEvento.getChildren().add(alarma);
+        }
+    }
 }

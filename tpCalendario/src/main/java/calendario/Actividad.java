@@ -30,7 +30,7 @@ public abstract class Actividad implements Serializable {
     public String getDescripcion() { return descripcion; }
     public boolean isDiaCompleto() { return diaCompleto; }
     public LocalDateTime getInicio() { return inicio; }
-    TreeSet<Alarma> getListaAlarmas() { return listaAlarmas; }
+    public TreeSet<Alarma> getListaAlarmas() { return listaAlarmas; }
 
     // Setters
     void setTitulo(String titulo) { this.titulo = titulo; }
