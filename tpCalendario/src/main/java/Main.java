@@ -55,6 +55,7 @@ public class Main extends Application {
     private Stage escenario;
 
 
+    // Cosas de crearEvento
     @FXML
     private Button crearEvento;
     @FXML
@@ -79,6 +80,18 @@ public class Main extends Application {
     private TextArea areaAlarmsDates;
     @FXML
     private TextArea areaAlarmsTimes;
+
+    // Cosas de crearTarea
+    @FXML
+    private TextField taskTitle;
+    @FXML
+    private TextArea taskDescription;
+    @FXML
+    private TextField fieldFecha;
+    @FXML
+    private TextField endTimeTask;
+    @FXML
+    private Button crearTarea;
 
     public Main() throws Exception {
         fechaActual = LocalDate.now();
@@ -461,6 +474,26 @@ public class Main extends Application {
         escenario.show();
     }
 
+    public void mostrarVistaCrearTarea() throws IOException{
+        // Load FXML file
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ScenaCrearTarea.fxml"));
+        loader.setController(this);
+        AnchorPane vista = loader.load();
+
+        cancelarEvento.setOnAction(event -> {
+            try {
+                mostrarVistaActividades();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        // Create the scene
+        Scene scene = new Scene(vista);
+        escenario.setScene(scene);
+        escenario.show();
+    }
+
     // METODOS RELATIVOS A LA CREACION DE EVENTOS Y TAREAS
 
     public void crearEvento() throws IOException {
@@ -552,13 +585,76 @@ public class Main extends Application {
         if (seRepite){
             Integer frecuenciaRepeticion = Integer.valueOf(frequencyRepeatDaily.getText());
             Repeticion repeticion = new RepeticionDiariaIntervalo(inicioEventoFormateado, frecuenciaRepeticion);
-            crearEvento.setOnAction(event -> calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, new Efecto[]{Efecto.NOTIFICACION}, repeticion));
+            calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, new Efecto[]{Efecto.NOTIFICACION}, repeticion);
         }
 
         else {
-            crearEvento.setOnAction(event -> calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, new Efecto[]{Efecto.NOTIFICACION}, null));
+            calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, new Efecto[]{Efecto.NOTIFICACION}, null);
         }
         mostrarVistaActividades();
+    }
+
+    public void crearTarea() throws IOException{
+        // Validar input del usuario
+        if (!esFechaValida(fieldFecha.getText())){
+            showErrorAlert("Formato de fecha invalido");
+            return;
+        }
+
+        if (!esTiempoValido(endTimeTask.getText())){
+            showErrorAlert("Formato de horario limite invalido");
+            return;
+        }
+
+        String[] alarmDates = areaAlarmsDates.getText().isEmpty() ? new String[0] : areaAlarmsDates.getText().split(" ");
+        String[] alarmTimes = areaAlarmsTimes.getText().isEmpty() ? new String[0] : areaAlarmsTimes.getText().split(" ");
+
+
+        if (alarmDates.length != alarmTimes.length) {
+            showErrorAlert("La cantidad de fechas de alarmas no coincide con la cantidad de horarios de alarma");
+            return;
+        }
+
+
+        for (String alarmDate : alarmDates) {
+            if (!esFechaValida(alarmDate)) {
+                showErrorAlert("Formato de fecha invalido para alguna/s de la/s fecha/s de la/s alarma/s");
+                return;
+            }
+        }
+
+        for (String alarmTime : alarmTimes) {
+            if (!esTiempoValido(alarmTime)) {
+                showErrorAlert("Formato de tiempo invalido para alguno/s de lo/s tiempo/s de la/s alarma/s");
+                return;
+            }
+        }
+
+        String fechaInicio = fieldFecha.getText();
+
+        String tituloTarea = taskTitle.getText();
+        String descripcionTarea = taskDescription.getText();
+
+        String limiteTarea = endTimeTask.getText();
+
+        Boolean diaCompleto = completeDayCheckbox.isSelected();
+        Boolean seRepite = dailyRepeatCheck.isSelected();
+
+        // Una vez validados los inputs, realizar creacion de evento.
+
+        LocalDate fechaInicioFormatProcess = LocalDate.parse(fechaInicio, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        LocalTime tiempoInicioFormatProcess = LocalTime.parse(limiteTarea, DateTimeFormatter.ofPattern("HH:mm"));
+        LocalDateTime dateTimeTareaFormateado = fechaInicioFormatProcess.atTime(tiempoInicioFormatProcess);
+
+        LocalDateTime[] alarmasFormateadas = new LocalDateTime[alarmDates.length];
+
+        for (int i = 0; i < alarmDates.length; i++) {
+            String date = alarmDates[i];
+            String time = alarmTimes[i];
+
+            LocalDateTime fechaTiempoFormateado = LocalDateTime.parse(date + "T" + time, DateTimeFormatter.ofPattern("dd/MM/yyyy'T'HH:mm"));
+            alarmasFormateadas[i] = fechaTiempoFormateado;
+        }
     }
 
     public void showErrorAlert(String mensaje){
