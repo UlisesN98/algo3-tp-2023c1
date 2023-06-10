@@ -64,7 +64,7 @@ public class Calendario implements Serializable {
             if (evento.esRepetido()){
                 TreeSet<LocalDateTime> instanciasRepetidas = evento.repeticionesPorIntervalo(inicioIntervalo, finIntervalo);
                 for (LocalDateTime fecha : instanciasRepetidas){
-                    Evento eventoCreado = new Evento(evento.getTitulo(), evento.getDescripcion(), evento.isDiaCompleto(), fecha, fecha.plusSeconds(ChronoUnit.SECONDS.between(evento.getInicio(), evento.getFin())), null);
+                    Evento eventoCreado = crearEventoRepetido(evento, fecha);
                     eventosIntervalo.add(eventoCreado);
                 }
             } else {
@@ -132,6 +132,20 @@ public class Calendario implements Serializable {
         var nuevoEvento = new Evento(titulo, descripcion, diaCompleto, inicio, fin, repeticion);
         agregarAlarmas(nuevoEvento, inicioAlarmas, efectoAlarmas);
         listaEventos.add(nuevoEvento);
+    }
+
+    private Evento crearEventoRepetido(Evento evento, LocalDateTime fecha) {
+        var nuevoEvento = new EventoRepetido(evento.getTitulo(), evento.getDescripcion(), evento.isDiaCompleto(), fecha, fecha.plusSeconds(ChronoUnit.SECONDS.between(evento.getInicio(), evento.getFin())), evento.getRepeticion(), evento);
+
+        List<LocalDateTime> inicios = new ArrayList<>();
+        List<Efecto> efectos = new ArrayList<>();
+        var alarmas = evento.getListaAlarmas();
+        for (Alarma alarma : alarmas) {
+            inicios.add(fecha.minusSeconds(ChronoUnit.SECONDS.between(alarma.getInicio(), evento.getInicio())));
+            efectos.add(alarma.getEfecto());
+        }
+        agregarAlarmas(nuevoEvento, inicios.toArray(new LocalDateTime[0]), efectos.toArray(new Efecto[0]));
+        return nuevoEvento;
     }
 
     // Recibe un String que indique su titulo, un String que indique una descripcion, un boolean que indique si es de dia completo,
@@ -234,7 +248,12 @@ public class Calendario implements Serializable {
 
     // Recibe una instancia de Evento y la quita de la lista de Eventos.
     public void eliminarEvento(Evento evento) {
-        listaEventos.remove(evento);
+        if (evento.esOriginal()) {
+            listaEventos.remove(evento);
+        } else {
+            var eventoRep = (EventoRepetido) evento;
+            listaEventos.remove(eventoRep.getEventoOriginal());
+        }
     }
 
     // Recibe una instancia de Tarea y la quita de la lista de Tareas.

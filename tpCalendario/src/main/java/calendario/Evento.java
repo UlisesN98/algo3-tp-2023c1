@@ -9,6 +9,7 @@ public class Evento extends Actividad {
     private LocalDateTime fin;
     private Repeticion repeticion; // Instancia de Repeticion con los datos de que como se repetira el Evento. Si el Evento no se repite lleva null.
     private LocalDateTime siguienteRepeticion; // Fecha de la siguiente repeticion del Evento. Si el Evento no se repite lleva null.
+    protected boolean original;
 
     Evento(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio, LocalDateTime fin, Repeticion repeticion) {
         super(titulo, descripcion, diaCompleto, inicio);
@@ -22,6 +23,8 @@ public class Evento extends Actividad {
         this.fin = fin;
         this.repeticion = repeticion;
         this.siguienteRepeticion = repeticion != null ? repeticion.calcularSiguienteRepeticion(inicio) : null;
+
+        this.original = true;
     }
 
     public LocalDateTime getFin() { return fin; }
@@ -95,6 +98,10 @@ public class Evento extends Actividad {
 
     public void aceptar(ActividadVisitante visitante) {
         visitante.visitarEvento(this);
+    }
+
+    public boolean esOriginal() {
+        return original;
     }
 
 }

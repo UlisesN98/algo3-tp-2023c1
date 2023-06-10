@@ -12,11 +12,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.time.DayOfWeek;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
@@ -37,6 +34,8 @@ public class Main extends Application {
     @FXML
     private Button cancelarEvento;
     @FXML
+    private Button eliminar;
+    @FXML
     private VBox detalleEvento;
 
 
@@ -44,14 +43,15 @@ public class Main extends Application {
     private LocalDate fechaActual;
     private Frecuencia intervalo;
     private Stage escenario;
+    private final String ruta;
 
     public Main() throws Exception {
         fechaActual = LocalDate.now();
         intervalo = Frecuencia.DIARIA;
+        ruta = "calendario";
 
         try {
-            var archivo = new BufferedInputStream(new FileInputStream("calendario"));
-            calendario = Calendario.deserializar(archivo);
+            recuperarEstado();
         } catch (IOException error) {
             calendario = new Calendario();
         }
@@ -60,20 +60,6 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         this.escenario = stage;
-
-        calendario.crearTarea("Compras", "Comprar aceite, huevos y pan", false, LocalDateTime.parse("2023-06-01T19:00"), new LocalDateTime[]{LocalDateTime.parse("2023-06-01T18:00")}, new Efecto[]{Efecto.SONIDO});
-        calendario.crearEvento("Cumpleaños", null, true, LocalDateTime.parse("2023-06-03T10:00"), LocalDateTime.parse("2023-06-03T22:00"), new Duration[]{Duration.ofHours(1)}, new Efecto[]{Efecto.NOTIFICACION}, null);
-        calendario.crearEvento(
-                "EyO",
-                "Clase de Estructuras y Organizaciones",
-                false,
-                LocalDateTime.parse("2023-03-17T18:00"),
-                LocalDateTime.parse("2023-03-17T22:00"),
-                new LocalDateTime[]{LocalDateTime.parse("2023-03-17T14:00"), LocalDateTime.parse("2023-03-17T16:00")},
-                new Efecto[]{Efecto.NOTIFICACION, Efecto.SONIDO},
-                new RepeticionComun(LocalDateTime.parse("2023-03-17T18:00"), LocalDateTime.parse("2023-06-30T00:00"), Frecuencia.SEMANAL));
-        calendario.crearTarea("TP Algo 3", null, true, LocalDateTime.parse("2023-06-15T22:00"), new LocalDateTime[]{}, null);
-
         mostrarVistaActividades();
     }
 
@@ -276,6 +262,14 @@ public class Main extends Application {
             }
         });
 
+        eliminar.setOnAction(event-> {
+            try {
+                eliminarEvento(evento);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         mostrarDetalleEvento(evento);
 
         Scene scene = new Scene(vista);
@@ -283,7 +277,7 @@ public class Main extends Application {
         escenario.show();
     }
 
-    private void mostrarDetalleEvento(Evento evento) {
+    public void mostrarDetalleEvento(Evento evento) {
 
         Label titulo = new Label();
         titulo.setText(evento.getTitulo());
@@ -341,6 +335,14 @@ public class Main extends Application {
             }
         });
 
+        eliminar.setOnAction(event-> {
+            try {
+                eliminarTarea(tarea);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         mostrarDetalleTarea(tarea);
 
         Scene scene = new Scene(vista);
@@ -348,7 +350,7 @@ public class Main extends Application {
         escenario.show();
     }
 
-    private void mostrarDetalleTarea(Tarea tarea) {
+    public void mostrarDetalleTarea(Tarea tarea) {
 
         Label titulo = new Label();
         titulo.setText(tarea.getTitulo());
@@ -388,5 +390,29 @@ public class Main extends Application {
             alarma.setText(String.format("Inicio: %s - Efecto: %s", formatoTiempo(a.getInicio()), a.getEfecto()));
             detalleEvento.getChildren().add(alarma);
         }
+    }
+
+    // METODOS PARA ELIMINAR
+    public void eliminarEvento(Evento evento) throws IOException {
+        calendario.eliminarEvento(evento);
+        guardarEstado();
+        mostrarVistaActividades();
+    }
+
+    public void eliminarTarea(Tarea tarea) throws IOException {
+        calendario.eliminarTarea(tarea);
+        guardarEstado();
+        mostrarVistaActividades();
+    }
+
+    // METODOS PARA GUARDAR Y RECUPERAR ESTADO
+    public void guardarEstado() throws IOException {
+        var estado = new BufferedOutputStream(new FileOutputStream(ruta));
+        calendario.serializar(estado);
+    }
+
+    public void recuperarEstado() throws IOException, ClassNotFoundException {
+        var estado = new BufferedInputStream(new FileInputStream(ruta));
+        calendario = Calendario.deserializar(estado);
     }
 }
