@@ -9,9 +9,10 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Button fx:id="siguiente" layoutX="498.0" layoutY="328.0" mnemonicParsing="false" text="Siguiente" />
+      <Button fx:id="crear_evento_tarea" layoutX="241.0" layoutY="328.0" mnemonicParsing="false" text="Crear Evento/Tarea" />
       <Label fx:id="fechaTitulo" layoutX="48.0" layoutY="30.0" text="Label" />
-      <Button fx:id="anterior" layoutX="48.0" layoutY="328.0" mnemonicParsing="false" text="Anterior" />
+      <Button fx:id="siguiente" layoutX="456.0" layoutY="328.0" mnemonicParsing="false" text="Siguiente" />
+      <Button fx:id="anterior" layoutX="76.0" layoutY="328.0" mnemonicParsing="false" text="Anterior" />
       <ScrollPane fx:id="scroll" fitToHeight="true" fitToWidth="true" layoutX="48.0" layoutY="62.0" prefHeight="248.0" prefWidth="511.0">
          <content>
             <VBox fx:id="listaActividades" prefHeight="246.0" prefWidth="511.0" />

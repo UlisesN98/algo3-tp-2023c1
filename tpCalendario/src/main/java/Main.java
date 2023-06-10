@@ -11,6 +11,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -44,6 +48,17 @@ public class Main extends Application {
     private LocalDate fechaActual;
     private Frecuencia intervalo;
     private Stage escenario;
+
+
+    private Button crearEvento;
+    private CheckBox completeDayCheckbox;
+    private TextField fieldFecha;
+    private TextField startTimeEvent;
+    private TextField endTimeEvent;
+    private CheckBox dailyRepeatCheck;
+    private TextField frequencyRepeatDaily;
+    private TextArea areaAlarmsDates;
+    private TextArea areaAlarmsTimes;
 
     public Main() throws Exception {
         fechaActual = LocalDate.now();
@@ -388,5 +403,20 @@ public class Main extends Application {
             alarma.setText(String.format("Inicio: %s - Efecto: %s", formatoTiempo(a.getInicio()), a.getEfecto()));
             detalleEvento.getChildren().add(alarma);
         }
+    }
+
+    public void mostrarCrearEvento() throws Exception {
+        // Load the FXML file
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("scenaCrearEvento.fxml"));
+        loader.setController(this);
+        AnchorPane vista = loader.load();
+
+        // Attach event handlers
+        crearEvento.setOnAction(event -> createEvent());
+
+        // Create the scene
+        Scene scene = new Scene(vista);
+        escenario.setScene(scene);
+        escenario.show();
     }
 }
