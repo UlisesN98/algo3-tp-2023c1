@@ -55,17 +55,29 @@ public class Main extends Application {
     private Stage escenario;
 
 
+    @FXML
     private Button crearEvento;
+    @FXML
     private CheckBox completeDayCheckbox;
+    @FXML
     private TextField eventTitle;
-    private TextField eventDescription;
+    @FXML
+    private TextArea eventDescription;
+    @FXML
     private TextField fieldFechaInicio;
+    @FXML
     private TextField fieldFechaFin;
+    @FXML
     private TextField startTimeEvent;
+    @FXML
     private TextField endTimeEvent;
+    @FXML
     private CheckBox dailyRepeatCheck;
+    @FXML
     private TextField frequencyRepeatDaily;
+    @FXML
     private TextArea areaAlarmsDates;
+    @FXML
     private TextArea areaAlarmsTimes;
 
     public Main() throws Exception {
@@ -421,11 +433,27 @@ public class Main extends Application {
         }
     }
 
-    public void mostrarVistaCrearEvento() throws Exception {
+    public void mostrarVistaCrearEvento() throws IOException{
         // Load the FXML file
         FXMLLoader loader = new FXMLLoader(getClass().getResource("scenaCrearEvento.fxml"));
         loader.setController(this);
         AnchorPane vista = loader.load();
+
+        crearEvento.setOnAction(event -> {
+            try {
+                crearEvento();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        cancelarEvento.setOnAction(event -> {
+            try {
+                mostrarVistaActividades();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         // Create the scene
         Scene scene = new Scene(vista);
@@ -435,15 +463,15 @@ public class Main extends Application {
 
     // METODOS RELATIVOS A LA CREACION DE EVENTOS Y TAREAS
 
-    public void crearEvento() {
+    public void crearEvento() throws IOException {
         // Validar input del usuario.
         if (!esFechaValida(fieldFechaInicio.getText())) {
-            showErrorAlert("Formato de fecha invalido");
+            showErrorAlert("Formato de fecha de inicio invalido");
             return;
         }
 
         if (!esFechaValida(fieldFechaFin.getText())) {
-            showErrorAlert("Formato de fecha invalido");
+            showErrorAlert("Formato de fecha de finalizacion invalido");
             return;
         }
 
@@ -464,13 +492,15 @@ public class Main extends Application {
             }
         }
 
-        String[] alarmDates = areaAlarmsDates.getText().split(" ");
-        String[] alarmTimes = areaAlarmsTimes.getText().split(" ");
+        String[] alarmDates = areaAlarmsDates.getText().isEmpty() ? new String[0] : areaAlarmsDates.getText().split(" ");
+        String[] alarmTimes = areaAlarmsTimes.getText().isEmpty() ? new String[0] : areaAlarmsTimes.getText().split(" ");
+
 
         if (alarmDates.length != alarmTimes.length) {
             showErrorAlert("La cantidad de fechas de alarmas no coincide con la cantidad de horarios de alarma");
             return;
         }
+
 
         for (String alarmDate : alarmDates) {
             if (!esFechaValida(alarmDate)) {
@@ -497,21 +527,17 @@ public class Main extends Application {
 
         Boolean diaCompleto = completeDayCheckbox.isSelected();
         Boolean seRepite = dailyRepeatCheck.isSelected();
-        if (seRepite){
-            Integer frecuenciaRepeticion = Integer.valueOf(frequencyRepeatDaily.getText());
-            Repeticion repeticion =
-        }
 
 
         // Una vez validados los inputs, realizar creacion de evento.
 
         LocalDate fechaInicioFormatProcess = LocalDate.parse(fechaInicio, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         LocalTime tiempoInicioFormatProcess = LocalTime.parse(inicioTiempoEvento, DateTimeFormatter.ofPattern("HH:mm"));
-        String inicioEventoFormateado = fechaInicioFormatProcess.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")) + "T" + tiempoInicioFormatProcess.format(DateTimeFormatter.ofPattern("HH:mm"));
+        LocalDateTime inicioEventoFormateado = fechaInicioFormatProcess.atTime(tiempoInicioFormatProcess);
 
         LocalDate fechaFinalFormatProcess = LocalDate.parse(fechaFin, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         LocalTime tiempoFinalFormatProcess = LocalTime.parse(finTiempoEvento, DateTimeFormatter.ofPattern("HH:mm"));
-        String finEventoFormateado = fechaFinalFormatProcess.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")) + "T" + tiempoFinalFormatProcess.format(DateTimeFormatter.ofPattern("HH:mm"));
+        LocalDateTime finEventoFormateado = fechaFinalFormatProcess.atTime(tiempoFinalFormatProcess);
 
         LocalDateTime[] alarmasFormateadas = new LocalDateTime[alarmDates.length];
 
@@ -523,7 +549,16 @@ public class Main extends Application {
             alarmasFormateadas[i] = fechaTiempoFormateado;
         }
 
-        crearEvento.setOnAction(event -> calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, new Efecto[]{Efecto.NOTIFICACION}));
+        if (seRepite){
+            Integer frecuenciaRepeticion = Integer.valueOf(frequencyRepeatDaily.getText());
+            Repeticion repeticion = new RepeticionDiariaIntervalo(inicioEventoFormateado, frecuenciaRepeticion);
+            crearEvento.setOnAction(event -> calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, new Efecto[]{Efecto.NOTIFICACION}, repeticion));
+        }
+
+        else {
+            crearEvento.setOnAction(event -> calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, new Efecto[]{Efecto.NOTIFICACION}, null));
+        }
+        mostrarVistaActividades();
     }
 
     public void showErrorAlert(String mensaje){

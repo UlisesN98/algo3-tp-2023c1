@@ -7,14 +7,14 @@
    <children>
       <Button fx:id="cancelarEvento" layoutX="14.0" layoutY="4.0" mnemonicParsing="false" text="Cancelar" />
       <Button fx:id="crearEvento" layoutX="502.0" layoutY="16.0" mnemonicParsing="false" text="Crear Evento" />
-      <CheckBox fx:id="CompleteDayCheckbox" layoutX="211.0" layoutY="159.0" mnemonicParsing="false" text="Dia completo?" />
-      <TextField fx:id="FieldFechaInicio" layoutX="31.0" layoutY="66.0" prefHeight="25.0" prefWidth="169.0" promptText="Fecha inicio (DD/MM/AAAA)" />
-      <TextArea fx:id="AreaAlarmsDates" layoutX="31.0" layoutY="189.0" prefHeight="200.0" prefWidth="200.0" promptText="Fecha Alarmas (DD/MM/AAAA ... DD/MM/AAAA ...)" />
-      <TextArea fx:id="AreaAlarmsTimes" layoutX="352.0" layoutY="189.0" prefHeight="200.0" prefWidth="200.0" promptText="Horario Alarmas (XX:XX ... XX:XX ...)" />
-      <TextField fx:id="EndTimeEvent" layoutX="31.0" layoutY="164.0" promptText="Horario Fin (XX:XX)" />
-      <TextField fx:id="StartTimeEvent" layoutX="31.0" layoutY="131.0" promptText="Horario Inicio (XX:XX)" />
-      <CheckBox fx:id="DailyRepeatCheck" layoutX="465.0" layoutY="130.0" mnemonicParsing="false" text="Repeticion Diaria?" />
-      <TextField fx:id="FrequencyRepeatDaily" layoutX="320.0" layoutY="155.0" prefHeight="25.0" prefWidth="263.0" promptText="Frecuencia (1 = Cada dia, 2 = Cada 2 dias, etc.)" />
+      <CheckBox fx:id="completeDayCheckbox" layoutX="211.0" layoutY="159.0" mnemonicParsing="false" text="Dia completo?" />
+      <TextField fx:id="fieldFechaInicio" layoutX="31.0" layoutY="66.0" prefHeight="25.0" prefWidth="169.0" promptText="Fecha inicio (DD/MM/AAAA)" />
+      <TextArea fx:id="areaAlarmsDates" layoutX="31.0" layoutY="189.0" prefHeight="200.0" prefWidth="200.0" promptText="Fecha Alarmas (DD/MM/AAAA ... DD/MM/AAAA ...)" />
+      <TextArea fx:id="areaAlarmsTimes" layoutX="352.0" layoutY="189.0" prefHeight="200.0" prefWidth="200.0" promptText="Horario Alarmas (XX:XX ... XX:XX ...)" />
+      <TextField fx:id="endTimeEvent" layoutX="31.0" layoutY="164.0" promptText="Horario Fin (XX:XX)" />
+      <TextField fx:id="startTimeEvent" layoutX="31.0" layoutY="131.0" promptText="Horario Inicio (XX:XX)" />
+      <CheckBox fx:id="dailyRepeatCheck" layoutX="465.0" layoutY="130.0" mnemonicParsing="false" text="Repeticion Diaria?" />
+      <TextField fx:id="frequencyRepeatDaily" layoutX="320.0" layoutY="155.0" prefHeight="25.0" prefWidth="263.0" promptText="Frecuencia (1 = Cada dia, 2 = Cada 2 dias, etc.)" />
       <Label layoutX="249.0" layoutY="28.0" text="Creacion de Evento" />
       <TextField fx:id="eventTitle" layoutX="31.0" layoutY="33.0" promptText="Titulo del evento" />
       <TextArea fx:id="eventDescription" layoutX="211.0" layoutY="56.0" prefHeight="87.0" prefWidth="246.0" promptText="Descripcion del evento" />
