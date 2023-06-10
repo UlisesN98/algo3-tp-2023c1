@@ -23,6 +23,8 @@ import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAdjusters;
 
 public class Main extends Application {
@@ -35,6 +37,8 @@ public class Main extends Application {
     private Button siguiente;
     @FXML
     private Button anterior;
+    @FXML
+    private Button crearEventScene;
     @FXML
     private ChoiceBox<String> opcionesIntervalo;
 
@@ -108,6 +112,14 @@ public class Main extends Application {
 
         anterior.setOnAction(event -> retroceder());
         siguiente.setOnAction(event -> avanzar());
+
+        crearEventScene.setOnAction(event -> {
+            try {
+                mostrarVistaCrearEvento();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         opcionesIntervalo.getItems().addAll(Frecuencia.DIARIA.toString(), Frecuencia.SEMANAL.toString(), Frecuencia.MENSUAL.toString());
         opcionesIntervalo.setValue(intervalo.toString());
@@ -405,18 +417,87 @@ public class Main extends Application {
         }
     }
 
-    public void mostrarCrearEvento() throws Exception {
+    public void mostrarVistaCrearEvento() throws Exception {
         // Load the FXML file
         FXMLLoader loader = new FXMLLoader(getClass().getResource("scenaCrearEvento.fxml"));
         loader.setController(this);
         AnchorPane vista = loader.load();
 
-        // Attach event handlers
-        crearEvento.setOnAction(event -> createEvent());
-
         // Create the scene
         Scene scene = new Scene(vista);
         escenario.setScene(scene);
         escenario.show();
+    }
+
+    // METODOS RELATIVOS A LA CREACION DE EVENTOS Y TAREAS
+
+    public void crearEvento() {
+        // Validar input del usuario.
+        if (!esFechaValida(fieldFecha.getText())) {
+            showErrorAlert("Formato de fecha invalido");
+            return;
+        }
+
+        if (!esTiempoValido(startTimeEvent.getText())) {
+            showErrorAlert("Formato de horario de inicio invalido");
+            return;
+        }
+
+        if (!esTiempoValido(endTimeEvent.getText())) {
+            showErrorAlert("Formato de horario de finalizacion invalido");
+            return;
+        }
+
+        if (dailyRepeatCheck.isSelected()) {
+            if (!frequencyRepeatDaily.getText().matches("\\d+")){
+                showErrorAlert("Formato de frequencia de repeticion diaria invalido");
+                return;
+            }
+        }
+
+        String[] alarmDates = areaAlarmsDates.getText().split(" ");
+        String[] alarmTimes = areaAlarmsTimes.getText().split(" ");
+
+        if (alarmDates.length != alarmTimes.length) {
+            showErrorAlert("La cantidad de fechas de alarmas no coincide con la cantidad de horarios de alarma");
+            return;
+        }
+
+        for (String alarmDate : alarmDates) {
+            if (!esFechaValida(alarmDate)) {
+                showErrorAlert("Formato de fecha invalido para alguna/s de la/s fecha/s de la/s alarma/s");
+                return;
+            }
+        }
+
+        for (String alarmTime : alarmTimes) {
+            if (!esTiempoValido(alarmTime)) {
+                showErrorAlert("Formato de tiempo invalido para alguno/s de lo/s tiempo/s de la/s alarma/s");
+                return;
+            }
+        }
+
+        // Una vez validados los inputs, realizar creacion de evento.
+    }
+
+    public void showErrorAlert(String mensaje){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Informacion");
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+
+    public boolean esFechaValida(String date) {
+        try {
+            LocalDate.parse(date, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+
+    public boolean esTiempoValido(String time) {
+        return time.matches("(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]");
     }
 }
