@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -56,7 +57,10 @@ public class Main extends Application {
 
     private Button crearEvento;
     private CheckBox completeDayCheckbox;
-    private TextField fieldFecha;
+    private TextField eventTitle;
+    private TextField eventDescription;
+    private TextField fieldFechaInicio;
+    private TextField fieldFechaFin;
     private TextField startTimeEvent;
     private TextField endTimeEvent;
     private CheckBox dailyRepeatCheck;
@@ -433,7 +437,12 @@ public class Main extends Application {
 
     public void crearEvento() {
         // Validar input del usuario.
-        if (!esFechaValida(fieldFecha.getText())) {
+        if (!esFechaValida(fieldFechaInicio.getText())) {
+            showErrorAlert("Formato de fecha invalido");
+            return;
+        }
+
+        if (!esFechaValida(fieldFechaFin.getText())) {
             showErrorAlert("Formato de fecha invalido");
             return;
         }
@@ -449,7 +458,7 @@ public class Main extends Application {
         }
 
         if (dailyRepeatCheck.isSelected()) {
-            if (!frequencyRepeatDaily.getText().matches("\\d+")){
+            if (!frequencyRepeatDaily.getText().matches("[1-9]\\d*")){
                 showErrorAlert("Formato de frequencia de repeticion diaria invalido");
                 return;
             }
@@ -477,7 +486,44 @@ public class Main extends Application {
             }
         }
 
+        String fechaInicio = fieldFechaInicio.getText();
+        String fechaFin = fieldFechaFin.getText();
+
+        String tituloEvento = eventTitle.getText();
+        String descripcionEvento = eventDescription.getText();
+
+        String inicioTiempoEvento = startTimeEvent.getText();
+        String finTiempoEvento = endTimeEvent.getText();
+
+        Boolean diaCompleto = completeDayCheckbox.isSelected();
+        Boolean seRepite = dailyRepeatCheck.isSelected();
+        if (seRepite){
+            Integer frecuenciaRepeticion = Integer.valueOf(frequencyRepeatDaily.getText());
+            Repeticion repeticion =
+        }
+
+
         // Una vez validados los inputs, realizar creacion de evento.
+
+        LocalDate fechaInicioFormatProcess = LocalDate.parse(fechaInicio, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        LocalTime tiempoInicioFormatProcess = LocalTime.parse(inicioTiempoEvento, DateTimeFormatter.ofPattern("HH:mm"));
+        String inicioEventoFormateado = fechaInicioFormatProcess.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")) + "T" + tiempoInicioFormatProcess.format(DateTimeFormatter.ofPattern("HH:mm"));
+
+        LocalDate fechaFinalFormatProcess = LocalDate.parse(fechaFin, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        LocalTime tiempoFinalFormatProcess = LocalTime.parse(finTiempoEvento, DateTimeFormatter.ofPattern("HH:mm"));
+        String finEventoFormateado = fechaFinalFormatProcess.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")) + "T" + tiempoFinalFormatProcess.format(DateTimeFormatter.ofPattern("HH:mm"));
+
+        LocalDateTime[] alarmasFormateadas = new LocalDateTime[alarmDates.length];
+
+        for (int i = 0; i < alarmDates.length; i++) {
+            String date = alarmDates[i];
+            String time = alarmTimes[i];
+
+            LocalDateTime fechaTiempoFormateado = LocalDateTime.parse(date + "T" + time, DateTimeFormatter.ofPattern("dd/MM/yyyy'T'HH:mm"));
+            alarmasFormateadas[i] = fechaTiempoFormateado;
+        }
+
+        crearEvento.setOnAction(event -> calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, new Efecto[]{Efecto.NOTIFICACION}));
     }
 
     public void showErrorAlert(String mensaje){
