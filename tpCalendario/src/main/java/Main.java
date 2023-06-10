@@ -41,6 +41,8 @@ public class Main extends Application {
     @FXML
     private Button crearEventScene;
     @FXML
+    private Button crearTareaScene;
+    @FXML
     private ChoiceBox<String> opcionesIntervalo;
 
     @FXML
@@ -145,6 +147,14 @@ public class Main extends Application {
         crearEventScene.setOnAction(event -> {
             try {
                 mostrarVistaCrearEvento();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        crearTareaScene.setOnAction(event -> {
+            try {
+                mostrarVistaCrearTarea();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -480,6 +490,14 @@ public class Main extends Application {
         loader.setController(this);
         AnchorPane vista = loader.load();
 
+        crearTarea.setOnAction(event -> {
+            try {
+                crearTarea();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         cancelarEvento.setOnAction(event -> {
             try {
                 mostrarVistaActividades();
@@ -638,7 +656,6 @@ public class Main extends Application {
         String limiteTarea = endTimeTask.getText();
 
         Boolean diaCompleto = completeDayCheckbox.isSelected();
-        Boolean seRepite = dailyRepeatCheck.isSelected();
 
         // Una vez validados los inputs, realizar creacion de evento.
 
@@ -655,6 +672,9 @@ public class Main extends Application {
             LocalDateTime fechaTiempoFormateado = LocalDateTime.parse(date + "T" + time, DateTimeFormatter.ofPattern("dd/MM/yyyy'T'HH:mm"));
             alarmasFormateadas[i] = fechaTiempoFormateado;
         }
+
+        calendario.crearTarea(tituloTarea, descripcionTarea, diaCompleto, dateTimeTareaFormateado, alarmasFormateadas, new Efecto[]{Efecto.NOTIFICACION});
+        mostrarVistaActividades();
     }
 
     public void showErrorAlert(String mensaje){
