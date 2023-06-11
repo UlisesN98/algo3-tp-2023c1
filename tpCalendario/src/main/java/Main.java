@@ -11,13 +11,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.*;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main extends Application {
 
@@ -67,9 +66,7 @@ public class Main extends Application {
     @FXML
     private TextField frequencyRepeatDaily;
     @FXML
-    private TextArea areaAlarmsDates;
-    @FXML
-    private TextArea areaAlarmsTimes;
+    private TextArea areaAlarms;
 
     // Cosas de crearTarea
     @FXML
@@ -541,29 +538,21 @@ public class Main extends Application {
             }
         }
 
-        String[] alarmDates = areaAlarmsDates.getText().isEmpty() ? new String[0] : areaAlarmsDates.getText().split(" ");
-        String[] alarmTimes = areaAlarmsTimes.getText().isEmpty() ? new String[0] : areaAlarmsTimes.getText().split(" ");
+        String[] alarmAreaInput = areaAlarms.getText().split("\n");
+        List<String> alarmAreaList = new ArrayList<>();
 
-
-        if (alarmDates.length != alarmTimes.length) {
-            showErrorAlert("La cantidad de fechas de alarmas no coincide con la cantidad de horarios de alarma");
-            return;
-        }
-
-
-        for (String alarmDate : alarmDates) {
-            if (!esFechaValida(alarmDate)) {
-                showErrorAlert("Formato de fecha invalido para alguna/s de la/s fecha/s de la/s alarma/s");
+        for (String input : alarmAreaInput) {
+            if (input.isEmpty()) {
+                continue;  // Skip empty lines
+            } else if (input.matches("\\d+[dhm]")) {
+                alarmAreaList.add(input);
+            } else {
+                showErrorAlert("Formato de alarma/s inválido");
                 return;
             }
         }
 
-        for (String alarmTime : alarmTimes) {
-            if (!esTiempoValido(alarmTime)) {
-                showErrorAlert("Formato de tiempo invalido para alguno/s de lo/s tiempo/s de la/s alarma/s");
-                return;
-            }
-        }
+        String[] alarmDates = alarmAreaList.toArray(new String[0]);
 
         String fechaInicio = fieldFechaInicio.getText();
         String fechaFin = fieldFechaFin.getText();
@@ -591,11 +580,9 @@ public class Main extends Application {
         LocalDateTime[] alarmasFormateadas = new LocalDateTime[alarmDates.length];
 
         for (int i = 0; i < alarmDates.length; i++) {
-            String date = alarmDates[i];
-            String time = alarmTimes[i];
-
-            LocalDateTime fechaTiempoFormateado = LocalDateTime.parse(date + "T" + time, DateTimeFormatter.ofPattern("dd/MM/yyyy'T'HH:mm"));
-            alarmasFormateadas[i] = fechaTiempoFormateado;
+            String alarmDate = alarmDates[i];
+            Duration duration = calcularDuration(alarmDate);
+            alarmasFormateadas[i] = inicioEventoFormateado.minus(duration);
         }
 
         if (seRepite){
@@ -624,29 +611,21 @@ public class Main extends Application {
             return;
         }
 
-        String[] alarmDates = areaAlarmsDates.getText().isEmpty() ? new String[0] : areaAlarmsDates.getText().split(" ");
-        String[] alarmTimes = areaAlarmsTimes.getText().isEmpty() ? new String[0] : areaAlarmsTimes.getText().split(" ");
+        String[] alarmAreaInput = areaAlarms.getText().split("\n");
+        List<String> alarmAreaList = new ArrayList<>();
 
-
-        if (alarmDates.length != alarmTimes.length) {
-            showErrorAlert("La cantidad de fechas de alarmas no coincide con la cantidad de horarios de alarma");
-            return;
-        }
-
-
-        for (String alarmDate : alarmDates) {
-            if (!esFechaValida(alarmDate)) {
-                showErrorAlert("Formato de fecha invalido para alguna/s de la/s fecha/s de la/s alarma/s");
+        for (String input : alarmAreaInput) {
+            if (input.isEmpty()) {
+                continue;  // Skip empty lines
+            } else if (input.matches("\\d+[dhm]")) {
+                alarmAreaList.add(input);
+            } else {
+                showErrorAlert("Formato de alarma/s inválido");
                 return;
             }
         }
 
-        for (String alarmTime : alarmTimes) {
-            if (!esTiempoValido(alarmTime)) {
-                showErrorAlert("Formato de tiempo invalido para alguno/s de lo/s tiempo/s de la/s alarma/s");
-                return;
-            }
-        }
+        String[] alarmDates = alarmAreaList.toArray(new String[0]);
 
         String fechaInicio = fieldFecha.getText();
 
@@ -666,16 +645,37 @@ public class Main extends Application {
         LocalDateTime[] alarmasFormateadas = new LocalDateTime[alarmDates.length];
 
         for (int i = 0; i < alarmDates.length; i++) {
-            String date = alarmDates[i];
-            String time = alarmTimes[i];
-
-            LocalDateTime fechaTiempoFormateado = LocalDateTime.parse(date + "T" + time, DateTimeFormatter.ofPattern("dd/MM/yyyy'T'HH:mm"));
-            alarmasFormateadas[i] = fechaTiempoFormateado;
+            String alarmDate = alarmDates[i];
+            Duration duration = calcularDuration(alarmDate);
+            alarmasFormateadas[i] = dateTimeTareaFormateado.minus(duration);
         }
 
         calendario.crearTarea(tituloTarea, descripcionTarea, diaCompleto, dateTimeTareaFormateado, alarmasFormateadas, new Efecto[]{Efecto.NOTIFICACION});
         guardarEstado();
         mostrarVistaActividades();
+    }
+
+    private Duration calcularDuration(String alarmDate) {
+        // Borrar basura de input
+        alarmDate = alarmDate.trim();
+
+        // Numero
+        int value = Integer.parseInt(alarmDate.substring(0, alarmDate.length() - 1));
+
+        // Letra
+        char unitChar = Character.toLowerCase(alarmDate.charAt(alarmDate.length() - 1));
+
+        // Calcular duracion basado en tipo
+        switch (unitChar) {
+            case 'd':
+                return Duration.ofDays(value);
+            case 'h':
+                return Duration.ofHours(value);
+            case 'm':
+                return Duration.ofMinutes(value);
+            default:
+                throw new IllegalArgumentException("Formato de duracion invalido: " + alarmDate);
+        }
     }
 
     public void showErrorAlert(String mensaje){

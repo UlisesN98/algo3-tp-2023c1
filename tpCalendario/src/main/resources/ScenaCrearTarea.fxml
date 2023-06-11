@@ -7,13 +7,12 @@
    <children>
       <Button fx:id="cancelarTarea" layoutX="14.0" layoutY="24.0" mnemonicParsing="false" text="Cancelar" />
       <Button fx:id="crearTarea" layoutX="489.0" layoutY="24.0" mnemonicParsing="false" text="Crear Tarea" />
-      <CheckBox fx:id="completeDayCheckbox" layoutX="233.0" layoutY="159.0" mnemonicParsing="false" text="Dia completo?" />
-      <TextField fx:id="fieldFecha" layoutX="76.0" layoutY="126.0" promptText="Fecha (DD/MM/AAAA)" />
-      <TextArea fx:id="areaAlarmsDates" layoutX="51.0" layoutY="186.0" prefHeight="200.0" prefWidth="200.0" promptText="Fecha Alarmas (DD/MM/AAAA ... DD/MM/AAAA ...)" />
-      <TextArea fx:id="areaAlarmsTimes" layoutX="348.0" layoutY="186.0" prefHeight="200.0" prefWidth="200.0" promptText="Horario Alarmas (XX:XX ... XX:XX ...)" />
-      <TextField fx:id="endTimeTask" layoutX="76.0" layoutY="155.0" promptText="Horario Limite (XX:XX)" />
+      <CheckBox fx:id="completeDayCheckbox" layoutX="145.0" layoutY="258.0" mnemonicParsing="false" text="Dia completo?" />
+      <TextField fx:id="fieldFecha" layoutX="45.0" layoutY="275.0" promptText="Fecha (DD/MM/AAAA)" />
+      <TextArea fx:id="areaAlarms" layoutX="366.0" layoutY="188.0" prefHeight="200.0" prefWidth="200.0" promptText="Alarmas antes de inicio de la tarea (Ej: 2h = 2 horas antes del inicio, 30m = 30 minutos antes del evento y 1d = 1 dia antes del inicio del evento) - Separados por enter" />
+      <TextField fx:id="endTimeTask" layoutX="199.0" layoutY="275.0" promptText="Horario Limite (XX:XX)" />
       <Label layoutX="252.0" layoutY="28.0" text="Creacion de Tarea" />
-      <TextField fx:id="taskTitle" layoutX="76.0" layoutY="61.0" promptText="Titulo tarea" />
-      <TextArea fx:id="taskDescription" layoutX="244.0" layoutY="61.0" prefHeight="90.0" prefWidth="333.0" promptText="Descripcion de tarea" />
+      <TextField fx:id="taskTitle" layoutX="226.0" layoutY="45.0" promptText="Titulo tarea" />
+      <TextArea fx:id="taskDescription" layoutX="134.0" layoutY="76.0" prefHeight="90.0" prefWidth="333.0" promptText="Descripcion de tarea" />
    </children>
 </AnchorPane>
