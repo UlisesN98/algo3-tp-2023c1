@@ -67,6 +67,8 @@ public class Main extends Application {
     private TextField frequencyRepeatDaily;
     @FXML
     private TextArea areaAlarms;
+    @FXML
+    private TextField quantityReps;
 
     // Cosas de crearTarea
     @FXML
@@ -531,9 +533,24 @@ public class Main extends Application {
             return;
         }
 
+        int quantityRepsParsed = 0;
+
         if (dailyRepeatCheck.isSelected()) {
-            if (!frequencyRepeatDaily.getText().matches("[1-9]\\d*")){
-                showErrorAlert("Formato de frequencia de repeticion diaria invalido");
+            // Validar y procesar quantityReps y frequencyRepeatDaily
+
+            String quantityRepsText = quantityReps.getText();
+            if (quantityRepsText.isEmpty()) {
+                quantityRepsParsed = -1;
+            } else if (quantityRepsText.matches("\\d+") && Integer.parseInt(quantityRepsText) > 0) {
+                quantityRepsParsed = Integer.parseInt(quantityRepsText);
+            } else {
+                showErrorAlert("Formato de cantidad de repeticiones inválido");
+                return;
+            }
+
+            String frequencyRepeatText = frequencyRepeatDaily.getText();
+            if (!frequencyRepeatText.matches("\\d+") || Integer.parseInt(frequencyRepeatText) <= 0) {
+                showErrorAlert("Formato de frecuencia de repetición diaria inválido");
                 return;
             }
         }
@@ -585,7 +602,14 @@ public class Main extends Application {
             alarmasFormateadas[i] = inicioEventoFormateado.minus(duration);
         }
 
-        if (seRepite){
+        if (seRepite && quantityRepsParsed > 0){
+            Integer frecuenciaRepeticion = Integer.valueOf(frequencyRepeatDaily.getText());
+            Repeticion repeticion = new RepeticionDiariaIntervalo(inicioEventoFormateado, quantityRepsParsed,frecuenciaRepeticion);
+            calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, new Efecto[]{Efecto.NOTIFICACION}, repeticion);
+            guardarEstado();
+        }
+
+        else if (seRepite){
             Integer frecuenciaRepeticion = Integer.valueOf(frequencyRepeatDaily.getText());
             Repeticion repeticion = new RepeticionDiariaIntervalo(inicioEventoFormateado, frecuenciaRepeticion);
             calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, new Efecto[]{Efecto.NOTIFICACION}, repeticion);
