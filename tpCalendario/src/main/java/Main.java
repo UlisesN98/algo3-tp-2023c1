@@ -1,7 +1,10 @@
 import calendario.*;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -9,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.*;
 import java.time.DayOfWeek;
@@ -17,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 
 public class Main extends Application {
@@ -90,32 +95,38 @@ public class Main extends Application {
     private Frecuencia intervalo;
     private Stage escenario;
     private final String ruta;
+    private Timeline temporizador;
 
-    public Main() throws Exception {
+    public Main() {
         fechaActual = LocalDate.now();
         intervalo = Frecuencia.DIARIA;
         ruta = "calendario";
-
-        try {
-            recuperarEstado();
-        } catch (IOException error) {
-            calendario = new Calendario();
-        }
+        recuperarEstado();
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         this.escenario = stage;
+
+        this.temporizador = new Timeline(new KeyFrame(Duration.seconds(1), this::chequearAlarma));
+        temporizador.setCycleCount(Timeline.INDEFINITE);
+        temporizador.play();
+
         mostrarVistaActividades();
     }
 
     // METODOS RELATIVOS A VISTA DE ACTIVIDADES
 
-    private void mostrarVistaActividades() throws IOException {
+    private void mostrarVistaActividades() {
         FXMLLoader loader = new FXMLLoader(getClass().
                 getResource("scena1.fxml"));
         loader.setController(this);
-        AnchorPane vista = loader.load();
+        AnchorPane vista;
+        try {
+            vista = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         switch (intervalo) {
             case DIARIA -> mostrarDia();
@@ -126,21 +137,9 @@ public class Main extends Application {
         anterior.setOnAction(event -> retroceder());
         siguiente.setOnAction(event -> avanzar());
 
-        crearEventScene.setOnAction(event -> {
-            try {
-                mostrarVistaCrearEvento();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        crearEventScene.setOnAction(event -> mostrarVistaCrearEvento());
 
-        crearTareaScene.setOnAction(event -> {
-            try {
-                mostrarVistaCrearTarea();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        crearTareaScene.setOnAction(event -> mostrarVistaCrearTarea());
 
         opcionesIntervalo.getItems().addAll(Frecuencia.DIARIA.toString(), Frecuencia.SEMANAL.toString(), Frecuencia.MENSUAL.toString());
         opcionesIntervalo.setValue(intervalo.toString());
@@ -215,13 +214,7 @@ public class Main extends Application {
 
         listaActividades.getChildren().add(label);
 
-        label.setOnMouseClicked(event -> {
-            try {
-                mostrarVistaEvento(evento);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        label.setOnMouseClicked(event -> mostrarVistaEvento(evento));
     }
 
     public void mostrarTarea(Actividad actividad) {
@@ -246,13 +239,7 @@ public class Main extends Application {
 
         listaActividades.getChildren().add(label);
 
-        label.setOnMouseClicked(event -> {
-            try {
-                mostrarVistaTarea(tarea);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        label.setOnMouseClicked(event -> mostrarVistaTarea(tarea));
     }
 
     // OBTENER PRINCIPIOS Y FINES DE INTERVALOS
@@ -310,27 +297,20 @@ public class Main extends Application {
 
     // METODOS RELATIVOS A LA VISTA DE EVENTO Y TAREAS
 
-    public void mostrarVistaEvento(Evento evento) throws IOException {
+    public void mostrarVistaEvento(Evento evento) {
         FXMLLoader loader = new FXMLLoader(getClass().
                 getResource("scena2.fxml"));
         loader.setController(this);
-        AnchorPane vista = loader.load();
+        AnchorPane vista;
+        try {
+            vista = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-        cancelarActividad.setOnAction(event -> {
-            try {
-                mostrarVistaActividades();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        cancelarActividad.setOnAction(event -> mostrarVistaActividades());
 
-        eliminar.setOnAction(event-> {
-            try {
-                eliminarEvento(evento);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        eliminar.setOnAction(event-> eliminarEvento(evento));
 
         mostrarDetalleEvento(evento);
 
@@ -383,27 +363,20 @@ public class Main extends Application {
         }
     }
 
-    public void mostrarVistaTarea(Tarea tarea) throws IOException {
+    public void mostrarVistaTarea(Tarea tarea)  {
         FXMLLoader loader = new FXMLLoader(getClass().
                 getResource("scena2.fxml"));
         loader.setController(this);
-        AnchorPane vista = loader.load();
+        AnchorPane vista;
+        try {
+            vista = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-        cancelarActividad.setOnAction(event -> {
-            try {
-                mostrarVistaActividades();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        cancelarActividad.setOnAction(event -> mostrarVistaActividades());
 
-        eliminar.setOnAction(event-> {
-            try {
-                eliminarTarea(tarea);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        eliminar.setOnAction(event-> eliminarTarea(tarea));
 
         mostrarDetalleTarea(tarea);
 
@@ -454,27 +427,20 @@ public class Main extends Application {
         }
     }
 
-    public void mostrarVistaCrearEvento() throws IOException{
+    public void mostrarVistaCrearEvento() {
         // Load the FXML file
         FXMLLoader loader = new FXMLLoader(getClass().getResource("scenaCrearEvento.fxml"));
         loader.setController(this);
-        AnchorPane vista = loader.load();
+        AnchorPane vista;
+        try {
+            vista = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-        crearEvento.setOnAction(event -> {
-            try {
-                crearEvento();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        crearEvento.setOnAction(event -> crearEvento());
 
-        cancelarEvento.setOnAction(event -> {
-            try {
-                mostrarVistaActividades();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        cancelarEvento.setOnAction(event -> mostrarVistaActividades());
 
         // Create the scene
         Scene scene = new Scene(vista);
@@ -482,27 +448,20 @@ public class Main extends Application {
         escenario.show();
     }
 
-    public void mostrarVistaCrearTarea() throws IOException{
+    public void mostrarVistaCrearTarea() {
         // Load FXML file
         FXMLLoader loader = new FXMLLoader(getClass().getResource("ScenaCrearTarea.fxml"));
         loader.setController(this);
-        AnchorPane vista = loader.load();
+        AnchorPane vista;
+        try {
+            vista = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-        crearTarea.setOnAction(event -> {
-            try {
-                crearTarea();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        crearTarea.setOnAction(event -> crearTarea());
 
-        cancelarTarea.setOnAction(event -> {
-            try {
-                mostrarVistaActividades();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        cancelarTarea.setOnAction(event -> mostrarVistaActividades());
 
         // Create the scene
         Scene scene = new Scene(vista);
@@ -512,7 +471,7 @@ public class Main extends Application {
 
     // METODOS RELATIVOS A LA CREACION DE EVENTOS Y TAREAS
 
-    public void crearEvento() throws IOException {
+    public void crearEvento() {
         // Validar input del usuario.
         if (!esFechaValida(fieldFechaInicio.getText())) {
             showErrorAlert("Formato de fecha de inicio invalido");
@@ -612,7 +571,7 @@ public class Main extends Application {
         mostrarVistaActividades();
     }
 
-    public void crearTarea() throws IOException{
+    public void crearTarea() {
         // Validar input del usuario
         if (!esFechaValida(fieldFecha.getText())){
             showErrorAlert("Formato de fecha invalido");
@@ -700,26 +659,74 @@ public class Main extends Application {
     }
 
     // METODOS PARA ELIMINAR
-    public void eliminarEvento(Evento evento) throws IOException {
+    public void eliminarEvento(Evento evento) {
         calendario.eliminarEvento(evento);
         guardarEstado();
         mostrarVistaActividades();
     }
 
-    public void eliminarTarea(Tarea tarea) throws IOException {
+    public void eliminarTarea(Tarea tarea) {
         calendario.eliminarTarea(tarea);
         guardarEstado();
         mostrarVistaActividades();
     }
 
-    // METODOS PARA GUARDAR Y RECUPERAR ESTADO
-    public void guardarEstado() throws IOException {
-        var estado = new BufferedOutputStream(new FileOutputStream(ruta));
-        calendario.serializar(estado);
+    // METODOS RELATIVOS A LA ALARMA
+    private void chequearAlarma(ActionEvent event) {
+        LocalDateTime horaActual = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        if (calendario.iniciaProximaAlarma(horaActual)) {
+            mostrarAlarma();
+        }
     }
 
-    public void recuperarEstado() throws IOException, ClassNotFoundException {
-        var estado = new BufferedInputStream(new FileInputStream(ruta));
-        calendario = Calendario.deserializar(estado);
+    private void mostrarAlarma() {
+        Actividad actividad = calendario.dispararProximaAlarma();
+        guardarEstado();
+
+        var vista = new VBox();
+        var titulo = new Label(actividad.getTitulo());
+        var descripcion = new Label(actividad.getDescripcion());
+
+        vista.getChildren().add(titulo);
+        vista.getChildren().add(descripcion);
+
+        var escena = new Scene(vista, 200, 100);
+
+        var ventana = new Stage();
+        ventana.setMinWidth(200);
+        ventana.setMaxWidth(200);
+        ventana.setMinHeight(100);
+        ventana.setMaxHeight(100);
+        ventana.setScene(escena);
+        ventana.show();
+    }
+
+    // METODOS PARA GUARDAR Y RECUPERAR ESTADO
+    public void guardarEstado() {
+        BufferedOutputStream estado;
+        try {
+            estado = new BufferedOutputStream(new FileOutputStream(ruta));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            calendario.serializar(estado);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void recuperarEstado() {
+        BufferedInputStream estado;
+        try {
+            estado = new BufferedInputStream(new FileInputStream(ruta));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            calendario = Calendario.deserializar(estado);
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
