@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Button fx:id="cancelarTarea" layoutX="14.0" layoutY="24.0" mnemonicParsing="false" text="Cancelar" />
+      <Button fx:id="crearTarea" layoutX="489.0" layoutY="24.0" mnemonicParsing="false" text="Crear Tarea" />
+      <CheckBox fx:id="completeDayCheckbox" layoutX="233.0" layoutY="159.0" mnemonicParsing="false" text="Dia completo?" />
+      <TextField fx:id="fieldFecha" layoutX="76.0" layoutY="126.0" promptText="Fecha (DD/MM/AAAA)" />
+      <TextArea fx:id="areaAlarmsDates" layoutX="51.0" layoutY="186.0" prefHeight="200.0" prefWidth="200.0" promptText="Fecha Alarmas (DD/MM/AAAA ... DD/MM/AAAA ...)" />
+      <TextArea fx:id="areaAlarmsTimes" layoutX="348.0" layoutY="186.0" prefHeight="200.0" prefWidth="200.0" promptText="Horario Alarmas (XX:XX ... XX:XX ...)" />
+      <TextField fx:id="endTimeTask" layoutX="76.0" layoutY="155.0" promptText="Horario Limite (XX:XX)" />
+      <Label layoutX="252.0" layoutY="28.0" text="Creacion de Tarea" />
+      <TextField fx:id="taskTitle" layoutX="76.0" layoutY="61.0" promptText="Titulo tarea" />
+      <TextArea fx:id="taskDescription" layoutX="244.0" layoutY="61.0" prefHeight="90.0" prefWidth="333.0" promptText="Descripcion de tarea" />
+   </children>
+</AnchorPane>
