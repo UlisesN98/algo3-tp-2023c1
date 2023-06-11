@@ -345,6 +345,9 @@ public class Calendario implements Serializable {
     // Metodo que muestra, en base a una fecha y hora indicada,
     // si debe sonar la proxima alarma.
     public boolean iniciaProximaAlarma (LocalDateTime tiempoActual) {
+        if (obtenerProximaAlarma() == null) {
+            return false;
+        }
         return tiempoActual.equals(obtenerProximaAlarma().getInicio());
     }
 
