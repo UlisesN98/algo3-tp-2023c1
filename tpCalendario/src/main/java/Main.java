@@ -100,7 +100,12 @@ public class Main extends Application {
         fechaActual = LocalDate.now();
         intervalo = Frecuencia.DIARIA;
         ruta = "calendario";
-        recuperarEstado();
+
+        try {
+            recuperarEstado();
+        } catch (Exception e) {
+            calendario = new Calendario();
+        }
     }
 
     @Override
@@ -741,17 +746,9 @@ public class Main extends Application {
         }
     }
 
-    public void recuperarEstado() {
-        BufferedInputStream estado;
-        try {
-            estado = new BufferedInputStream(new FileInputStream(ruta));
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            calendario = Calendario.deserializar(estado);
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    public void recuperarEstado() throws IOException, ClassNotFoundException {
+        var estado = new BufferedInputStream(new FileInputStream(ruta));
+        calendario = Calendario.deserializar(estado);
+
     }
 }
