@@ -12,7 +12,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.io.*;
 import java.time.*;
@@ -22,6 +21,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.Duration;
 
 public class Main extends Application {
 
@@ -107,7 +107,8 @@ public class Main extends Application {
     public void start(Stage stage) {
         this.escenario = stage;
 
-        this.temporizador = new Timeline(new KeyFrame(Duration.seconds(1), this::chequearAlarma));
+        javafx.util.Duration segundos = javafx.util.Duration.seconds(1);
+        this.temporizador = new Timeline(new KeyFrame(segundos, this::chequearAlarma));
         temporizador.setCycleCount(Timeline.INDEFINITE);
         temporizador.play();
 
