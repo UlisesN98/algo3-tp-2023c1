@@ -20,6 +20,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.time.Duration;
 
@@ -525,7 +526,7 @@ public class Main extends Application {
 
         for (String input : alarmAreaInput) {
             if (input.isEmpty()) {
-                continue;  // Skip empty lines
+                continue;
             } else if (input.matches("\\d+[dhm]")) {
                 alarmAreaList.add(input);
             } else {
@@ -570,7 +571,9 @@ public class Main extends Application {
         if (seRepite && quantityRepsParsed > 0){
             Integer frecuenciaRepeticion = Integer.valueOf(frequencyRepeatDaily.getText());
             Repeticion repeticion = new RepeticionDiariaIntervalo(inicioEventoFormateado, quantityRepsParsed,frecuenciaRepeticion);
-            calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, new Efecto[]{Efecto.NOTIFICACION}, repeticion);
+            Efecto[] efectos = new Efecto[quantityRepsParsed];
+            Arrays.fill(efectos, Efecto.NOTIFICACION);
+            calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, efectos, repeticion);
             guardarEstado();
         }
 
