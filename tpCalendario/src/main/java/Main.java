@@ -642,7 +642,10 @@ public class Main extends Application {
             alarmasFormateadas[i] = dateTimeTareaFormateado.minus(duration);
         }
 
-        calendario.crearTarea(tituloTarea, descripcionTarea, diaCompleto, dateTimeTareaFormateado, alarmasFormateadas, new Efecto[]{Efecto.NOTIFICACION});
+        Efecto[] efectos = new Efecto[alarmasFormateadas.length];
+        Arrays.fill(efectos, Efecto.NOTIFICACION);
+
+        calendario.crearTarea(tituloTarea, descripcionTarea, diaCompleto, dateTimeTareaFormateado, alarmasFormateadas, efectos);
         guardarEstado();
         mostrarVistaActividades();
     }
