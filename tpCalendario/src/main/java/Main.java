@@ -92,6 +92,10 @@ public class Main extends Application {
     @FXML
     private Button crearTarea;
 
+    // Cosas de modificarEvento
+
+    // Cosas de modificarTarea
+
     private Calendario calendario;
     private LocalDate fechaActual;
     private Frecuencia intervalo;

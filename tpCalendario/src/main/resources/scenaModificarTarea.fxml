@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="259.0" layoutY="14.0" text="Modificar Tarea" />
+      <TextField fx:id="newTitleModifyTask" layoutX="226.0" layoutY="47.0" promptText="Nuevo Titulo" />
+      <TextArea fx:id="newDescriptionModifyTask" layoutX="129.0" layoutY="80.0" prefHeight="100.0" prefWidth="342.0" promptText="Nueva Descripcion" />
+      <TextField fx:id="newDateModifyTask" layoutX="129.0" layoutY="225.0" prefHeight="25.0" prefWidth="171.0" promptText="Nueva Fecha (DD/MM/YYYY)" />
+      <TextField fx:id="newTimeLimitModifyTask" layoutX="301.0" layoutY="225.0" promptText="Nuevo Limite (XX:XX)" />
+      <CheckBox fx:id="allDayCheckboxModifyTask" layoutX="251.0" layoutY="200.0" mnemonicParsing="false" text="Dia Completo?" />
+      <Button fx:id="cancelarModifyTask" layoutX="14.0" layoutY="19.0" mnemonicParsing="false" text="Cancelar" />
+      <Button fx:id="modifyTask_Effect" layoutX="519.0" layoutY="19.0" mnemonicParsing="false" text="Modificar" />
+   </children>
+</AnchorPane>

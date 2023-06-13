@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="259.0" layoutY="14.0" text="Modificar Evento" />
+      <TextField fx:id="newTitleModifyEvent" layoutX="226.0" layoutY="47.0" promptText="Nuevo Titulo" />
+      <TextArea fx:id="newDescriptionModifyEvent" layoutX="129.0" layoutY="80.0" prefHeight="100.0" prefWidth="342.0" promptText="Nueva Descripcion" />
+      <TextField fx:id="newDateStartModifyEvent" layoutX="129.0" layoutY="225.0" prefHeight="25.0" prefWidth="200.0" promptText="Nueva Fecha Inicio (DD/MM/YYYY)" />
+      <TextField fx:id="newTimeStartModifyEvent" layoutX="329.0" layoutY="225.0" prefHeight="25.0" prefWidth="171.0" promptText="Nuevo Horario inicio (XX:XX)" />
+      <CheckBox fx:id="allDayCheckboxModifyTask" layoutX="251.0" layoutY="200.0" mnemonicParsing="false" text="Dia Completo?" />
+      <Button fx:id="cancelarModifyEvent" layoutX="14.0" layoutY="19.0" mnemonicParsing="false" text="Cancelar" />
+      <Button fx:id="modifyEvent_Effect" layoutX="519.0" layoutY="19.0" mnemonicParsing="false" text="Modificar" />
+      <TextField fx:id="newDateEndModifyEvent1" layoutX="129.0" layoutY="263.0" prefHeight="25.0" prefWidth="200.0" promptText="Nueva Fecha Fin (DD/MM/YYYY)" />
+      <TextField fx:id="newTimeEndModifyEvent1" layoutX="329.0" layoutY="263.0" prefHeight="25.0" prefWidth="171.0" promptText="Nuevo Horario Fin (XX:XX)" />
+   </children>
+</AnchorPane>
