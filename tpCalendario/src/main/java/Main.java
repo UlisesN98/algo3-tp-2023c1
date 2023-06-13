@@ -47,6 +47,8 @@ public class Main extends Application {
     private Button eliminar;
     @FXML
     private VBox detalleActividad;
+    @FXML
+    private Button marcarTareaButton;
 
     // Cosas de crearEvento
     @FXML
@@ -371,7 +373,7 @@ public class Main extends Application {
 
     public void mostrarVistaTarea(Tarea tarea)  {
         FXMLLoader loader = new FXMLLoader(getClass().
-                getResource("scena2.fxml"));
+                getResource("scena2Tarea.fxml"));
         loader.setController(this);
         AnchorPane vista;
         try {
@@ -384,11 +386,20 @@ public class Main extends Application {
 
         eliminar.setOnAction(event-> eliminarTarea(tarea));
 
+        marcarTareaButton.setOnAction(event -> {
+            cambiarTareaCompletada(tarea);
+            mostrarVistaTarea(tarea);
+        });
+
         mostrarDetalleTarea(tarea);
 
         Scene scene = new Scene(vista);
         escenario.setScene(scene);
         escenario.show();
+    }
+
+    public void cambiarTareaCompletada(Tarea tarea) {
+        calendario.marcarTarea(tarea);
     }
 
     public void mostrarDetalleTarea(Tarea tarea) {
