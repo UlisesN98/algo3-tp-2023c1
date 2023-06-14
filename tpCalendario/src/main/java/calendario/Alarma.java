@@ -10,12 +10,14 @@ public class Alarma implements Serializable {
     private final Actividad actividad; // Actividad que cuenta con esta Alarma
     private final LocalDateTime inicio;
     private final Efecto efecto; // Tipo de efecto que producira la Alarma
+    private boolean disparada;
 
     // Constructor para el caso donde el tiempo de inicio de la Alarma se indica con una hora absoluta.
     Alarma(Actividad actividad, LocalDateTime inicio, Efecto efecto) {
         this.actividad = actividad;
         this.inicio = inicio;
         this.efecto = efecto;
+        this.disparada = false;
     }
 
     // Constructor para el caso donde el tiempo de inicio de la Alarma se indica con un intervalo previo al inicio de su actividad.
@@ -23,21 +25,25 @@ public class Alarma implements Serializable {
         this.actividad = actividad;
         this.inicio = actividad.getInicio().minus(intervaloPrevio.getSeconds(), intervaloPrevio.getUnits().get(0));
         this.efecto = efecto;
+        this.disparada = false;
     }
 
     // Getters
 
-    public Actividad getActividad() {
-        return actividad;
-    }
     public LocalDateTime getInicio() {
         return inicio;
     }
     public Efecto getEfecto() { return efecto; }
+    public boolean isDisparada() { return disparada; }
 
     // Devuelve true si la instancia de Alarma se inicia antes que la pasada por parametro
     boolean esAnterior(Alarma alarma) {
         return this.getInicio().isBefore(alarma.getInicio());
+    }
+
+    // Devuelve true si la instancia de Alarma se inicia antes que el tiempo pasado por parametro
+    boolean esAnterior(LocalDateTime tiempo) {
+        return this.getInicio().isBefore(tiempo);
     }
 
     // Metodo requerido para hacer comparaciones que permitan ordenar Alarmas temporalmente
@@ -52,6 +58,11 @@ public class Alarma implements Serializable {
             }
             return 0;
         }
+    }
+
+    public Actividad disparar() {
+        disparada = true;
+        return actividad;
     }
 
 }

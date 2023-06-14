@@ -5,8 +5,8 @@ import java.util.TreeSet;
 
 public class RepeticionDiariaIntervalo extends Repeticion {
 
-    private final Integer intervalo; // Intervalo de dias en los que ocurre una repeticion
-    private final LocalDateTime fin; // Fecha limite de la repeticion
+    private final Integer intervalo; // Intervalo de días en los que ocurre una repeticion
+    private final LocalDateTime fin; // Fecha límite de la repeticion
 
     // Constructor para repeticiones sin limite
     public RepeticionDiariaIntervalo(LocalDateTime inicio, Integer intervalo) {
@@ -22,7 +22,7 @@ public class RepeticionDiariaIntervalo extends Repeticion {
         this.fin = fin;
     }
 
-    // Constructor para repeticiones con cantidad limite
+    // Constructor para repeticiones con cantidad límite
     public RepeticionDiariaIntervalo(LocalDateTime inicio, Integer fin, Integer intervalo) {
         super(inicio);
         this.intervalo = intervalo;
@@ -30,13 +30,25 @@ public class RepeticionDiariaIntervalo extends Repeticion {
 
     }
 
-    // Metodo que calcula la fecha limite en base a la cantidad especificada
+    // Metodo que calcula la fecha límite basándose en la cantidad especificada
     private LocalDateTime calcularFechaFin(Integer fin) { return inicio.plusDays((long) intervalo * fin); }
 
     @Override
     public LocalDateTime calcularSiguienteRepeticion(LocalDateTime fecha) {
-        LocalDateTime repeticion = fecha.plusDays(intervalo);
-        return superoLimite(repeticion)? null : repeticion;
+        if (superoLimite(fecha)) {
+            return null;
+        }
+        if (fecha.isBefore(inicio)) {
+            return inicio;
+        }
+        LocalDateTime repeticion = inicio;
+        while (repeticion.isBefore(fecha)) {
+            repeticion = repeticion.plusDays(intervalo);
+            if (superoLimite(repeticion)) {
+                return null;
+            }
+        }
+        return repeticion;
     }
 
     @Override

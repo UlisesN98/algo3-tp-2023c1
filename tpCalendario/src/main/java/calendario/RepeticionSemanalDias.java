@@ -7,8 +7,8 @@ import java.util.TreeSet;
 
 public class RepeticionSemanalDias extends Repeticion {
 
-    private final Set<DayOfWeek> dias; // Arreglo con los dias de la semana donde ocurre una repeticion
-    private final LocalDateTime fin; // Fecha limite de la repeticion
+    private final Set<DayOfWeek> dias; // Arreglo con los días de la semana donde ocurre una repeticion
+    private final LocalDateTime fin; // Fecha límite de la repeticion
 
     // Constructor para repeticiones sin limite
     public RepeticionSemanalDias(LocalDateTime inicio, Set<DayOfWeek> dias) {
@@ -24,14 +24,14 @@ public class RepeticionSemanalDias extends Repeticion {
         this.fin = fin;
     }
 
-    // Constructor para repeticiones con cantidad limite
+    // Constructor para repeticiones con cantidad límite
     public RepeticionSemanalDias(LocalDateTime inicio, Integer fin,  Set<DayOfWeek> dias) {
         super(inicio);
         this.dias = dias;
         this.fin = calcularFechaFin(fin - 1);
     }
 
-    // Metodo que calcula la fecha limite en base a la cantidad especificada
+    // Metodo que calcula la fecha límite basándose en la cantidad especificada
     private LocalDateTime calcularFechaFin(Integer fin) {
         LocalDateTime fecha = inicio;
         var repeticiones = new TreeSet<LocalDateTime>();
@@ -48,10 +48,24 @@ public class RepeticionSemanalDias extends Repeticion {
 
     @Override
     public LocalDateTime calcularSiguienteRepeticion(LocalDateTime fecha) {
+        if (superoLimite(fecha)) {
+            return null;
+        }
+        LocalDateTime inicioSemana = inicio;
         var repeticiones = new TreeSet<LocalDateTime>();
-        repeticiones = obtenerRepeticionesSemana(fecha);
-        if (repeticiones.first().getDayOfWeek() == fecha.getDayOfWeek()) { repeticiones.remove(repeticiones.first());}
-        return superoLimite(repeticiones.first())? null : repeticiones.first();
+        while (true) {
+            repeticiones = obtenerRepeticionesSemana(inicioSemana);
+            for (LocalDateTime r : repeticiones) {
+                if (superoLimite(r)) {
+                    return null;
+                }
+                if (r.isBefore(fecha)) {
+                    continue;
+                }
+                return r;
+            }
+            inicioSemana = inicioSemana.plusWeeks(1);
+        }
     }
 
     @Override
@@ -84,8 +98,8 @@ public class RepeticionSemanalDias extends Repeticion {
         return fecha.isAfter(fin);
     }
 
-    // Devuelve un treeset con las fechas de los dias de la semana donde ocurre una repeticion,
-    // toma como punto de partida de la semana el dia de la fecha especificada por parametro
+    // Devuelve un treeset con las fechas de los días de la semana donde ocurre una repeticion,
+    // toma como punto de partida de la semana el día de la fecha especificada por parametro
     private TreeSet<LocalDateTime> obtenerRepeticionesSemana(LocalDateTime fecha) {
         var repeticiones = new TreeSet<LocalDateTime>();
         for (DayOfWeek diaRep : dias) {
