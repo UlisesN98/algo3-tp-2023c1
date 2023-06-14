@@ -213,7 +213,9 @@ public class Calendario implements Serializable {
 
     // Recibe una instancia de Tarea y modifica su limite.
     public void modificar(Tarea tarea, LocalDateTime nuevoLimite){
-        tarea.setInicio(nuevoLimite);
+        if (nuevoLimite != null){
+            tarea.setInicio(nuevoLimite);
+        }
     }
 
     // Recibe una instancia de Evento y modifica su titulo, descripcion, inicio y fin, o unicamente los parametros pasados distintos de null.

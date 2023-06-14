@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.w3c.dom.Text;
 
 import java.io.*;
 import java.time.*;
@@ -93,8 +94,44 @@ public class Main extends Application {
     private Button crearTarea;
 
     // Cosas de modificarEvento
+    @FXML
+    private Button modifyEventButton;
+    @FXML
+    private Button cancelarModifyEvent;
+    @FXML
+    private Button modifyEvent_Effect;
+    @FXML
+    private TextField newTitleModifyEvent;
+    @FXML
+    private TextArea newDescriptionModifyEvent;
+    @FXML
+    private CheckBox allDayCheckboxModifyEvent;
+    @FXML
+    private TextField newDateStartModifyEvent;
+    @FXML
+    private TextField newTimeStartModifyEvent;
+    @FXML
+    private TextField newDateEndModifyEvent;
+    @FXML
+    private TextField newTimeEndModifyEvent;
 
     // Cosas de modificarTarea
+    @FXML
+    private Button modifyTaskButton;
+    @FXML
+    private Button cancelarModifyTask;
+    @FXML
+    private Button modifyTask_Effect;
+    @FXML
+    private TextField newTitleModifyTask;
+    @FXML
+    private TextArea newDescriptionModifyTask;
+    @FXML
+    private CheckBox allDayCheckboxModifyTask;
+    @FXML
+    private TextField newDateModifyTask;
+    @FXML
+    private TextField newTimeLimitModifyTask;
 
     private Calendario calendario;
     private LocalDate fechaActual;
@@ -395,7 +432,29 @@ public class Main extends Application {
             mostrarVistaTarea(tarea);
         });
 
+        modifyTaskButton.setOnAction(event -> mostrarVistaModificarTarea(tarea));
+
         mostrarDetalleTarea(tarea);
+
+        Scene scene = new Scene(vista);
+        escenario.setScene(scene);
+        escenario.show();
+    }
+
+    public void mostrarVistaModificarTarea(Tarea tarea) {
+        FXMLLoader loader = new FXMLLoader(getClass().
+                getResource("scenaModificarTarea.fxml"));
+        loader.setController(this);
+        AnchorPane vista;
+        try {
+            vista = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        cancelarModifyTask.setOnAction(event -> mostrarVistaTarea(tarea));
+
+        modifyTask_Effect.setOnAction(event -> modificarTarea(tarea));
 
         Scene scene = new Scene(vista);
         escenario.setScene(scene);
@@ -404,6 +463,7 @@ public class Main extends Application {
 
     public void cambiarTareaCompletada(Tarea tarea) {
         calendario.marcarTarea(tarea);
+        guardarEstado();
     }
 
     public void mostrarDetalleTarea(Tarea tarea) {
@@ -490,7 +550,7 @@ public class Main extends Application {
         escenario.show();
     }
 
-    // METODOS RELATIVOS A LA CREACION DE EVENTOS Y TAREAS
+    // METODOS RELATIVOS A LA CREACION Y MODIFICACION DE EVENTOS Y TAREAS
 
     public void crearEvento() {
         // Validar input del usuario.
@@ -661,6 +721,53 @@ public class Main extends Application {
         Arrays.fill(efectos, Efecto.NOTIFICACION);
 
         calendario.crearTarea(tituloTarea, descripcionTarea, diaCompleto, dateTimeTareaFormateado, alarmasFormateadas, efectos);
+        guardarEstado();
+        mostrarVistaActividades();
+    }
+
+    public void modificarTarea(Tarea tarea) {
+        String nuevoTitulo = null;
+        String nuevaDescripcion = null;
+        LocalDateTime nuevoLimite = null;
+
+        String auxiliar_date = newDateModifyTask.getText();
+        String auxiliar_time = newTimeLimitModifyTask.getText();
+
+        if (!auxiliar_date.isEmpty()){
+            if (!esFechaValida(auxiliar_date)){
+                showErrorAlert("Formato de fecha invalido");
+                return;
+            }
+        }
+
+        if (!auxiliar_time.isEmpty()){
+            if (!esTiempoValido(auxiliar_time)){
+                showErrorAlert("Formato de horario limite invalido");
+                return;
+            }
+        }
+
+        if ((!auxiliar_date.isEmpty() && auxiliar_time.isEmpty()) || (auxiliar_date.isEmpty() && (!auxiliar_time.isEmpty()))) {
+            showErrorAlert("Ingrese tanto la fecha como el horario (Complete ambos campos)");
+            return;
+        }
+
+        if ((!newTitleModifyTask.getText().isEmpty())) {
+           nuevoTitulo = newTitleModifyTask.getText();
+        }
+
+        if ((!newDescriptionModifyTask.getText().isEmpty())) {
+            nuevaDescripcion = newDescriptionModifyTask.getText();
+        }
+
+        if ((!auxiliar_date.isEmpty()) && (!auxiliar_time.isEmpty())){
+            LocalDate nuevaFechaInicioFormatProcess = LocalDate.parse(auxiliar_date, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            LocalTime nuevoTiempoLimiteFormatProcess = LocalTime.parse(auxiliar_time, DateTimeFormatter.ofPattern("HH:mm"));
+            nuevoLimite = nuevaFechaInicioFormatProcess.atTime(nuevoTiempoLimiteFormatProcess);
+        }
+
+        calendario.modificar(tarea, nuevoTitulo, nuevaDescripcion, nuevoLimite);
+        calendario.modificar(tarea, allDayCheckboxModifyTask.isSelected());
         guardarEstado();
         mostrarVistaActividades();
     }
