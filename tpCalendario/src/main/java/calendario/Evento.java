@@ -103,7 +103,7 @@ public class Evento extends Actividad {
     // y devuelve una instancia de EventoRepetido que replica la información del
     // Evento adecuada a esa fecha.
     EventoRepetido crearRepeticion(LocalDateTime inicioRepeticion) {
-        var nuevoEvento = new EventoRepetido(titulo, descripcion, diaCompleto, inicioRepeticion, inicioRepeticion.plusSeconds(ChronoUnit.SECONDS.between(inicio, fin)), repeticion, this);
+        var nuevoEvento = new EventoRepetido(titulo, descripcion, diaCompleto, inicioRepeticion, inicioRepeticion.plusSeconds(ChronoUnit.SECONDS.between(inicio, fin)), null, this);
 
         List<LocalDateTime> inicios = new ArrayList<>();
         List<Efecto> efectos = new ArrayList<>();

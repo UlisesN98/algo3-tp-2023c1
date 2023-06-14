@@ -148,9 +148,10 @@ public class Main extends Application {
         ruta = "calendario";
 
         try {
-            recuperarEstado();
-        } catch (Exception e) {
+            calendario = recuperarEstado();
+        } catch (IOException | ClassNotFoundException e) {
             calendario = new Calendario();
+            guardarEstado();
         }
     }
 
@@ -452,7 +453,7 @@ public class Main extends Application {
             throw new RuntimeException(e);
         }
 
-        cancelarModifyTask.setOnAction(event -> mostrarVistaActividades());
+        cancelarActividad.setOnAction(event -> mostrarVistaActividades());
 
         eliminar.setOnAction(event-> eliminarTarea(tarea));
 
@@ -984,9 +985,8 @@ public class Main extends Application {
         }
     }
 
-    public void recuperarEstado() throws IOException, ClassNotFoundException {
+    public Calendario recuperarEstado() throws IOException, ClassNotFoundException {
         var estado = new BufferedInputStream(new FileInputStream(ruta));
-        calendario = Calendario.deserializar(estado);
-
+        return Calendario.deserializar(estado);
     }
 }

@@ -15,4 +15,34 @@ public class EventoRepetido extends Evento {
     Evento getEventoOriginal() {
         return eventoOriginal;
     }
+
+    @Override
+    void setTitulo(String titulo) {
+        eventoOriginal.setTitulo(titulo);
+    }
+
+    @Override
+    void setDescripcion(String descripcion) {
+        eventoOriginal.setDescripcion(descripcion);
+    }
+
+    @Override
+    void setInicio(LocalDateTime inicio) {
+        eventoOriginal.setInicio(inicio);
+    }
+
+    @Override
+    void setFin(LocalDateTime fin) {
+        eventoOriginal.setFin(fin);
+    }
+
+    @Override
+    void setDiaCompleto(boolean esDiaCompleto) {
+        eventoOriginal.setDiaCompleto(esDiaCompleto);
+    }
+
+    @Override
+    public boolean esRepetido() {
+        return !original;
+    }
 }
