@@ -95,7 +95,8 @@ public class Main extends Application {
     private Frecuencia intervalo;
     private Stage escenario;
     private final String ruta;
-    private Timeline temporizador;
+    private Timeline temporizadorAlarma;
+    private Timeline temporizadorRepeticiones;
 
     public Main() {
         fechaActual = LocalDate.now();
@@ -114,9 +115,14 @@ public class Main extends Application {
         this.escenario = stage;
 
         javafx.util.Duration segundos = javafx.util.Duration.seconds(1);
-        this.temporizador = new Timeline(new KeyFrame(segundos, this::chequearAlarma));
-        temporizador.setCycleCount(Timeline.INDEFINITE);
-        temporizador.play();
+        this.temporizadorAlarma = new Timeline(new KeyFrame(segundos, this::chequearAlarma));
+        temporizadorAlarma.setCycleCount(Timeline.INDEFINITE);
+        temporizadorAlarma.play();
+
+        javafx.util.Duration minutos = javafx.util.Duration.minutes(1);
+        this.temporizadorRepeticiones = new Timeline(new KeyFrame(minutos, this::chequearRepeticiones));
+        temporizadorRepeticiones.setCycleCount(Timeline.INDEFINITE);
+        temporizadorRepeticiones.play();
 
         mostrarVistaActividades();
     }
@@ -707,16 +713,22 @@ public class Main extends Application {
         mostrarVistaActividades();
     }
 
+    // METODO RELATIVO A LAS REPETICIONES
+    private void chequearRepeticiones(ActionEvent event) {
+        LocalDateTime horaActual = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        calendario.actualizarEventosRepetidos(horaActual);
+    }
+
     // METODOS RELATIVOS A LA ALARMA
     private void chequearAlarma(ActionEvent event) {
         LocalDateTime horaActual = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
         if (calendario.iniciaProximaAlarma(horaActual)) {
-            mostrarAlarma();
+            mostrarAlarma(calendario.obtenerProximaAlarma(horaActual));
         }
     }
 
-    private void mostrarAlarma() {
-        Actividad actividad = calendario.dispararProximaAlarma();
+    private void mostrarAlarma(Alarma alarma) {
+        Actividad actividad = alarma.disparar();
         guardarEstado();
 
         var vista = new VBox();

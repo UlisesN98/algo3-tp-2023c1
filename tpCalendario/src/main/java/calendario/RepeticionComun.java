@@ -6,7 +6,7 @@ import java.util.TreeSet;
 public class RepeticionComun extends Repeticion {
 
     private final Frecuencia frecuencia; // Frecuencia que puede tomar una repeticion
-    private final LocalDateTime fin; // Fecha limite de la repeticion
+    private final LocalDateTime fin; // Fecha límite de la repeticion
 
     // Constructor para repeticiones sin limite
     public RepeticionComun(LocalDateTime inicio, Frecuencia frecuencia) {
@@ -22,22 +22,34 @@ public class RepeticionComun extends Repeticion {
         this.fin = fin;
     }
 
-    // Constructor para repeticiones con cantidad limite
+    // Constructor para repeticiones con cantidad límite
     public RepeticionComun(LocalDateTime inicio, Integer fin, Frecuencia frecuencia) {
         super(inicio);
         this.frecuencia = frecuencia;
         this.fin = calcularFechaFin(fin - 1);
     }
 
-    // Metodo que calcula la fecha limite en base a la cantidad especificada
+    // Metodo que calcula la fecha límite basándose en la cantidad especificada
     private LocalDateTime calcularFechaFin(Integer fin) {
         return sumarTiempo(inicio, fin);
     }
 
     @Override
     public LocalDateTime calcularSiguienteRepeticion(LocalDateTime fecha) {
-        LocalDateTime repeticion = sumarTiempo(fecha, 1);
-        return superoLimite(repeticion)? null : repeticion;
+        if (superoLimite(fecha)) {
+            return null;
+        }
+        if (fecha.isBefore(inicio)) {
+            return inicio;
+        }
+        LocalDateTime repeticion = inicio;
+        while (repeticion.isBefore(fecha)) {
+            repeticion = sumarTiempo(repeticion, 1);
+            if (superoLimite(repeticion)) {
+                return null;
+            }
+        }
+        return repeticion;
     }
 
     @Override
@@ -64,7 +76,7 @@ public class RepeticionComun extends Repeticion {
         return repeticiones;
     }
 
-    // Calcula en base a una frecuencia y una cantidad la siguiente fecha
+    // Calcula basándose en una frecuencia y una cantidad la siguiente fecha
     private LocalDateTime sumarTiempo(LocalDateTime fecha, int cantidad) {
         if (frecuencia.equals(Frecuencia.DIARIA)) {
             return fecha.plusDays(cantidad);

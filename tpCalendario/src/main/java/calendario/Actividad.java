@@ -8,7 +8,7 @@ import java.util.TreeSet;
 
 public abstract class Actividad implements Serializable {
 
-    protected String titulo; // Titulo de la actividad. En caso de que este atributo no se indique, se le asignara "Sin titulo".
+    protected String titulo; // Título de la actividad. En caso de que este atributo no se indique, se le asignara "Sin título".
     protected String descripcion; // Descripcion de la actividad. En caso de que este atributo no se indique, se le asignara "Sin descripcion".
     protected boolean diaCompleto;
     protected LocalDateTime inicio;
@@ -53,6 +53,21 @@ public abstract class Actividad implements Serializable {
         listaAlarmas.add(nuevaAlarma);
     }
 
+    // Crea y agrega las alarmas indicadas. El inicio de las alarmas lo determina una fecha
+    // y hora definida
+    void agregarAlarmas(LocalDateTime[] inicioAlarmas, Efecto[] efectoAlarmas) {
+        for (int i = 0; i < inicioAlarmas.length; i++) {
+            this.agregarAlarma(inicioAlarmas[i], efectoAlarmas[i]);
+        }
+    }
+
+    // Crea y agrega las alarmas indicadas. El inicio de las alarmas lo determina un intervalo previo
+    void agregarAlarmas(Duration[] inicioAlarmas, Efecto[] efectoAlarmas) {
+        for (int i = 0; i < inicioAlarmas.length; i++) {
+            this.agregarAlarma(inicioAlarmas[i], efectoAlarmas[i]);
+        }
+    }
+
     // Recibe una instancia de Alarma y la quita de su lista.
     void eliminarAlarma(Alarma alarma) { listaAlarmas.remove(alarma); }
 
@@ -66,8 +81,14 @@ public abstract class Actividad implements Serializable {
     }
 
     // Devuelve la siguiente alarma que deberia sonar. Devuelve null si no hay ninguna alarma.
-    Alarma obtenerProximaAlarma() {
-        return listaAlarmas.isEmpty()? null : listaAlarmas.first();
+    Alarma obtenerProximaAlarma(LocalDateTime tiempoActual) {
+        for (Alarma alarma : listaAlarmas) {
+            if (alarma.esAnterior(tiempoActual) || alarma.isDisparada()) {
+                continue;
+            }
+            return alarma;
+        }
+        return null;
     }
 
     // Metodo requerido para hacer comparaciones que permitan ordenar Eventos y Tareas temporalmente

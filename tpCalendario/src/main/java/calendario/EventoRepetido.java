@@ -12,8 +12,7 @@ public class EventoRepetido extends Evento {
         this.original = false;
     }
 
-    public Evento getEventoOriginal() {
+    Evento getEventoOriginal() {
         return eventoOriginal;
     }
-
 }

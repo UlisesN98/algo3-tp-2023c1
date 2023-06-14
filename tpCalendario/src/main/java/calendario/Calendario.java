@@ -3,7 +3,6 @@ package calendario;
 import java.io.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
@@ -18,45 +17,22 @@ public class Calendario implements Serializable {
         this.listaTareas = new ArrayList<>();
     }
 
-    // Recibe una fecha y hora y actualiza el inicio y fin
-    // de un evento repetido en caso de que este ya haya ocurrido.
-    public void actualizarEventosRepetidos(LocalDateTime tiempoActual) {
+    // Actualiza la repeticion actual de los eventos repetidos si esta
+    // queda obsoleta de acuerdo a la fecha pasada
+    public void actualizarEventosRepetidos(LocalDateTime fechaActual) {
         for (Evento evento : listaEventos) {
-            if (!evento.esRepetido()) {continue;}
-            if (evento.getFin().isBefore(tiempoActual)) {
-                evento.actualizarSiguienteRepeticion();
+            if (!evento.esRepetido()) { continue; }
+
+            if (evento.finRepeticionEsAnterior(fechaActual)) {
+                evento.actualizarRepeticionActual(fechaActual);
             }
         }
     }
 
     // METODOS DE BUSQUEDA
 
-    // Busca Eventos a partir sus caracteristicas principales (titulo, descripcion, fecha de inicio y fecha de fin)
-    // y devuelve un Lista con aquellos que las tienen
-    public List<Evento> buscarEventos(String titulo, String descripcion, LocalDateTime inicio, LocalDateTime fin) {
-        var eventos = new ArrayList<Evento>();
-        for (Evento evento : listaEventos) {
-            if (evento.getTitulo().equals(titulo) && evento.getDescripcion().equals(descripcion) && evento.getInicio().equals(inicio) && evento.getFin().equals(fin)) {
-                eventos.add(evento);
-            }
-        }
-        return eventos;
-    }
-
-    // Busca Tareas a partir sus caracteristicas principales (titulo, descripcion y fecha limite)
-    // y devuelve un Lista con aquellas que las tienen
-    public List<Tarea> buscarTareas(String titulo, String descripcion, LocalDateTime limite) {
-        var tareas = new ArrayList<Tarea>();
-        for (Tarea tarea : listaTareas) {
-            if (tarea.getTitulo().equals(titulo) && tarea.getDescripcion().equals(descripcion) && tarea.getInicio().equals(limite)) {
-                tareas.add(tarea);
-            }
-        }
-        return tareas;
-    }
-
-    // Dado un intervalo de tiempo devuelve un Lista con los Eventos que ocurren en este.
-    // El Lista esta ordenado.
+    // Dado un intervalo de tiempo devuelve una Lista con los Eventos que ocurren en este.
+    // La Lista está ordenado.
     public List<Evento> buscarEventoPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
         var eventosIntervalo = new ArrayList<Evento>();
 
@@ -64,7 +40,7 @@ public class Calendario implements Serializable {
             if (evento.esRepetido()){
                 TreeSet<LocalDateTime> instanciasRepetidas = evento.repeticionesPorIntervalo(inicioIntervalo, finIntervalo);
                 for (LocalDateTime fecha : instanciasRepetidas){
-                    Evento eventoCreado = crearEventoRepetido(evento, fecha);
+                    EventoRepetido eventoCreado = evento.crearRepeticion(fecha);
                     eventosIntervalo.add(eventoCreado);
                 }
             } else {
@@ -81,8 +57,8 @@ public class Calendario implements Serializable {
         return eventosIntervalo;
     }
 
-    // Dado un intervalo de tiempo devuelve un Lista con las Tareas que ocurren en este.
-    // El Lista esta ordenado.
+    // Dado un intervalo de tiempo devuelve una Lista con las Tareas que ocurren en este.
+    // La Lista está ordenado.
     public List<Tarea> buscarTareaPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
         var tareasIntervalo = new ArrayList<Tarea>();
         for (Tarea tarea : listaTareas) {
@@ -94,8 +70,8 @@ public class Calendario implements Serializable {
         return tareasIntervalo;
     }
 
-    // Dado un intervalo de tiempo devuelve un Lista con los Eventos y Tareas que ocurren en este.
-    // El Lista esta ordenado.
+    // Dado un intervalo de tiempo devuelve una Lista con los Eventos y Tareas que ocurren en este.
+    // La Lista está ordenado.
     public List<Actividad> buscarPorIntervalo(LocalDateTime inicioIntervalo, LocalDateTime finIntervalo) {
         var listaActividades = new ArrayList<Actividad>();
 
@@ -112,84 +88,54 @@ public class Calendario implements Serializable {
 
     // METODOS DE CREACION
 
-    // Recibe un String que indique su titulo, un String que indique una descripcion, un boolean que indique si es de dia completo
+    // Recibe un String que indique su título, un String que indique una descripcion, un boolean que indique si es de día completo
     // un LocalDateTime que indique su fecha y hora de inicio, un LocalDateTime que indique su fecha y hora de fin, un array que
     // indique la fecha y hora absoluta de sus alarmas, un array de la misma longitud que el anterior que indique el efecto de estas
-    // alarmas y una instancia de Repeticion que indique de que modo se repite. A partir de estas caracterisiticas se crea una
+    // alarmas y una instancia de Repeticion que indique de qué modo se repite. A partir de estas caracteristicas se crea una
     // instancia de Evento que se guardara en la lista de Eventos.
     public void crearEvento(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio, LocalDateTime fin, LocalDateTime[] inicioAlarmas, Efecto[] efectoAlarmas, Repeticion repeticion) {
         var nuevoEvento = new Evento(titulo, descripcion, diaCompleto, inicio, fin, repeticion);
-        agregarAlarmas(nuevoEvento, inicioAlarmas, efectoAlarmas);
+        nuevoEvento.agregarAlarmas(inicioAlarmas, efectoAlarmas);
+        nuevoEvento.setRepeticionActual();
         listaEventos.add(nuevoEvento);
     }
 
     // Recibe un String que indique su titulo, un String que indique una descripcion, un boolean que indique si es de dia completo
     // un LocalDateTime que indique su fecha y hora de inicio, un LocalDateTime que indique su fecha y hora de fin, un array que
-    // indique el intervalo de tiempo previo de sus alarmas , un array de la misma longitud que el anterior que indique el efecto de estas
-    // alarmas y una instancia de Repeticion que indique de que modo se repite. A partir de estas caracterisiticas se crea una
+    // indique el intervalo de tiempo previo de sus alarmas, un array de la misma longitud que el anterior que indique el efecto de estas
+    // alarmas y una instancia de Repeticion que indique de qué modo se repite. A partir de estas caracteristicas se crea una
     // instancia de Evento que se guardara en la lista de Eventos.
     public void crearEvento(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio, LocalDateTime fin, Duration[] inicioAlarmas, Efecto[] efectoAlarmas, Repeticion repeticion) {
         var nuevoEvento = new Evento(titulo, descripcion, diaCompleto, inicio, fin, repeticion);
-        agregarAlarmas(nuevoEvento, inicioAlarmas, efectoAlarmas);
+        nuevoEvento.agregarAlarmas(inicioAlarmas, efectoAlarmas);
+        nuevoEvento.setRepeticionActual();
         listaEventos.add(nuevoEvento);
-    }
-
-    private Evento crearEventoRepetido(Evento evento, LocalDateTime fecha) {
-        var nuevoEvento = new EventoRepetido(evento.getTitulo(), evento.getDescripcion(), evento.isDiaCompleto(), fecha, fecha.plusSeconds(ChronoUnit.SECONDS.between(evento.getInicio(), evento.getFin())), evento.getRepeticion(), evento);
-
-        List<LocalDateTime> inicios = new ArrayList<>();
-        List<Efecto> efectos = new ArrayList<>();
-        var alarmas = evento.getListaAlarmas();
-        for (Alarma alarma : alarmas) {
-            inicios.add(fecha.minusSeconds(ChronoUnit.SECONDS.between(alarma.getInicio(), evento.getInicio())));
-            efectos.add(alarma.getEfecto());
-        }
-        agregarAlarmas(nuevoEvento, inicios.toArray(new LocalDateTime[0]), efectos.toArray(new Efecto[0]));
-        return nuevoEvento;
     }
 
     // Recibe un String que indique su titulo, un String que indique una descripcion, un boolean que indique si es de dia completo,
     // un LocalDateTime que indique su fecha y hora limite, un array que indique la fecha y hora absoluta de sus alarmas, un array
-    // de la misma longitud que el anterior que indique el efecto de estas alarmas. A partir de estas caracterisiticas se crea una
+    // de la misma longitud que el anterior que indique el efecto de estas alarmas. A partir de estas caracteristicas se crea una
     // instancia de Tarea que se guardara en la lista de Tareas.
     public void crearTarea(String titulo, String descripcion, boolean diaCompleto, LocalDateTime limite, LocalDateTime[] inicioAlarmas, Efecto[] efectoAlarmas) {
         var nuevaTarea = new Tarea(titulo, descripcion, diaCompleto, limite);
-        agregarAlarmas(nuevaTarea, inicioAlarmas, efectoAlarmas);
+        nuevaTarea.agregarAlarmas(inicioAlarmas, efectoAlarmas);
         listaTareas.add(nuevaTarea);
     }
 
     // Recibe un String que indique su titulo, un String que indique una descripcion, un boolean que indique si es de dia completo,
     // un LocalDateTime que indique su fecha y hora limite, un array que indique el intervalo de tiempo previo de sus alarmas, un array
-    // de la misma longitud que el anterior que indique el efecto de estas alarmas. A partir de estas caracterisiticas se crea una
+    // de la misma longitud que el anterior que indique el efecto de estas alarmas. A partir de estas caracteristicas se crea una
     // instancia de Tarea que se guardara en la lista de Tareas.
     public void crearTarea(String titulo, String descripcion, boolean diaCompleto, LocalDateTime limite, Duration[] inicioAlarmas, Efecto[] efectoAlarmas) {
         var nuevaTarea = new Tarea(titulo, descripcion, diaCompleto, limite);
-        agregarAlarmas(nuevaTarea, inicioAlarmas, efectoAlarmas);
+        nuevaTarea.agregarAlarmas(inicioAlarmas, efectoAlarmas);
         listaTareas.add(nuevaTarea);
     }
 
-    // Crea y agrega las alarmas indicadas a un evento o tarea. El inicio de las alarmas lo determina una fecha
-    // y hora definida
-    private void agregarAlarmas(Actividad nuevaActividad, LocalDateTime[] inicioAlarmas, Efecto[] efectoAlarmas) {
-        if (inicioAlarmas.length != 0) {
-            for (int i = 0; i < inicioAlarmas.length; i++) {
-                nuevaActividad.agregarAlarma(inicioAlarmas[i], efectoAlarmas[i]);
-            }
-        }
-    }
-
-    // Crea y agrega las alarmas indicadas a un evento o tarea. El inicio de las alarmas lo determina una intervalo previo
-    private void agregarAlarmas(Actividad nuevaActividad, Duration[] inicioAlarmas, Efecto[] efectoAlarmas) {
-        if (inicioAlarmas.length != 0) {
-            for (int i = 0; i < inicioAlarmas.length; i++) {
-                nuevaActividad.agregarAlarma(inicioAlarmas[i], efectoAlarmas[i]);
-            }
-        }
-    }
 
     // METODOS DE MODIFICACION
 
-    // Recibe una instancia de Evento o Tarea y modifica su titulo y su descripcion, o unicamente uno de los dos en
+    // Recibe una instancia de Evento o Tarea y modifica su titulo y su descripcion, o únicamente uno de los dos en
     // caso de que uno de los parametros sea null.
     public void modificar(Actividad actividad, String nuevoTitulo, String nuevaDescripcion) {
         if (nuevoTitulo != null){
@@ -200,7 +146,7 @@ public class Calendario implements Serializable {
         }
     }
 
-    // Recibe una instancia de Evento y modifica su inicio y su fin, o unicamente uno de los dos en
+    // Recibe una instancia de Evento y modifica su inicio y su fin, o únicamente uno de los dos en
     // caso de que uno de los parametros sea null.
     public void modificar(Evento evento, LocalDateTime nuevoInicio, LocalDateTime nuevoFin) {
         if (nuevoInicio != null){
@@ -216,13 +162,13 @@ public class Calendario implements Serializable {
         tarea.setInicio(nuevoLimite);
     }
 
-    // Recibe una instancia de Evento y modifica su titulo, descripcion, inicio y fin, o unicamente los parametros pasados distintos de null.
+    // Recibe una instancia de Evento y modifica su titulo, descripcion, inicio y fin, o únicamente los parametros pasados distintos de null.
     public void modificar(Evento evento, String nuevoTitulo, String nuevaDescripcion, LocalDateTime nuevoInicio, LocalDateTime nuevoFin) {
         modificar(evento, nuevoTitulo, nuevaDescripcion);
         modificar(evento, nuevoInicio, nuevoFin);
     }
 
-    // Recibe una instancia de Tarea y modifica su titulo, descripcion y limite, o unicamente los parametros pasados distintos de null.
+    // Recibe una instancia de Tarea y modifica su titulo, descripcion y limite, o únicamente los parametros pasados distintos de null.
     public void modificar(Tarea tarea, String nuevoTitulo, String nuevaDescripcion, LocalDateTime nuevoLimite) {
         modificar(tarea, nuevoTitulo, nuevaDescripcion);
         modificar(tarea, nuevoLimite);
@@ -240,7 +186,7 @@ public class Calendario implements Serializable {
 
     // Modifica la Repeticion de un Evento tras pasarle una nueva instancia de esta con las nuevas caracteristicas requeridas.
     public void modificar(Evento evento, Repeticion repeticion) {
-        evento.setRepeticion(repeticion);
+       evento.setRepeticion(repeticion);
     }
 
 
@@ -316,20 +262,25 @@ public class Calendario implements Serializable {
         actividad.eliminarAlarma(alarma);
     }
 
-    // Devuelve la siguiente alarma que deberia sonar. Devuelve null si no hay ninguna alarma.
-    public Alarma obtenerProximaAlarma() {
+    // Devuelve la siguiente alarma que deberia sonar basandose en la fecha pasada.
+    // Devuelve null si no hay ninguna alarma.
+    public Alarma obtenerProximaAlarma(LocalDateTime tiempoActual) {
         Alarma proximaAlarma = null;
         for (Evento evento : listaEventos) {
-            proximaAlarma = actualizarProximaAlarma(evento, proximaAlarma);
+            if (evento.esRepetido() && evento.tieneSiguienteRepeticion()) {
+                proximaAlarma = actualizarProximaAlarma(evento.getRepeticionActual(), proximaAlarma, tiempoActual);
+            } else {
+                proximaAlarma = actualizarProximaAlarma(evento, proximaAlarma, tiempoActual);
+            }
         }
         for (Tarea tarea : listaTareas) {
-            proximaAlarma = actualizarProximaAlarma(tarea, proximaAlarma);
+            proximaAlarma = actualizarProximaAlarma(tarea, proximaAlarma, tiempoActual);
         }
         return proximaAlarma;
     }
 
-    private Alarma actualizarProximaAlarma(Actividad actividad, Alarma proximaAlarma) {
-        Alarma alarma = actividad.obtenerProximaAlarma();
+    private Alarma actualizarProximaAlarma(Actividad actividad, Alarma proximaAlarma, LocalDateTime tiempoActual) {
+        Alarma alarma = actividad.obtenerProximaAlarma(tiempoActual);
         if (alarma == null) {
             return proximaAlarma;
         }
@@ -342,44 +293,10 @@ public class Calendario implements Serializable {
         return proximaAlarma;
     }
 
-    // Metodo que muestra, en base a una fecha y hora indicada,
+    // Metodo que muestra, basándose en una fecha y hora indicada,
     // si debe sonar la proxima alarma.
     public boolean iniciaProximaAlarma (LocalDateTime tiempoActual) {
-        if (obtenerProximaAlarma() == null) {
-            return false;
-        }
-        return tiempoActual.equals(obtenerProximaAlarma().getInicio());
-    }
-
-    // Metodo que obtiene a partir de la alarma que debio activarse el Evento o Tarea correspondiente.
-    // Si se trata de un Evento con repeticion, actualiza la alarma disparada a la de su repeticion.
-    // Finalmente elimina la alarma disparada.
-    public Actividad dispararProximaAlarma() {
-        Alarma alarmaActual = obtenerProximaAlarma();
-        Actividad actividad = alarmaActual.getActividad();
-
-        actualizarAlarmaRepeticion(actividad, alarmaActual);
-
-        actividad.eliminarAlarma(alarmaActual);
-        return actividad;
-    }
-
-    // Metodo que se encarga de actualizar la alarma de un Evento dado el caso de que este deba repetirse.
-    public void actualizarAlarmaRepeticion(Actividad actividad, Alarma alarma) {
-        if (!listaEventos.contains(actividad)) { return;}
-
-        int i = listaEventos.indexOf(actividad);
-        Evento eventoAlarma = listaEventos.get(i);
-
-        if (!eventoAlarma.esRepetido()) {return;}
-
-        LocalDateTime fechaRepeticion = eventoAlarma.getSiguienteRepeticion();
-
-        if (fechaRepeticion == null) {return;}
-
-        LocalDateTime fechaSiguienteAlarma = eventoAlarma.getRepeticion().calcularSiguienteRepeticion(alarma.getInicio());
-
-        eventoAlarma.agregarAlarma(fechaSiguienteAlarma, alarma.getEfecto());
+        return obtenerProximaAlarma(tiempoActual) != null && tiempoActual.equals(obtenerProximaAlarma(tiempoActual).getInicio());
     }
 
     // METODOS DE SERIALIZACION
@@ -394,5 +311,4 @@ public class Calendario implements Serializable {
         ObjectInputStream objectInStream = new ObjectInputStream(is);
         return (Calendario) objectInStream.readObject();
     }
-
 }
