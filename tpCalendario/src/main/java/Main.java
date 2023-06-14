@@ -5,7 +5,6 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -13,7 +12,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.w3c.dom.Text;
 
 import java.io.*;
 import java.time.*;
@@ -713,7 +711,7 @@ public class Main extends Application {
 
         for (String input : alarmAreaInput) {
             if (input.isEmpty()) {
-                continue;  // Skip empty lines
+                continue;
             } else if (input.matches("\\d+[dhm]")) {
                 alarmAreaList.add(input);
             } else {
@@ -888,16 +886,12 @@ public class Main extends Application {
         char unitChar = Character.toLowerCase(alarmDate.charAt(alarmDate.length() - 1));
 
         // Calcular duracion basado en tipo
-        switch (unitChar) {
-            case 'd':
-                return Duration.ofDays(value);
-            case 'h':
-                return Duration.ofHours(value);
-            case 'm':
-                return Duration.ofMinutes(value);
-            default:
-                throw new IllegalArgumentException("Formato de duracion invalido: " + alarmDate);
-        }
+        return switch (unitChar) {
+            case 'd' -> Duration.ofDays(value);
+            case 'h' -> Duration.ofHours(value);
+            case 'm' -> Duration.ofMinutes(value);
+            default -> throw new IllegalArgumentException("Formato de duracion invalido: " + alarmDate);
+        };
     }
 
     public void showErrorAlert(String mensaje){
