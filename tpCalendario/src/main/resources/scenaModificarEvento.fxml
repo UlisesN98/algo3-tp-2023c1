@@ -13,7 +13,7 @@
       <CheckBox fx:id="allDayCheckboxModifyEvent" layoutX="251.0" layoutY="200.0" mnemonicParsing="false" text="Dia Completo?" />
       <Button fx:id="cancelarModifyEvent" layoutX="14.0" layoutY="19.0" mnemonicParsing="false" text="Cancelar" />
       <Button fx:id="modifyEvent_Effect" layoutX="519.0" layoutY="19.0" mnemonicParsing="false" text="Modificar" />
-      <TextField fx:id="newDateEndModifyEvent1" layoutX="129.0" layoutY="263.0" prefHeight="25.0" prefWidth="200.0" promptText="Nueva Fecha Fin (DD/MM/YYYY)" />
+      <TextField fx:id="newDateEndModifyEvent" layoutX="129.0" layoutY="263.0" prefHeight="25.0" prefWidth="200.0" promptText="Nueva Fecha Fin (DD/MM/YYYY)" />
       <TextField fx:id="newTimeEndModifyEvent" layoutX="329.0" layoutY="263.0" prefHeight="25.0" prefWidth="171.0" promptText="Nuevo Horario Fin (XX:XX)" />
    </children>
 </AnchorPane>

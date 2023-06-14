@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -361,7 +362,29 @@ public class Main extends Application {
 
         eliminar.setOnAction(event-> eliminarEvento(evento));
 
+        modifyEventButton.setOnAction(event -> mostrarVistaModificarEvento(evento));
+
         mostrarDetalleEvento(evento);
+
+        Scene scene = new Scene(vista);
+        escenario.setScene(scene);
+        escenario.show();
+    }
+
+    public void mostrarVistaModificarEvento(Evento evento) {
+        FXMLLoader loader = new FXMLLoader(getClass().
+                getResource("scenaModificarEvento.fxml"));
+        loader.setController(this);
+        AnchorPane vista;
+        try {
+            vista = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        cancelarModifyEvent.setOnAction(event -> mostrarVistaEvento(evento));
+
+        modifyEvent_Effect.setOnAction(event -> modificarEvento(evento));
 
         Scene scene = new Scene(vista);
         escenario.setScene(scene);
@@ -423,7 +446,7 @@ public class Main extends Application {
             throw new RuntimeException(e);
         }
 
-        cancelarActividad.setOnAction(event -> mostrarVistaActividades());
+        cancelarModifyTask.setOnAction(event -> mostrarVistaActividades());
 
         eliminar.setOnAction(event-> eliminarTarea(tarea));
 
@@ -768,6 +791,81 @@ public class Main extends Application {
 
         calendario.modificar(tarea, nuevoTitulo, nuevaDescripcion, nuevoLimite);
         calendario.modificar(tarea, allDayCheckboxModifyTask.isSelected());
+        guardarEstado();
+        mostrarVistaActividades();
+    }
+
+    public void modificarEvento(Evento evento) {
+        String nuevoTitulo = null;
+        String nuevaDescripcion = null;
+        LocalDateTime nuevoInicio = null;
+        LocalDateTime nuevoFin = null;
+
+        String auxiliar_date_inicio = newDateStartModifyEvent.getText();
+        String auxiliar_time_inicio = newTimeStartModifyEvent.getText();
+        String auxiliar_date_fin = newDateEndModifyEvent.getText();
+        String auxiliar_time_fin = newTimeEndModifyEvent.getText();
+
+        if (!auxiliar_date_inicio.isEmpty()){
+            if (!esFechaValida(auxiliar_date_inicio)){
+                showErrorAlert("Formato de fecha invalido");
+                return;
+            }
+        }
+
+        if (!auxiliar_time_inicio.isEmpty()){
+            if (!esTiempoValido(auxiliar_time_inicio)){
+                showErrorAlert("Formato de horario limite invalido");
+                return;
+            }
+        }
+
+        if (!auxiliar_date_fin.isEmpty()){
+            if (!esFechaValida(auxiliar_date_fin)){
+                showErrorAlert("Formato de fecha invalido");
+                return;
+            }
+        }
+
+        if (!auxiliar_time_fin.isEmpty()){
+            if (!esTiempoValido(auxiliar_time_fin)){
+                showErrorAlert("Formato de horario limite invalido");
+                return;
+            }
+        }
+
+        if ((!auxiliar_date_inicio.isEmpty() && auxiliar_time_inicio.isEmpty()) || (auxiliar_date_inicio.isEmpty() && (!auxiliar_time_inicio.isEmpty()))) {
+            showErrorAlert("Ingrese tanto la fecha como el horario de inicio (Complete ambos campos)");
+            return;
+        }
+
+        if ((!auxiliar_date_fin.isEmpty() && auxiliar_time_fin.isEmpty()) || (auxiliar_date_fin.isEmpty() && (!auxiliar_time_fin.isEmpty()))) {
+            showErrorAlert("Ingrese tanto la fecha como el horario de fin (Complete ambos campos)");
+            return;
+        }
+
+        if ((!newTitleModifyEvent.getText().isEmpty())) {
+            nuevoTitulo = newTitleModifyEvent.getText();
+        }
+
+        if ((!newDescriptionModifyEvent.getText().isEmpty())) {
+            nuevaDescripcion = newDescriptionModifyEvent.getText();
+        }
+
+        if ((!auxiliar_date_inicio.isEmpty()) && (!auxiliar_time_inicio.isEmpty())){
+            LocalDate nuevaFechaInicioFormatProcess = LocalDate.parse(auxiliar_date_inicio, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            LocalTime nuevoTiempoLimiteFormatProcess = LocalTime.parse(auxiliar_time_inicio, DateTimeFormatter.ofPattern("HH:mm"));
+            nuevoInicio = nuevaFechaInicioFormatProcess.atTime(nuevoTiempoLimiteFormatProcess);
+        }
+
+        if ((!auxiliar_date_fin.isEmpty()) && (!auxiliar_time_fin.isEmpty())){
+            LocalDate nuevaFechaInicioFormatProcess = LocalDate.parse(auxiliar_date_fin, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            LocalTime nuevoTiempoLimiteFormatProcess = LocalTime.parse(auxiliar_time_fin, DateTimeFormatter.ofPattern("HH:mm"));
+            nuevoFin = nuevaFechaInicioFormatProcess.atTime(nuevoTiempoLimiteFormatProcess);
+        }
+
+        calendario.modificar(evento, nuevoTitulo, nuevaDescripcion, nuevoInicio, nuevoFin);
+        calendario.modificar(evento, allDayCheckboxModifyEvent.isSelected());
         guardarEstado();
         mostrarVistaActividades();
     }
