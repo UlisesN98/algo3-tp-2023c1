@@ -676,7 +676,7 @@ public class Main extends Application {
         if (seRepite && quantityRepsParsed > 0){
             Integer frecuenciaRepeticion = Integer.valueOf(frequencyRepeatDaily.getText());
             Repeticion repeticion = new RepeticionDiariaIntervalo(inicioEventoFormateado, quantityRepsParsed,frecuenciaRepeticion);
-            Efecto[] efectos = new Efecto[quantityRepsParsed];
+            Efecto[] efectos = new Efecto[alarmasFormateadas.length];
             Arrays.fill(efectos, Efecto.NOTIFICACION);
             calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, efectos, repeticion);
             guardarEstado();
