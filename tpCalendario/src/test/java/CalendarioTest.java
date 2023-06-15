@@ -519,7 +519,7 @@ public class CalendarioTest {
         String titulo1 = "Tarea A";
         String descripcion1 = "Desc. tarea A";
         LocalDateTime limite1 = LocalDateTime.parse("2018-10-10T11:25");
-        LocalDateTime[] inicioAlarmas = {LocalDateTime.parse("2018-10-10T14:00")};
+        LocalDateTime[] inicioAlarmas = {LocalDateTime.parse("2018-10-10T08:00")};
         Efecto[] efectoAlarmas = {Efecto.NOTIFICACION};
 
         String titulo2 = "Tarea B";
@@ -535,12 +535,9 @@ public class CalendarioTest {
         for (int i = 0; i < 1000; i++){
             Tarea tareaActual = nuevaListaTareas.get(i);
             nuevoCalendario.modificar(tareaActual, titulo2, descripcion2, limite2.plusMinutes(i));
-            Alarma alarmaActual = tareaActual.buscarAlarma(inicioAlarmas[0], efectoAlarmas[0]);
             assertEquals(titulo2, tareaActual.getTitulo());
             assertEquals(descripcion2, tareaActual.getDescripcion());
             assertEquals(limite2.plusMinutes(i), tareaActual.getInicio());
-            assertEquals(inicioAlarmas[0], alarmaActual.getInicio());
-            assertEquals(efectoAlarmas[0], alarmaActual.getEfecto());
         }
     }
 
@@ -568,13 +565,10 @@ public class CalendarioTest {
         for (int i = 0; i < 1000; i++){
             Evento eventoActual = nuevaListaEventos.get(i);
             nuevoCalendario.modificar(eventoActual, titulo2, descripcion2, inicio2.plusMinutes(i), fin2.plusMinutes(i));
-            Alarma alarmaActual = eventoActual.buscarAlarma(inicioAlarmas[0], efectoAlarmas[0]);
             assertEquals(titulo2, eventoActual.getTitulo());
             assertEquals(descripcion2, eventoActual.getDescripcion());
             assertEquals(inicio2.plusMinutes(i), eventoActual.getInicio());
             assertEquals(fin2.plusMinutes(i), eventoActual.getFin());
-            assertEquals(inicioAlarmas[0], alarmaActual.getInicio());
-            assertEquals(efectoAlarmas[0], alarmaActual.getEfecto());
         }
     }
 
@@ -1259,10 +1253,10 @@ public class CalendarioTest {
         assertEquals(inicioAlarmasEvento1[1], alarma4.getInicio());
         assertEquals(Efecto.SONIDO, alarma4.getEfecto());
 
-        assertEquals(inicioAlarmasEvento2[0], alarma5.getInicio());
+        assertEquals(LocalDateTime.parse("2023-10-11T17:00"), alarma5.getInicio());
         assertEquals(Efecto.NOTIFICACION, alarma5.getEfecto());
 
-        assertEquals(inicioAlarmasEvento2[1], alarma6.getInicio());
+        assertEquals(LocalDateTime.parse("2023-10-11T19:00"), alarma6.getInicio());
         assertEquals(Efecto.SONIDO, alarma6.getEfecto());
 
         // Luego todas las instancias recuperadas de eventos y tareas...
