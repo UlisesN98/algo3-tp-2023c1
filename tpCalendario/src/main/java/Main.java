@@ -26,6 +26,7 @@ import java.time.Duration;
 
 public class Main extends Application {
 
+    // ATRIBUTOS RELATIVOS A VISTA DE ACTIVIDADES
     @FXML
     private Label fechaTitulo;
     @FXML
@@ -35,12 +36,13 @@ public class Main extends Application {
     @FXML
     private Button anterior;
     @FXML
-    private Button crearEventScene;
+    private Button vistaCrearEvento;
     @FXML
-    private Button crearTareaScene;
+    private Button vistaCrearTarea;
     @FXML
     private ChoiceBox<String> opcionesIntervalo;
 
+    // ATRIBUTOS RELATIVOS A VISTA DE EVENTO Y TAREA
     @FXML
     private Button cancelarActividad;
     @FXML
@@ -48,9 +50,13 @@ public class Main extends Application {
     @FXML
     private VBox detalleActividad;
     @FXML
-    private Button marcarTareaButton;
+    private Button marcarTarea;
+    @FXML
+    private Button vistaModificarEvento;
+    @FXML
+    private Button vistaModificarTarea;
 
-    // Cosas de crearEvento
+    // ATRIBUTOS RELATIVOS A CREAR EVENTO
     @FXML
     private Button crearEvento;
     @FXML
@@ -78,7 +84,9 @@ public class Main extends Application {
     @FXML
     private TextField quantityReps;
 
-    // Cosas de crearTarea
+    // ATRIBUTOS RELATIVOS A CREAR TAREA
+    @FXML
+    private Button crearTarea;
     @FXML
     private Button cancelarTarea;
     @FXML
@@ -89,16 +97,12 @@ public class Main extends Application {
     private TextField fieldFecha;
     @FXML
     private TextField endTimeTask;
-    @FXML
-    private Button crearTarea;
 
-    // Cosas de modificarEvento
+    // ATRIBUTOS RELATIVOS A MODIFICAR EVENTO
     @FXML
-    private Button modifyEventButton;
+    private Button modificarEvento;
     @FXML
-    private Button cancelarModifyEvent;
-    @FXML
-    private Button modifyEvent_Effect;
+    private Button cancelarModificarEvento;
     @FXML
     private TextField newTitleModifyEvent;
     @FXML
@@ -114,13 +118,11 @@ public class Main extends Application {
     @FXML
     private TextField newTimeEndModifyEvent;
 
-    // Cosas de modificarTarea
+    // ATRIBUTOS RELATIVOS A MODIFICAR TAREA
     @FXML
-    private Button modifyTaskButton;
+    private Button modificarTarea;
     @FXML
-    private Button cancelarModifyTask;
-    @FXML
-    private Button modifyTask_Effect;
+    private Button cancelarModificarTarea;
     @FXML
     private TextField newTitleModifyTask;
     @FXML
@@ -132,25 +134,19 @@ public class Main extends Application {
     @FXML
     private TextField newTimeLimitModifyTask;
 
-    private Calendario calendario;
+    // ATRIBUTOS DEL CONTROLADOR
+    private final Calendario calendario;
     private LocalDate fechaActual;
     private Frecuencia intervalo;
     private Stage escenario;
     private final String ruta;
-    private Timeline temporizadorAlarma;
-    private Timeline temporizadorRepeticiones;
 
     public Main() {
         fechaActual = LocalDate.now();
         intervalo = Frecuencia.DIARIA;
         ruta = "calendario";
-
-        try {
-            calendario = recuperarEstado();
-        } catch (IOException | ClassNotFoundException e) {
-            calendario = new Calendario();
-            guardarEstado();
-        }
+        calendario = recuperarEstado();
+        guardarEstado();
     }
 
     @Override
@@ -158,23 +154,21 @@ public class Main extends Application {
         this.escenario = stage;
 
         javafx.util.Duration segundos = javafx.util.Duration.seconds(1);
-        this.temporizadorAlarma = new Timeline(new KeyFrame(segundos, this::chequearAlarma));
+        Timeline temporizadorAlarma = new Timeline(new KeyFrame(segundos, this::chequearAlarma));
         temporizadorAlarma.setCycleCount(Timeline.INDEFINITE);
         temporizadorAlarma.play();
 
         javafx.util.Duration minutos = javafx.util.Duration.minutes(1);
-        this.temporizadorRepeticiones = new Timeline(new KeyFrame(minutos, this::chequearRepeticiones));
+        Timeline temporizadorRepeticiones = new Timeline(new KeyFrame(minutos, this::chequearRepeticiones));
         temporizadorRepeticiones.setCycleCount(Timeline.INDEFINITE);
         temporizadorRepeticiones.play();
 
         mostrarVistaActividades();
     }
 
-    // METODOS RELATIVOS A VISTA DE ACTIVIDADES
-
-    private void mostrarVistaActividades() {
-        FXMLLoader loader = new FXMLLoader(getClass().
-                getResource("scena1.fxml"));
+    /* METODOS RELATIVOS AL STAGE */
+    public AnchorPane cargarVista(String nombreArchivo) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(nombreArchivo));
         loader.setController(this);
         AnchorPane vista;
         try {
@@ -182,6 +176,18 @@ public class Main extends Application {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return vista;
+    }
+
+    public void mostrarEscenario(AnchorPane vista) {
+        Scene escena = new Scene(vista);
+        escenario.setScene(escena);
+        escenario.show();
+    }
+
+    /* METODOS RELATIVOS A VISTA DE ACTIVIDADES */
+    public void mostrarVistaActividades() {
+        AnchorPane vista = cargarVista("vistaActividades.fxml");
 
         switch (intervalo) {
             case DIARIA -> mostrarDia();
@@ -192,9 +198,9 @@ public class Main extends Application {
         anterior.setOnAction(event -> retroceder());
         siguiente.setOnAction(event -> avanzar());
 
-        crearEventScene.setOnAction(event -> mostrarVistaCrearEvento());
+        vistaCrearEvento.setOnAction(event -> mostrarVistaCrearEvento());
 
-        crearTareaScene.setOnAction(event -> mostrarVistaCrearTarea());
+        vistaCrearTarea.setOnAction(event -> mostrarVistaCrearTarea());
 
         opcionesIntervalo.getItems().addAll(Frecuencia.DIARIA.toString(), Frecuencia.SEMANAL.toString(), Frecuencia.MENSUAL.toString());
         opcionesIntervalo.setValue(intervalo.toString());
@@ -212,12 +218,10 @@ public class Main extends Application {
             }
         });
 
-        Scene scene = new Scene(vista);
-        escenario.setScene(scene);
-        escenario.show();
+        mostrarEscenario(vista);
     }
 
-    // MOSTRAR LOS DISTINTOS INTERVALOS
+    // Mostrar los distintos intervalos
     public void mostrarDia() {
         listaActividades.getChildren().clear();
         fechaTitulo.setText(formatoFecha(fechaActual));
@@ -236,7 +240,7 @@ public class Main extends Application {
         mostrarActividades(FXCollections.observableList(calendario.buscarPorIntervalo(obtenerPrincipioMes(fechaActual).atStartOfDay(), obtenerFinMes(fechaActual).atStartOfDay().plusDays(1))));
     }
 
-    // MOSTRAR LAS DISTINTAS ACTIVIDADES
+    // Mostrar las distintas actividades
     public void mostrarActividades(ObservableList<Actividad> actividades) {
         for (Actividad a : actividades) {
             a.aceptar(new ActividadVisitante() {
@@ -260,10 +264,10 @@ public class Main extends Application {
         label.setText(evento.getTitulo());
 
         if (evento.isDiaCompleto()) {
-            label.setText(String.format("%s [ Inicio: %s | Fin: %s ]",  label.getText(), formatoFecha(evento.getInicio()), formatoFecha(evento.getFin())));
+            label.setText(String.format("%s [ Inicio: %s | Fin: %s ]", label.getText(), formatoFecha(evento.getInicio()), formatoFecha(evento.getFin())));
             label.setStyle("-fx-background-color: blue; " + "-fx-text-fill: white;");
         } else {
-            label.setText(String.format("%s [ Inicio: %s | Fin: %s ]",  label.getText(), formatoTiempo(evento.getInicio()), formatoTiempo(evento.getFin())));
+            label.setText(String.format("%s [ Inicio: %s | Fin: %s ]", label.getText(), formatoTiempo(evento.getInicio()), formatoTiempo(evento.getFin())));
             label.setStyle("-fx-text-fill: blue;");
         }
 
@@ -297,33 +301,38 @@ public class Main extends Application {
         label.setOnMouseClicked(event -> mostrarVistaTarea(tarea));
     }
 
-    // OBTENER PRINCIPIOS Y FINES DE INTERVALOS
+    // Obtener principios y fines de intervalos
     public static LocalDate obtenerPrincipioSemana(LocalDate fecha) {
         return fecha.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
     }
+
     public static LocalDate obtenerFinSemana(LocalDate fecha) {
         return fecha.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY));
     }
+
     public static LocalDate obtenerPrincipioMes(LocalDate fecha) {
         return fecha.withDayOfMonth(1);
     }
+
     public static LocalDate obtenerFinMes(LocalDate fecha) {
         int ultimoDiaMes = fecha.lengthOfMonth();
         return fecha.withDayOfMonth(ultimoDiaMes);
     }
 
-    // DARLE FORMATO A LOCALDATE
+    // Darle formato a LocalDate
     public String formatoTiempo(LocalDateTime tiempo) {
         return String.format("%s - %s/%s/%s", tiempo.toLocalTime(), tiempo.getDayOfMonth(), tiempo.getMonthValue(), tiempo.getYear());
     }
+
     public String formatoFecha(LocalDateTime tiempo) {
         return String.format("%s/%s/%s", tiempo.getDayOfMonth(), tiempo.getMonthValue(), tiempo.getYear());
     }
+
     public String formatoFecha(LocalDate fecha) {
         return String.format("%s/%s/%s", fecha.getDayOfMonth(), fecha.getMonthValue(), fecha.getYear());
     }
 
-    // AVANZAR Y RETROCEDER EN EL TIEMPO
+    // Avanzar y retroceder en el tiempo
     public void retroceder() {
         if (intervalo.equals(Frecuencia.DIARIA)) {
             fechaActual = fechaActual.minusDays(1);
@@ -350,54 +359,22 @@ public class Main extends Application {
         }
     }
 
-    // METODOS RELATIVOS A LA VISTA DE EVENTO Y TAREAS
-
+    /* METODOS RELATIVOS A LA VISTA DETALLADA DE EVENTO Y TAREA */
     public void mostrarVistaEvento(Evento evento) {
-        FXMLLoader loader = new FXMLLoader(getClass().
-                getResource("scena2.fxml"));
-        loader.setController(this);
-        AnchorPane vista;
-        try {
-            vista = loader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        AnchorPane vista = cargarVista("vistaEvento.fxml");
 
         cancelarActividad.setOnAction(event -> mostrarVistaActividades());
 
-        eliminar.setOnAction(event-> eliminarEvento(evento));
+        eliminar.setOnAction(event -> eliminarEvento(evento));
 
-        modifyEventButton.setOnAction(event -> mostrarVistaModificarEvento(evento));
+        vistaModificarEvento.setOnAction(event -> mostrarVistaModificarEvento(evento));
 
         mostrarDetalleEvento(evento);
 
-        Scene scene = new Scene(vista);
-        escenario.setScene(scene);
-        escenario.show();
-    }
-
-    public void mostrarVistaModificarEvento(Evento evento) {
-        FXMLLoader loader = new FXMLLoader(getClass().
-                getResource("scenaModificarEvento.fxml"));
-        loader.setController(this);
-        AnchorPane vista;
-        try {
-            vista = loader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        cancelarModifyEvent.setOnAction(event -> mostrarVistaEvento(evento));
-
-        modifyEvent_Effect.setOnAction(event -> modificarEvento(evento));
-
-        Scene scene = new Scene(vista);
-        escenario.setScene(scene);
-        escenario.show();
+        mostrarEscenario(vista);
     }
 
     public void mostrarDetalleEvento(Evento evento) {
-
         Label titulo = new Label();
         titulo.setText(evento.getTitulo());
 
@@ -410,19 +387,19 @@ public class Main extends Application {
 
         if (evento.isDiaCompleto()) {
             diaCompleto.setText("Dia completo ✅");
-            inicio.setText(formatoFecha(evento.getInicio()));
-            fin.setText(formatoFecha(evento.getFin()));
+            inicio.setText("Inicia: " + formatoFecha(evento.getInicio()));
+            fin.setText("Finaliza: "  + formatoFecha(evento.getFin()));
         } else {
             diaCompleto.setText("Dia completo ✗");
-            inicio.setText(formatoTiempo(evento.getInicio()));
-            fin.setText(formatoTiempo(evento.getFin()));
+            inicio.setText("Inicia: " + formatoTiempo(evento.getInicio()));
+            fin.setText("Finaliza: " + formatoTiempo(evento.getFin()));
         }
 
         Label repeticion = new Label();
         if (evento.esRepetido()) {
-            repeticion.setText("Repeticion ✅");
+            repeticion.setText("Se repite ✅");
         } else {
-            repeticion.setText("Repeticion ✗");
+            repeticion.setText("Se repite ✗");
         }
 
         detalleActividad.getChildren().add(titulo);
@@ -432,66 +409,26 @@ public class Main extends Application {
         detalleActividad.getChildren().add(fin);
         detalleActividad.getChildren().add(repeticion);
 
-        detalleActividad.getChildren().add(new Label("Alarmas"));
-        for (Alarma a: evento.getListaAlarmas()) {
-            Label alarma = new Label();
-            alarma.setText(String.format("Inicio: %s - Efecto: %s", formatoTiempo(a.getInicio()), a.getEfecto()));
-            detalleActividad.getChildren().add(alarma);
-        }
+        mostrarAlarmas(evento);
     }
 
-    public void mostrarVistaTarea(Tarea tarea)  {
-        FXMLLoader loader = new FXMLLoader(getClass().
-                getResource("scena2Tarea.fxml"));
-        loader.setController(this);
-        AnchorPane vista;
-        try {
-            vista = loader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void mostrarVistaTarea(Tarea tarea) {
+        AnchorPane vista = cargarVista("vistaTarea.fxml");
 
         cancelarActividad.setOnAction(event -> mostrarVistaActividades());
 
-        eliminar.setOnAction(event-> eliminarTarea(tarea));
+        eliminar.setOnAction(event -> eliminarTarea(tarea));
 
-        marcarTareaButton.setOnAction(event -> {
+        marcarTarea.setOnAction(event -> {
             cambiarTareaCompletada(tarea);
             mostrarVistaTarea(tarea);
         });
 
-        modifyTaskButton.setOnAction(event -> mostrarVistaModificarTarea(tarea));
+        vistaModificarTarea.setOnAction(event -> mostrarVistaModificarTarea(tarea));
 
         mostrarDetalleTarea(tarea);
 
-        Scene scene = new Scene(vista);
-        escenario.setScene(scene);
-        escenario.show();
-    }
-
-    public void mostrarVistaModificarTarea(Tarea tarea) {
-        FXMLLoader loader = new FXMLLoader(getClass().
-                getResource("scenaModificarTarea.fxml"));
-        loader.setController(this);
-        AnchorPane vista;
-        try {
-            vista = loader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        cancelarModifyTask.setOnAction(event -> mostrarVistaTarea(tarea));
-
-        modifyTask_Effect.setOnAction(event -> modificarTarea(tarea));
-
-        Scene scene = new Scene(vista);
-        escenario.setScene(scene);
-        escenario.show();
-    }
-
-    public void cambiarTareaCompletada(Tarea tarea) {
-        calendario.marcarTarea(tarea);
-        guardarEstado();
+        mostrarEscenario(vista);
     }
 
     public void mostrarDetalleTarea(Tarea tarea) {
@@ -504,14 +441,13 @@ public class Main extends Application {
 
         Label diaCompleto = new Label();
         Label inicio = new Label();
-        Label fin = new Label();
 
         if (tarea.isDiaCompleto()) {
             diaCompleto.setText("Dia completo ✅");
-            inicio.setText(formatoFecha(tarea.getInicio()));
+            inicio.setText("Vence: " + formatoFecha(tarea.getInicio()));
         } else {
             diaCompleto.setText("Dia completo ✗");
-            inicio.setText(formatoTiempo(tarea.getInicio()));
+            inicio.setText("Vence: " + formatoTiempo(tarea.getInicio()));
         }
 
         Label completada = new Label();
@@ -525,60 +461,47 @@ public class Main extends Application {
         detalleActividad.getChildren().add(descripcion);
         detalleActividad.getChildren().add(diaCompleto);
         detalleActividad.getChildren().add(inicio);
-        detalleActividad.getChildren().add(fin);
         detalleActividad.getChildren().add(completada);
 
-        detalleActividad.getChildren().add(new Label("Alarmas"));
-        for (Alarma a: tarea.getListaAlarmas()) {
-            Label alarma = new Label();
-            alarma.setText(String.format("Inicio: %s - Efecto: %s", formatoTiempo(a.getInicio()), a.getEfecto()));
-            detalleActividad.getChildren().add(alarma);
-        }
+        mostrarAlarmas(tarea);
     }
 
-    public void mostrarVistaCrearEvento() {
-        // Load the FXML file
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("scenaCrearEvento.fxml"));
-        loader.setController(this);
-        AnchorPane vista;
-        try {
-            vista = loader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public void mostrarAlarmas(Actividad actividad) {
+        if (actividad.getListaAlarmas().size() == 0) {
+            detalleActividad.getChildren().add(new Label("Sin alarmas"));
+        } else {
+            for (Alarma a : actividad.getListaAlarmas()) {
+                Label alarma = new Label();
+                alarma.setText(String.format("Alarma [ Inicio: %s ]", formatoTiempo(a.getInicio())));
+                detalleActividad.getChildren().add(alarma);
+            }
         }
+    }
+    public void cambiarTareaCompletada(Tarea tarea) {
+        calendario.marcarTarea(tarea);
+        guardarEstado();
+    }
+
+    /* METODOS RELATIVOS A CREAR */
+    public void mostrarVistaCrearEvento() {
+        AnchorPane vista = cargarVista("vistaCrearEvento.fxml");
 
         crearEvento.setOnAction(event -> crearEvento());
 
         cancelarEvento.setOnAction(event -> mostrarVistaActividades());
 
-        // Create the scene
-        Scene scene = new Scene(vista);
-        escenario.setScene(scene);
-        escenario.show();
+        mostrarEscenario(vista);
     }
 
     public void mostrarVistaCrearTarea() {
-        // Load FXML file
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("ScenaCrearTarea.fxml"));
-        loader.setController(this);
-        AnchorPane vista;
-        try {
-            vista = loader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        AnchorPane vista = cargarVista("vistaCrearTarea.fxml");
 
         crearTarea.setOnAction(event -> crearTarea());
 
         cancelarTarea.setOnAction(event -> mostrarVistaActividades());
 
-        // Create the scene
-        Scene scene = new Scene(vista);
-        escenario.setScene(scene);
-        escenario.show();
+        mostrarEscenario(vista);
     }
-
-    // METODOS RELATIVOS A LA CREACION Y MODIFICACION DE EVENTOS Y TAREAS
 
     public void crearEvento() {
         // Validar input del usuario.
@@ -652,7 +575,6 @@ public class Main extends Application {
         boolean diaCompleto = completeDayCheckbox.isSelected();
         boolean seRepite = dailyRepeatCheck.isSelected();
 
-
         // Una vez validados los inputs, realizar creacion de evento.
 
         LocalDate fechaInicioFormatProcess = LocalDate.parse(fechaInicio, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
@@ -671,24 +593,21 @@ public class Main extends Application {
             alarmasFormateadas[i] = inicioEventoFormateado.minus(duration);
         }
 
-        if (seRepite && quantityRepsParsed > 0){
+        Efecto[] efectos = new Efecto[alarmasFormateadas.length];
+        Arrays.fill(efectos, Efecto.NOTIFICACION);
+
+        if (seRepite && quantityRepsParsed > 0) {
             Integer frecuenciaRepeticion = Integer.valueOf(frequencyRepeatDaily.getText());
-            Repeticion repeticion = new RepeticionDiariaIntervalo(inicioEventoFormateado, quantityRepsParsed,frecuenciaRepeticion);
-            Efecto[] efectos = new Efecto[alarmasFormateadas.length];
-            Arrays.fill(efectos, Efecto.NOTIFICACION);
+            Repeticion repeticion = new RepeticionDiariaIntervalo(inicioEventoFormateado, quantityRepsParsed, frecuenciaRepeticion);
             calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, efectos, repeticion);
             guardarEstado();
-        }
-
-        else if (seRepite){
+        } else if (seRepite) {
             Integer frecuenciaRepeticion = Integer.valueOf(frequencyRepeatDaily.getText());
             Repeticion repeticion = new RepeticionDiariaIntervalo(inicioEventoFormateado, frecuenciaRepeticion);
-            calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, new Efecto[]{Efecto.NOTIFICACION}, repeticion);
+            calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, efectos, repeticion);
             guardarEstado();
-        }
-
-        else {
-            calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, new Efecto[]{Efecto.NOTIFICACION}, null);
+        } else {
+            calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, efectos, null);
             guardarEstado();
         }
         mostrarVistaActividades();
@@ -696,12 +615,12 @@ public class Main extends Application {
 
     public void crearTarea() {
         // Validar input del usuario
-        if (!esFechaValida(fieldFecha.getText())){
+        if (!esFechaValida(fieldFecha.getText())) {
             showErrorAlert("Formato de fecha invalido");
             return;
         }
 
-        if (!esTiempoValido(endTimeTask.getText())){
+        if (!esTiempoValido(endTimeTask.getText())) {
             showErrorAlert("Formato de horario limite invalido");
             return;
         }
@@ -731,7 +650,7 @@ public class Main extends Application {
 
         boolean diaCompleto = completeDayCheckbox.isSelected();
 
-        // Una vez validados los inputs, realizar creacion de evento.
+        // Una vez validados los inputs, realizar creacion de tarea.
 
         LocalDate fechaInicioFormatProcess = LocalDate.parse(fechaInicio, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         LocalTime tiempoInicioFormatProcess = LocalTime.parse(limiteTarea, DateTimeFormatter.ofPattern("HH:mm"));
@@ -753,6 +672,27 @@ public class Main extends Application {
         mostrarVistaActividades();
     }
 
+    /* METODOS RELATIVOS A MODIFICAR */
+    public void mostrarVistaModificarTarea(Tarea tarea) {
+        AnchorPane vista = cargarVista("vistaModificarTarea.fxml");
+
+        cancelarModificarTarea.setOnAction(event -> mostrarVistaTarea(tarea));
+
+        modificarTarea.setOnAction(event -> modificarTarea(tarea));
+
+        mostrarEscenario(vista);
+    }
+
+    public void mostrarVistaModificarEvento(Evento evento) {
+        AnchorPane vista = cargarVista("vistaModificarEvento.fxml");
+
+        cancelarModificarEvento.setOnAction(event -> mostrarVistaEvento(evento));
+
+        modificarEvento.setOnAction(event -> modificarEvento(evento));
+
+        mostrarEscenario(vista);
+    }
+
     public void modificarTarea(Tarea tarea) {
         String nuevoTitulo = null;
         String nuevaDescripcion = null;
@@ -761,15 +701,15 @@ public class Main extends Application {
         String auxiliar_date = newDateModifyTask.getText();
         String auxiliar_time = newTimeLimitModifyTask.getText();
 
-        if (!auxiliar_date.isEmpty()){
-            if (!esFechaValida(auxiliar_date)){
+        if (!auxiliar_date.isEmpty()) {
+            if (!esFechaValida(auxiliar_date)) {
                 showErrorAlert("Formato de fecha invalido");
                 return;
             }
         }
 
-        if (!auxiliar_time.isEmpty()){
-            if (!esTiempoValido(auxiliar_time)){
+        if (!auxiliar_time.isEmpty()) {
+            if (!esTiempoValido(auxiliar_time)) {
                 showErrorAlert("Formato de horario limite invalido");
                 return;
             }
@@ -781,14 +721,14 @@ public class Main extends Application {
         }
 
         if ((!newTitleModifyTask.getText().isEmpty())) {
-           nuevoTitulo = newTitleModifyTask.getText();
+            nuevoTitulo = newTitleModifyTask.getText();
         }
 
         if ((!newDescriptionModifyTask.getText().isEmpty())) {
             nuevaDescripcion = newDescriptionModifyTask.getText();
         }
 
-        if ((!auxiliar_date.isEmpty()) && (!auxiliar_time.isEmpty())){
+        if ((!auxiliar_date.isEmpty()) && (!auxiliar_time.isEmpty())) {
             LocalDate nuevaFechaInicioFormatProcess = LocalDate.parse(auxiliar_date, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             LocalTime nuevoTiempoLimiteFormatProcess = LocalTime.parse(auxiliar_time, DateTimeFormatter.ofPattern("HH:mm"));
             nuevoLimite = nuevaFechaInicioFormatProcess.atTime(nuevoTiempoLimiteFormatProcess);
@@ -811,29 +751,29 @@ public class Main extends Application {
         String auxiliar_date_fin = newDateEndModifyEvent.getText();
         String auxiliar_time_fin = newTimeEndModifyEvent.getText();
 
-        if (!auxiliar_date_inicio.isEmpty()){
-            if (!esFechaValida(auxiliar_date_inicio)){
+        if (!auxiliar_date_inicio.isEmpty()) {
+            if (!esFechaValida(auxiliar_date_inicio)) {
                 showErrorAlert("Formato de fecha invalido");
                 return;
             }
         }
 
-        if (!auxiliar_time_inicio.isEmpty()){
-            if (!esTiempoValido(auxiliar_time_inicio)){
+        if (!auxiliar_time_inicio.isEmpty()) {
+            if (!esTiempoValido(auxiliar_time_inicio)) {
                 showErrorAlert("Formato de horario limite invalido");
                 return;
             }
         }
 
-        if (!auxiliar_date_fin.isEmpty()){
-            if (!esFechaValida(auxiliar_date_fin)){
+        if (!auxiliar_date_fin.isEmpty()) {
+            if (!esFechaValida(auxiliar_date_fin)) {
                 showErrorAlert("Formato de fecha invalido");
                 return;
             }
         }
 
-        if (!auxiliar_time_fin.isEmpty()){
-            if (!esTiempoValido(auxiliar_time_fin)){
+        if (!auxiliar_time_fin.isEmpty()) {
+            if (!esTiempoValido(auxiliar_time_fin)) {
                 showErrorAlert("Formato de horario limite invalido");
                 return;
             }
@@ -857,13 +797,13 @@ public class Main extends Application {
             nuevaDescripcion = newDescriptionModifyEvent.getText();
         }
 
-        if ((!auxiliar_date_inicio.isEmpty()) && (!auxiliar_time_inicio.isEmpty())){
+        if ((!auxiliar_date_inicio.isEmpty()) && (!auxiliar_time_inicio.isEmpty())) {
             LocalDate nuevaFechaInicioFormatProcess = LocalDate.parse(auxiliar_date_inicio, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             LocalTime nuevoTiempoLimiteFormatProcess = LocalTime.parse(auxiliar_time_inicio, DateTimeFormatter.ofPattern("HH:mm"));
             nuevoInicio = nuevaFechaInicioFormatProcess.atTime(nuevoTiempoLimiteFormatProcess);
         }
 
-        if ((!auxiliar_date_fin.isEmpty()) && (!auxiliar_time_fin.isEmpty())){
+        if ((!auxiliar_date_fin.isEmpty()) && (!auxiliar_time_fin.isEmpty())) {
             LocalDate nuevaFechaInicioFormatProcess = LocalDate.parse(auxiliar_date_fin, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             LocalTime nuevoTiempoLimiteFormatProcess = LocalTime.parse(auxiliar_time_fin, DateTimeFormatter.ofPattern("HH:mm"));
             nuevoFin = nuevaFechaInicioFormatProcess.atTime(nuevoTiempoLimiteFormatProcess);
@@ -894,7 +834,7 @@ public class Main extends Application {
         };
     }
 
-    public void showErrorAlert(String mensaje){
+    public void showErrorAlert(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Informacion");
         alert.setHeaderText(null);
@@ -915,7 +855,7 @@ public class Main extends Application {
         return time.matches("(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]");
     }
 
-    // METODOS PARA ELIMINAR
+    /* METODOS RELATIVOS A ELIMINAR */
     public void eliminarEvento(Evento evento) {
         calendario.eliminarEvento(evento);
         guardarEstado();
@@ -928,21 +868,21 @@ public class Main extends Application {
         mostrarVistaActividades();
     }
 
-    // METODO RELATIVO A LAS REPETICIONES
-    private void chequearRepeticiones(ActionEvent event) {
+    /* METODO RELATIVO A CONTROLAR LAS REPETICIONES */
+    public void chequearRepeticiones(ActionEvent event) {
         LocalDateTime horaActual = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
         calendario.actualizarEventosRepetidos(horaActual);
     }
 
-    // METODOS RELATIVOS A LA ALARMA
-    private void chequearAlarma(ActionEvent event) {
+    /* METODOS RELATIVOS A CONTROLAR LAS ALARMAS */
+    public void chequearAlarma(ActionEvent event) {
         LocalDateTime horaActual = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
         if (calendario.iniciaProximaAlarma(horaActual)) {
             mostrarAlarma(calendario.obtenerProximaAlarma(horaActual));
         }
     }
 
-    private void mostrarAlarma(Alarma alarma) {
+    public void mostrarAlarma(Alarma alarma) {
         Actividad actividad = alarma.disparar();
         guardarEstado();
 
@@ -964,23 +904,26 @@ public class Main extends Application {
         ventana.show();
     }
 
-    // METODOS PARA GUARDAR Y RECUPERAR ESTADO
+    /* METODOS RELATIVOS A GUARDAR Y RECUPERAR EL ESTADO */
     public void guardarEstado() {
-        BufferedOutputStream estado;
         try {
-            estado = new BufferedOutputStream(new FileOutputStream(ruta));
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        try {
+            var estado = new BufferedOutputStream(new FileOutputStream(ruta));
             calendario.serializar(estado);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public Calendario recuperarEstado() throws IOException, ClassNotFoundException {
-        var estado = new BufferedInputStream(new FileInputStream(ruta));
-        return Calendario.deserializar(estado);
+    public Calendario recuperarEstado() {
+        Calendario c;
+        try {
+            var estado = new BufferedInputStream(new FileInputStream(ruta));
+            c = Calendario.deserializar(estado);
+        } catch (FileNotFoundException e) {
+            c = new Calendario();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return c;
     }
 }

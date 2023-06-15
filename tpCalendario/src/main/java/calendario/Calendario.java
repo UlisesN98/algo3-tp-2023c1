@@ -18,7 +18,7 @@ public class Calendario implements Serializable {
     }
 
     // Actualiza la repeticion actual de los eventos repetidos si esta
-    // queda obsoleta de acuerdo a la fecha pasada
+    // queda obsoleta de acuerdo a la fecha pasada por parametro
     public void actualizarEventosRepetidos(LocalDateTime fechaActual) {
         for (Evento evento : listaEventos) {
             if (!evento.esRepetido()) { continue; }
@@ -85,7 +85,6 @@ public class Calendario implements Serializable {
         return listaActividades;
     }
 
-
     // METODOS DE CREACION
 
     // Recibe un String que indique su título, un String que indique una descripcion, un boolean que indique si es de día completo
@@ -131,7 +130,6 @@ public class Calendario implements Serializable {
         nuevaTarea.agregarAlarmas(inicioAlarmas, efectoAlarmas);
         listaTareas.add(nuevaTarea);
     }
-
 
     // METODOS DE MODIFICACION
 

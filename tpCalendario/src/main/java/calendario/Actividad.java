@@ -9,16 +9,16 @@ import java.util.TreeSet;
 
 public abstract class Actividad implements Serializable {
 
-    protected String titulo; // Título de la actividad. En caso de que este atributo no se indique, se le asignara "Sin título".
-    protected String descripcion; // Descripcion de la actividad. En caso de que este atributo no se indique, se le asignara "Sin descripcion".
+    protected String titulo; // Título de la actividad. En caso de que se introduzca una cadena vacia se le asignara "Sin título".
+    protected String descripcion; // Descripcion de la actividad. En caso de que se introduzca una cadena vacia se le asignara "Sin descripcion".
     protected boolean diaCompleto;
     protected LocalDateTime inicio;
     protected final TreeSet<Alarma> listaAlarmas;
 
     Actividad(String titulo, String descripcion, boolean diaCompleto, LocalDateTime inicio) {
 
-        this.titulo = titulo == null? "Sin titulo" : titulo;
-        this.descripcion = descripcion == null? "Sin descripcion" : descripcion;
+        this.titulo = titulo.equals("") ? "Sin titulo" : titulo;
+        this.descripcion = descripcion.equals("") ? "Sin descripcion" : descripcion;
 
         this.diaCompleto = diaCompleto;
 
@@ -36,7 +36,6 @@ public abstract class Actividad implements Serializable {
     // Setters
     void setTitulo(String titulo) { this.titulo = titulo; }
     void setDescripcion(String descripcion) { this.descripcion = descripcion; }
-
 
     // Metodos relativos a alarmas
 
@@ -92,6 +91,7 @@ public abstract class Actividad implements Serializable {
         return null;
     }
 
+    // Modifica los inicios de las alarmas basándose en la fecha pasada por parametro
     void actualizarAlarmas(LocalDateTime nuevoInicio) {
         for (Alarma alarma : listaAlarmas) {
             alarma.setInicio(nuevoInicio.minusSeconds(ChronoUnit.SECONDS.between(alarma.getInicio(), inicio)));
