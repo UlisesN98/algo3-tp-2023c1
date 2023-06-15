@@ -8,7 +8,7 @@ import java.util.Comparator;
 public class Alarma implements Serializable {
 
     private final Actividad actividad; // Actividad que cuenta con esta Alarma
-    private final LocalDateTime inicio;
+    private LocalDateTime inicio;
     private final Efecto efecto; // Tipo de efecto que producira la Alarma
     private boolean disparada;
 
@@ -28,13 +28,15 @@ public class Alarma implements Serializable {
         this.disparada = false;
     }
 
-    // Getters
+    // Getters & Setters
 
     public LocalDateTime getInicio() {
         return inicio;
     }
     public Efecto getEfecto() { return efecto; }
     public boolean isDisparada() { return disparada; }
+
+    public void setInicio(LocalDateTime inicio) { this.inicio = inicio; }
 
     // Devuelve true si la instancia de Alarma se inicia antes que la pasada por parametro
     boolean esAnterior(Alarma alarma) {

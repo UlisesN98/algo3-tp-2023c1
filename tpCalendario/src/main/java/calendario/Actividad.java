@@ -3,6 +3,7 @@ package calendario;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.TreeSet;
 
@@ -89,6 +90,12 @@ public abstract class Actividad implements Serializable {
             return alarma;
         }
         return null;
+    }
+
+    void actualizarAlarmas(LocalDateTime nuevoInicio) {
+        for (Alarma alarma : listaAlarmas) {
+            alarma.setInicio(nuevoInicio.minusSeconds(ChronoUnit.SECONDS.between(alarma.getInicio(), inicio)));
+        }
     }
 
     // Metodo requerido para hacer comparaciones que permitan ordenar Eventos y Tareas temporalmente

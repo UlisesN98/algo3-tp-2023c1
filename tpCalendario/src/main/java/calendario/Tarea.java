@@ -19,16 +19,18 @@ public class Tarea extends Actividad {
     // Recibe una nueva fecha de inicio, que en caso de ser la Tarea de día completo se adaptara al formato antes de asignarse.
     void setInicio(LocalDateTime inicio) {
         if (diaCompleto) {
-            this.inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 23, 59);
-        } else {
-            this.inicio = inicio;
+            inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 23, 59);
         }
+        actualizarAlarmas(inicio);
+        this.inicio = inicio;
     }
 
     // Modifica el estado de día completo por el que indica el parametro y adapta de ser necesario la fecha de inicio.
     void setDiaCompleto(boolean esDiaCompleto) {
         if (!diaCompleto && esDiaCompleto) {
-            inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 23, 59);
+            LocalDateTime nuevoInicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 23, 59);
+            actualizarAlarmas(nuevoInicio);
+            inicio = nuevoInicio;
         }
         this.diaCompleto = esDiaCompleto;
     }

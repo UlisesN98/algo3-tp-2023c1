@@ -25,18 +25,38 @@ public class Evento extends Actividad {
         this.fin = fin;
         this.repeticion = repeticion;
 
+        this.repActual = null;
         this.original = true;
     }
 
     public LocalDateTime getFin() { return fin; }
 
+    @Override
+    void setTitulo(String titulo) {
+        super.setTitulo(titulo);
+        if (repActual != null) {
+            repActual.colocarTitulo(titulo);
+        }
+    }
+
+    @Override
+    void setDescripcion(String descripcion) {
+        super.setDescripcion(descripcion);
+        if (repActual != null) {
+            repActual.colocarDescripcion(descripcion);
+        }
+    }
+
     // Recibe una nueva fecha de inicio, que en caso de ser el Evento de día completo se adaptara al formato antes de asignarse.
+    // Modifica las fechas de los atributos asociados al inicio.
     void setInicio(LocalDateTime inicio) {
         if (diaCompleto) {
             inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 0, 0);
         }
+        actualizarAlarmas(inicio);
         this.inicio = inicio;
         if (repeticion != null) { repeticion.setInicio(this.inicio); }
+        if (repActual != null) { repActual = crearRepeticion(this.inicio); }
     }
 
     // Recibe una nueva fecha de fin, que en caso de ser el Evento de día completo se adaptara al formato antes de asignarse.
@@ -45,14 +65,19 @@ public class Evento extends Actividad {
             fin = LocalDateTime.of(fin.getYear(), fin.getMonth(), fin.getDayOfMonth(), 23, 59);
         }
         this.fin = fin;
+        if (repActual != null) { repActual = crearRepeticion(this.inicio); }
     }
 
     // Modifica el estado de día completo por el que indica el parametro y adapta de ser necesario las fechas de inicio y fin.
+    // Si modifica el inicio se encarga de adaptar las fechas de los atributos dependientes de este.
     void setDiaCompleto(boolean esDiaCompleto) {
         if (!diaCompleto && esDiaCompleto) {
-            inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 0, 0);
+            LocalDateTime nuevoInicio = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDayOfMonth(), 0, 0);
+            actualizarAlarmas(nuevoInicio);
+            inicio = nuevoInicio;
             fin = LocalDateTime.of(fin.getYear(), fin.getMonth(), fin.getDayOfMonth(), 23, 59);
             if (repeticion != null) { repeticion.setInicio(this.inicio); }
+            if (repActual != null) { repActual = crearRepeticion(this.inicio); }
         }
         this.diaCompleto = esDiaCompleto;
     }

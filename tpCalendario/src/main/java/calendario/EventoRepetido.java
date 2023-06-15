@@ -20,10 +20,17 @@ public class EventoRepetido extends Evento {
     void setTitulo(String titulo) {
         eventoOriginal.setTitulo(titulo);
     }
+    void colocarTitulo(String titulo) {
+        this.titulo = titulo;
+    }
 
     @Override
     void setDescripcion(String descripcion) {
         eventoOriginal.setDescripcion(descripcion);
+    }
+
+    void colocarDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     @Override
