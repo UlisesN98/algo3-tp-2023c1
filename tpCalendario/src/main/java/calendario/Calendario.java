@@ -11,10 +11,13 @@ public class Calendario implements Serializable {
 
     private final List<Evento> listaEventos;
     private final List<Tarea> listaTareas;
+    private final List<Suscriptor> suscriptores;
 
     public Calendario() {
         this.listaEventos = new ArrayList<>();
         this.listaTareas = new ArrayList<>();
+        this.suscriptores = new ArrayList<>();
+
     }
 
     // Actualiza la repeticion actual de los eventos repetidos si esta
@@ -27,6 +30,7 @@ public class Calendario implements Serializable {
                 evento.actualizarRepeticionActual(fechaActual);
             }
         }
+        notificar();
     }
 
     // METODOS DE BUSQUEDA
@@ -97,6 +101,7 @@ public class Calendario implements Serializable {
         nuevoEvento.agregarAlarmas(inicioAlarmas, efectoAlarmas);
         nuevoEvento.setRepeticionActual();
         listaEventos.add(nuevoEvento);
+        notificar();
     }
 
     // Recibe un String que indique su titulo, un String que indique una descripcion, un boolean que indique si es de dia completo
@@ -109,6 +114,7 @@ public class Calendario implements Serializable {
         nuevoEvento.agregarAlarmas(inicioAlarmas, efectoAlarmas);
         nuevoEvento.setRepeticionActual();
         listaEventos.add(nuevoEvento);
+        notificar();
     }
 
     // Recibe un String que indique su titulo, un String que indique una descripcion, un boolean que indique si es de dia completo,
@@ -119,6 +125,7 @@ public class Calendario implements Serializable {
         var nuevaTarea = new Tarea(titulo, descripcion, diaCompleto, limite);
         nuevaTarea.agregarAlarmas(inicioAlarmas, efectoAlarmas);
         listaTareas.add(nuevaTarea);
+        notificar();
     }
 
     // Recibe un String que indique su titulo, un String que indique una descripcion, un boolean que indique si es de dia completo,
@@ -129,6 +136,7 @@ public class Calendario implements Serializable {
         var nuevaTarea = new Tarea(titulo, descripcion, diaCompleto, limite);
         nuevaTarea.agregarAlarmas(inicioAlarmas, efectoAlarmas);
         listaTareas.add(nuevaTarea);
+        notificar();
     }
 
     // METODOS DE MODIFICACION
@@ -142,6 +150,7 @@ public class Calendario implements Serializable {
         if (nuevaDescripcion != null){
             actividad.setDescripcion(nuevaDescripcion);
         }
+        notificar();
     }
 
     // Recibe una instancia de Evento y modifica su inicio y su fin, o únicamente uno de los dos en
@@ -153,6 +162,7 @@ public class Calendario implements Serializable {
         if (nuevoFin != null){
             evento.setFin(nuevoFin);
         }
+        notificar();
     }
 
     // Recibe una instancia de Tarea y modifica su limite.
@@ -160,33 +170,39 @@ public class Calendario implements Serializable {
         if (nuevoLimite != null){
             tarea.setInicio(nuevoLimite);
         }
+        notificar();
     }
 
     // Recibe una instancia de Evento y modifica su titulo, descripcion, inicio y fin, o únicamente los parametros pasados distintos de null.
     public void modificar(Evento evento, String nuevoTitulo, String nuevaDescripcion, LocalDateTime nuevoInicio, LocalDateTime nuevoFin) {
         modificar(evento, nuevoTitulo, nuevaDescripcion);
         modificar(evento, nuevoInicio, nuevoFin);
+        notificar();
     }
 
     // Recibe una instancia de Tarea y modifica su titulo, descripcion y limite, o únicamente los parametros pasados distintos de null.
     public void modificar(Tarea tarea, String nuevoTitulo, String nuevaDescripcion, LocalDateTime nuevoLimite) {
         modificar(tarea, nuevoTitulo, nuevaDescripcion);
         modificar(tarea, nuevoLimite);
+        notificar();
     }
 
     // Recibe una instancia de Evento y segun el parametro pasado cambia su estado de dia completo.
     public void modificar(Evento evento, boolean diaCompleto) {
         evento.setDiaCompleto(diaCompleto);
+        notificar();
     }
 
     // Recibe una instancia de Tarea y segun el parametro pasado cambia su estado de dia completo.
     public void modificar(Tarea tarea, boolean diaCompleto) {
         tarea.setDiaCompleto(diaCompleto);
+        notificar();
     }
 
     // Modifica la Repeticion de un Evento tras pasarle una nueva instancia de esta con las nuevas caracteristicas requeridas.
     public void modificar(Evento evento, Repeticion repeticion) {
-       evento.setRepeticion(repeticion);
+        evento.setRepeticion(repeticion);
+        notificar();
     }
 
 
@@ -200,11 +216,13 @@ public class Calendario implements Serializable {
             var eventoRep = (EventoRepetido) evento;
             listaEventos.remove(eventoRep.getEventoOriginal());
         }
+        notificar();
     }
 
     // Recibe una instancia de Tarea y la quita de la lista de Tareas.
     public void eliminarTarea(Tarea tarea) {
         listaTareas.remove(tarea);
+        notificar();
     }
 
 
@@ -218,6 +236,7 @@ public class Calendario implements Serializable {
     // Recibe una instancia de Tarea y dependiendo de su estado la cambia a completa o incompleta.
     public void marcarTarea(Tarea tarea) {
         tarea.cambiarEstadoTarea();
+        notificar();
     }
 
 
@@ -227,12 +246,14 @@ public class Calendario implements Serializable {
     // caracteristicas pasadas por parametro.
     public void agregarAlarma(Actividad actividad, LocalDateTime inicio, Efecto efecto) {
         actividad.agregarAlarma(inicio, efecto);
+        notificar();
     }
 
     // Recibe una instancia de Evento o Tarea y agrega le agrega una alarma con las
     // caracteristicas pasadas por parametro.
     public void agregarAlarma(Actividad actividad, Duration inicio, Efecto efecto) {
         actividad.agregarAlarma(inicio, efecto);
+        notificar();
     }
 
     // Recibe una instancia de Evento o Tarea y modifica la alarma, que tiene las caracteristicas indicadas, con el parametro pasado.
@@ -240,6 +261,7 @@ public class Calendario implements Serializable {
         Alarma alarma = actividad.buscarAlarma(inicio, efecto);
         actividad.eliminarAlarma(alarma);
         actividad.agregarAlarma(nuevoInicio, efecto);
+        notificar();
     }
 
     // Recibe una instancia de Evento o Tarea y modifica la alarma, que tiene las caracteristicas indicadas, con el parametro pasado.
@@ -247,6 +269,7 @@ public class Calendario implements Serializable {
         Alarma alarma = actividad.buscarAlarma(inicio, efecto);
         actividad.eliminarAlarma(alarma);
         actividad.agregarAlarma(nuevoInicio, efecto);
+        notificar();
     }
 
     // Recibe una instancia de Evento o Tarea y modifica la alarma, que tiene las caracteristicas indicadas, con el parametro pasado.
@@ -254,12 +277,14 @@ public class Calendario implements Serializable {
         Alarma alarma = actividad.buscarAlarma(inicio, efecto);
         actividad.eliminarAlarma(alarma);
         actividad.agregarAlarma(inicio, nuevoEfecto);
+        notificar();
     }
 
     // Recibe una instancia de Evento o Tarea y le elimina la alarma que tiene las caracteristicas indicadas.
     public void eliminarAlarma(Actividad actividad, LocalDateTime inicio, Efecto efecto) {
         Alarma alarma = actividad.buscarAlarma(inicio, efecto);
         actividad.eliminarAlarma(alarma);
+        notificar();
     }
 
     // Devuelve la siguiente alarma que deberia sonar basandose en la fecha pasada.
@@ -310,5 +335,16 @@ public class Calendario implements Serializable {
     public static Calendario deserializar(InputStream is) throws IOException, ClassNotFoundException {
         ObjectInputStream objectInStream = new ObjectInputStream(is);
         return (Calendario) objectInStream.readObject();
+    }
+
+    // METODOS DE OBSERVER
+    public void suscribir(Suscriptor s) { suscriptores.add(s); }
+
+    public void desuscribir(Suscriptor s) { suscriptores.remove(s); }
+
+    public void notificar() {
+        for (Suscriptor s : suscriptores) {
+            s.actualizar();
+        }
     }
 }

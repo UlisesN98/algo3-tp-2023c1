@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.time.Duration;
 
-public class Main extends Application {
+public class Main extends Application implements Suscriptor{
 
     // ATRIBUTOS RELATIVOS A VISTA DE ACTIVIDADES
     @FXML
@@ -479,7 +479,6 @@ public class Main extends Application {
     }
     public void cambiarTareaCompletada(Tarea tarea) {
         calendario.marcarTarea(tarea);
-        guardarEstado();
     }
 
     /* METODOS RELATIVOS A CREAR */
@@ -600,15 +599,12 @@ public class Main extends Application {
             Integer frecuenciaRepeticion = Integer.valueOf(frequencyRepeatDaily.getText());
             Repeticion repeticion = new RepeticionDiariaIntervalo(inicioEventoFormateado, quantityRepsParsed, frecuenciaRepeticion);
             calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, efectos, repeticion);
-            guardarEstado();
         } else if (seRepite) {
             Integer frecuenciaRepeticion = Integer.valueOf(frequencyRepeatDaily.getText());
             Repeticion repeticion = new RepeticionDiariaIntervalo(inicioEventoFormateado, frecuenciaRepeticion);
             calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, efectos, repeticion);
-            guardarEstado();
         } else {
             calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, efectos, null);
-            guardarEstado();
         }
         mostrarVistaActividades();
     }
@@ -668,7 +664,6 @@ public class Main extends Application {
         Arrays.fill(efectos, Efecto.NOTIFICACION);
 
         calendario.crearTarea(tituloTarea, descripcionTarea, diaCompleto, dateTimeTareaFormateado, alarmasFormateadas, efectos);
-        guardarEstado();
         mostrarVistaActividades();
     }
 
@@ -736,7 +731,6 @@ public class Main extends Application {
 
         calendario.modificar(tarea, nuevoTitulo, nuevaDescripcion, nuevoLimite);
         calendario.modificar(tarea, allDayCheckboxModifyTask.isSelected());
-        guardarEstado();
         mostrarVistaActividades();
     }
 
@@ -811,7 +805,6 @@ public class Main extends Application {
 
         calendario.modificar(evento, nuevoTitulo, nuevaDescripcion, nuevoInicio, nuevoFin);
         calendario.modificar(evento, allDayCheckboxModifyEvent.isSelected());
-        guardarEstado();
         mostrarVistaActividades();
     }
 
@@ -858,13 +851,11 @@ public class Main extends Application {
     /* METODOS RELATIVOS A ELIMINAR */
     public void eliminarEvento(Evento evento) {
         calendario.eliminarEvento(evento);
-        guardarEstado();
         mostrarVistaActividades();
     }
 
     public void eliminarTarea(Tarea tarea) {
         calendario.eliminarTarea(tarea);
-        guardarEstado();
         mostrarVistaActividades();
     }
 
@@ -921,9 +912,15 @@ public class Main extends Application {
             c = Calendario.deserializar(estado);
         } catch (FileNotFoundException e) {
             c = new Calendario();
+            c.suscribir(this);
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
         return c;
+    }
+
+    @Override
+    public void actualizar() {
+        guardarEstado();
     }
 }
