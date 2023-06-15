@@ -876,46 +876,6 @@ public class CalendarioTest {
         assertEquals(segundaTareaLista.getInicio(), limite2);
     }
 
-    /*
-    @Test
-    public void modificarRepeticion() {
-        // Arrange
-
-        var nuevoCalendario = new Calendario();
-
-        String titulo1 = "Evento";
-        String descripcion1 = "Evento a probar";
-        LocalDateTime inicio1 = LocalDateTime.parse("2023-04-24T14:00");
-        LocalDateTime fin1 = LocalDateTime.parse("2023-04-24T17:00");
-        LocalDateTime[] inicioAlarmas1 = {LocalDateTime.parse("2023-04-24T13:00")};
-        Efecto[] efectoAlarmas1 = {Efecto.NOTIFICACION};
-        Repeticion repeticion1 = new RepeticionDiariaIntervalo(inicio1, 5, 3);
-
-        Repeticion repeticion2 = new RepeticionComun(inicio1, Frecuencia.SEMANAL);
-
-        // Act
-
-        nuevoCalendario.crearEvento(titulo1, descripcion1, false, inicio1, fin1, inicioAlarmas1, efectoAlarmas1, repeticion1);
-        List<Evento> listaEventos = nuevoCalendario.buscarEventoPorIntervalo(inicio1, fin1);
-        Evento eventoBuscado = listaEventos.get(0);
-
-        LocalDateTime siguienteRepeticion1 = eventoBuscado.siguienteRepeticion(LocalDateTime.parse("2023-04-24T14:01"));
-
-        // Modifico la repeticion
-        nuevoCalendario.modificar(eventoBuscado, repeticion2);
-        LocalDateTime siguienteRepeticion2 = eventoBuscado.siguienteRepeticion(LocalDateTime.parse("2023-04-24T14:01"));
-
-        nuevoCalendario.modificar(eventoBuscado, null);
-        LocalDateTime siguienteRepeticion3 = eventoBuscado.siguienteRepeticion(LocalDateTime.parse("2023-04-24T14:01"));
-
-        // Assert
-
-        // Chequeo que la siguiente repeticion sea correcta y se actualice
-        assertEquals(LocalDateTime.parse("2023-04-27T14:00"), siguienteRepeticion1);
-        assertEquals(LocalDateTime.parse("2023-05-01T14:00"), siguienteRepeticion2);
-        assertNull(siguienteRepeticion3);
-    }*/
-
     // Crea un evento con un dado inicio y fin pero indicando que es de dia completo y chequea que sus valores de inicio y fin son los
     // que corresponden al ser marcado como dia completo
     @Test

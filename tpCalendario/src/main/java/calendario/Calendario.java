@@ -184,12 +184,6 @@ public class Calendario implements Serializable {
         tarea.setDiaCompleto(diaCompleto);
     }
 
-    // Modifica la Repeticion de un Evento tras pasarle una nueva instancia de esta con las nuevas caracteristicas requeridas.
-    public void modificar(Evento evento, Repeticion repeticion) {
-       evento.setRepeticion(repeticion);
-    }
-
-
     // METODOS DE ELIMINACION
 
     // Recibe una instancia de Evento y la quita de la lista de Eventos.

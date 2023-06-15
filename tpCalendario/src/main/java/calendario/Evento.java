@@ -82,10 +82,6 @@ public class Evento extends Actividad {
         this.diaCompleto = esDiaCompleto;
     }
 
-    void setRepeticion(Repeticion repeticion) {
-        this.repeticion = repeticion;
-    }
-
     public boolean esRepetido() { return (repeticion != null); }
 
     // Devuelve un treeset de LocalDateTime con las fechas de las repeticiones que ocurren en el intervalo pasado por parametro.

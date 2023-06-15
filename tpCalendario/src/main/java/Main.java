@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -133,6 +134,10 @@ public class Main extends Application {
     private TextField newDateModifyTask;
     @FXML
     private TextField newTimeLimitModifyTask;
+
+    // ATRIBUTO RELATIVO A ALARMA
+    @FXML
+    private VBox detalleAlarma;
 
     // ATRIBUTOS DEL CONTROLADOR
     private final Calendario calendario;
@@ -376,10 +381,14 @@ public class Main extends Application {
 
     public void mostrarDetalleEvento(Evento evento) {
         Label titulo = new Label();
+        Font f1 = new Font(18);
         titulo.setText(evento.getTitulo());
+        titulo.setFont(f1);
 
         Label descripcion = new Label();
+        Font f2 = new Font(14);
         descripcion.setText(evento.getDescripcion());
+        descripcion.setFont(f2);
 
         Label diaCompleto = new Label();
         Label inicio = new Label();
@@ -404,10 +413,13 @@ public class Main extends Application {
 
         detalleActividad.getChildren().add(titulo);
         detalleActividad.getChildren().add(descripcion);
+        detalleActividad.getChildren().add(new Label());
         detalleActividad.getChildren().add(diaCompleto);
         detalleActividad.getChildren().add(inicio);
         detalleActividad.getChildren().add(fin);
+        detalleActividad.getChildren().add(new Label());
         detalleActividad.getChildren().add(repeticion);
+        detalleActividad.getChildren().add(new Label());
 
         mostrarAlarmas(evento);
     }
@@ -432,12 +444,15 @@ public class Main extends Application {
     }
 
     public void mostrarDetalleTarea(Tarea tarea) {
-
         Label titulo = new Label();
+        Font f1 = new Font(18);
         titulo.setText(tarea.getTitulo());
+        titulo.setFont(f1);
 
         Label descripcion = new Label();
+        Font f2 = new Font(14);
         descripcion.setText(tarea.getDescripcion());
+        descripcion.setFont(f2);
 
         Label diaCompleto = new Label();
         Label inicio = new Label();
@@ -459,9 +474,12 @@ public class Main extends Application {
 
         detalleActividad.getChildren().add(titulo);
         detalleActividad.getChildren().add(descripcion);
+        detalleActividad.getChildren().add(new Label());
         detalleActividad.getChildren().add(diaCompleto);
         detalleActividad.getChildren().add(inicio);
+        detalleActividad.getChildren().add(new Label());
         detalleActividad.getChildren().add(completada);
+        detalleActividad.getChildren().add(new Label());
 
         mostrarAlarmas(tarea);
     }
@@ -872,6 +890,7 @@ public class Main extends Application {
     public void chequearRepeticiones(ActionEvent event) {
         LocalDateTime horaActual = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
         calendario.actualizarEventosRepetidos(horaActual);
+        guardarEstado();
     }
 
     /* METODOS RELATIVOS A CONTROLAR LAS ALARMAS */
@@ -881,25 +900,20 @@ public class Main extends Application {
             mostrarAlarma(calendario.obtenerProximaAlarma(horaActual));
         }
     }
-
     public void mostrarAlarma(Alarma alarma) {
         Actividad actividad = alarma.disparar();
         guardarEstado();
 
-        var vista = new VBox();
+        AnchorPane vista = cargarVista("vistaAlarma.fxml");
+
         var titulo = new Label(actividad.getTitulo());
-        var descripcion = new Label(actividad.getDescripcion());
+        var inicio = new Label(formatoTiempo(actividad.getInicio()));
 
-        vista.getChildren().add(titulo);
-        vista.getChildren().add(descripcion);
+        detalleAlarma.getChildren().add(titulo);
+        detalleAlarma.getChildren().add(inicio);
 
-        var escena = new Scene(vista, 200, 100);
-
+        var escena = new Scene(vista);
         var ventana = new Stage();
-        ventana.setMinWidth(200);
-        ventana.setMaxWidth(200);
-        ventana.setMinHeight(100);
-        ventana.setMaxHeight(100);
         ventana.setScene(escena);
         ventana.show();
     }
