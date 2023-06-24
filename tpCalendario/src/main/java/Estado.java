@@ -2,9 +2,9 @@ import calendario.Calendario;
 
 import java.io.*;
 
-public class Persistir {
+public class Estado {
 
-    public static void guardarEstado(Calendario calendario, String ruta) {
+    public static void guardar(Calendario calendario, String ruta) {
         try {
             var estado = new BufferedOutputStream(new FileOutputStream(ruta));
             calendario.serializar(estado);
@@ -13,7 +13,7 @@ public class Persistir {
         }
     }
 
-    public static Calendario recuperarEstado(String ruta) {
+    public static Calendario recuperar(String ruta) {
         Calendario c;
         try {
             var estado = new BufferedInputStream(new FileInputStream(ruta));

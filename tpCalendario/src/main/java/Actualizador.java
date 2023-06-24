@@ -18,12 +18,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Actualizar {
+public class Actualizador {
 
     private final Calendario calendario;
     private final String ruta;
 
-    public Actualizar(Calendario calendario, String ruta) {
+    public Actualizador(Calendario calendario, String ruta) {
         this.calendario = calendario;
         this.ruta = ruta;
 
@@ -36,7 +36,7 @@ public class Actualizar {
     /* COMPLETAR/DESCOMPLETAR TAREA */
     public void cambiarTareaCompletada(Tarea tarea) {
         calendario.marcarTarea(tarea);
-        Persistir.guardarEstado(calendario, ruta);
+        Estado.guardar(calendario, ruta);
     }
 
     /* CREAR EVENTOS Y TAREAS */
@@ -138,15 +138,15 @@ public class Actualizar {
             Integer frecuenciaRepeticion = Integer.valueOf(frequencyRepeatDaily.getText());
             Repeticion repeticion = new RepeticionDiariaIntervalo(inicioEventoFormateado, quantityRepsParsed, frecuenciaRepeticion);
             calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, efectos, repeticion);
-            Persistir.guardarEstado(calendario, ruta);
+            Estado.guardar(calendario, ruta);
         } else if (seRepite) {
             Integer frecuenciaRepeticion = Integer.valueOf(frequencyRepeatDaily.getText());
             Repeticion repeticion = new RepeticionDiariaIntervalo(inicioEventoFormateado, frecuenciaRepeticion);
             calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, efectos, repeticion);
-            Persistir.guardarEstado(calendario, ruta);
+            Estado.guardar(calendario, ruta);
         } else {
             calendario.crearEvento(tituloEvento, descripcionEvento, diaCompleto, inicioEventoFormateado, finEventoFormateado, alarmasFormateadas, efectos, null);
-            Persistir.guardarEstado(calendario, ruta);
+            Estado.guardar(calendario, ruta);
         }
     }
 
@@ -205,7 +205,7 @@ public class Actualizar {
         Arrays.fill(efectos, Efecto.NOTIFICACION);
 
         calendario.crearTarea(tituloTarea, descripcionTarea, diaCompleto, dateTimeTareaFormateado, alarmasFormateadas, efectos);
-        Persistir.guardarEstado(calendario, ruta);
+        Estado.guardar(calendario, ruta);
     }
 
     /* MODIFICAR EVENTOS Y TAREAS */
@@ -281,7 +281,7 @@ public class Actualizar {
 
         calendario.modificar(evento, nuevoTitulo, nuevaDescripcion, nuevoInicio, nuevoFin);
         calendario.modificar(evento, allDayCheckboxModifyEvent.isSelected());
-        Persistir.guardarEstado(calendario, ruta);
+        Estado.guardar(calendario, ruta);
     }
 
     public void modificarTarea(Tarea tarea, TextField newTitleModifyTask, TextArea newDescriptionModifyTask, CheckBox allDayCheckboxModifyTask, TextField newTimeLimitModifyTask, TextField newDateModifyTask) {
@@ -327,7 +327,7 @@ public class Actualizar {
 
         calendario.modificar(tarea, nuevoTitulo, nuevaDescripcion, nuevoLimite);
         calendario.modificar(tarea, allDayCheckboxModifyTask.isSelected());
-        Persistir.guardarEstado(calendario, ruta);
+        Estado.guardar(calendario, ruta);
     }
 
     /* METODOS AUXILIARES */
@@ -374,18 +374,18 @@ public class Actualizar {
     /* ELIMINAR EVENTOS Y TAREAS */
     public void eliminarEvento(Evento evento) {
         calendario.eliminarEvento(evento);
-        Persistir.guardarEstado(calendario, ruta);
+        Estado.guardar(calendario, ruta);
     }
 
     public void eliminarTarea(Tarea tarea) {
         calendario.eliminarTarea(tarea);
-        Persistir.guardarEstado(calendario, ruta);
+        Estado.guardar(calendario, ruta);
     }
 
     /* CONTROLAR LAS REPETICIONES */
     public void chequearRepeticiones(ActionEvent event) {
         LocalDateTime horaActual = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
         calendario.actualizarEventosRepetidos(horaActual);
-        Persistir.guardarEstado(calendario, ruta);
+        Estado.guardar(calendario, ruta);
     }
 }

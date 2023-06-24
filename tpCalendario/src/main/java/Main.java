@@ -9,15 +9,15 @@ public class Main extends Application {
 
     public Main() {
         ruta = "calendario";
-        calendario = Persistir.recuperarEstado(ruta);
-        Persistir.guardarEstado(calendario, ruta);
+        calendario = Estado.recuperar(ruta);
+        Estado.guardar(calendario, ruta);
     }
 
     @Override
     public void start(Stage stage) {
-        Actualizar actualizar = new Actualizar(calendario, ruta);
-        Mostrar mostrar = new Mostrar(calendario, actualizar, stage);
-        Alarmar alarmar = new Alarmar(calendario, ruta);
-        mostrar.mostrarVistaActividades();
+        Actualizador actualizador = new Actualizador(calendario, ruta);
+        VistaActividades vistaActividades = new VistaActividades(calendario, actualizador, stage);
+        ControladorAlarma controladorAlarma = new ControladorAlarma(calendario, ruta);
+        vistaActividades.mostrar();
     }
 }

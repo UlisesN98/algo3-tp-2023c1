@@ -15,7 +15,7 @@
       <TextField fx:id="newDateModifyTask" layoutX="252.0" layoutY="76.0" prefHeight="25.0" prefWidth="167.0" promptText="Nueva Fecha (DD/MM/YYYY)" />
       <TextField fx:id="newTimeLimitModifyTask" layoutX="439.0" layoutY="76.0" prefHeight="25.0" prefWidth="131.0" promptText="Nuevo Limite (XX:XX)" />
       <CheckBox fx:id="allDayCheckboxModifyTask" layoutX="259.0" layoutY="116.0" mnemonicParsing="false" text="Dia Completo?" />
-      <Button fx:id="cancelarModificarTarea" layoutX="28.0" layoutY="24.0" mnemonicParsing="false" text="Cancelar" />
-      <Button fx:id="modificarTarea" layoutX="503.0" layoutY="24.0" mnemonicParsing="false" text="Modificar" />
+      <Button fx:id="cancelar" layoutX="28.0" layoutY="24.0" mnemonicParsing="false" text="Cancelar" />
+      <Button fx:id="modificar" layoutX="503.0" layoutY="24.0" mnemonicParsing="false" text="Modificar" />
    </children>
 </AnchorPane>

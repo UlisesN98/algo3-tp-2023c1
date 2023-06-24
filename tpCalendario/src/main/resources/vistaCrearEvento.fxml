@@ -9,8 +9,8 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Button fx:id="cancelarEvento" layoutX="28.0" layoutY="24.0" mnemonicParsing="false" text="Cancelar" />
-      <Button fx:id="crearEvento" layoutX="493.0" layoutY="24.0" mnemonicParsing="false" text="Crear Evento" />
+      <Button fx:id="cancelar" layoutX="28.0" layoutY="24.0" mnemonicParsing="false" text="Cancelar" />
+      <Button fx:id="crear" layoutX="493.0" layoutY="24.0" mnemonicParsing="false" text="Crear Evento" />
       <CheckBox fx:id="completeDayCheckbox" layoutX="276.0" layoutY="150.0" mnemonicParsing="false" text="Dia completo?" />
       <TextField fx:id="fieldFechaInicio" layoutX="276.0" layoutY="76.0" prefHeight="25.0" prefWidth="167.0" promptText="Fecha inicio (DD/MM/AAAA)" />
       <TextArea fx:id="areaAlarms" layoutX="450.0" layoutY="175.0" prefHeight="205.0" prefWidth="127.0" promptText="Colocar tiempo de inicio previo al evento (Ej: 2h = 2 horas antes del inicio, 30m = 30 minutos antes del evento y 1d = 1 dia antes del inicio del evento) - Separados por enter" />

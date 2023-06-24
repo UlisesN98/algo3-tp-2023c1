@@ -16,14 +16,14 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-public class Alarmar {
+public class ControladorAlarma {
 
     @FXML
     private VBox detalleAlarma;
     private final Calendario calendario;
     private final String ruta;
 
-    public Alarmar(Calendario calendario, String ruta) {
+    public ControladorAlarma(Calendario calendario, String ruta) {
         this.calendario = calendario;
         this.ruta = ruta;
 
@@ -38,7 +38,7 @@ public class Alarmar {
         if (calendario.iniciaProximaAlarma(horaActual)) {
             Alarma alarma = calendario.obtenerProximaAlarma(horaActual);
             Actividad actividad = alarma.disparar();
-            Persistir.guardarEstado(calendario, ruta);
+            Estado.guardar(calendario, ruta);
             mostrarAlarma(actividad);
         }
     }
@@ -54,7 +54,7 @@ public class Alarmar {
         }
 
         var titulo = new Label(actividad.getTitulo());
-        var inicio = new Label(Mostrar.formatoTiempo(actividad.getInicio()));
+        var inicio = new Label(VistaActividades.formatoTiempo(actividad.getInicio()));
 
         detalleAlarma.getChildren().add(titulo);
         detalleAlarma.getChildren().add(inicio);

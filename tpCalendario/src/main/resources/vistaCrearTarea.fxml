@@ -9,8 +9,8 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Button fx:id="cancelarTarea" layoutX="28.0" layoutY="24.0" mnemonicParsing="false" text="Cancelar" />
-      <Button fx:id="crearTarea" layoutX="493.0" layoutY="24.0" mnemonicParsing="false" text="Crear Tarea" />
+      <Button fx:id="cancelar" layoutX="28.0" layoutY="24.0" mnemonicParsing="false" text="Cancelar" />
+      <Button fx:id="crear" layoutX="493.0" layoutY="24.0" mnemonicParsing="false" text="Crear Tarea" />
       <CheckBox fx:id="completeDayCheckbox" layoutX="296.0" layoutY="117.0" mnemonicParsing="false" text="Dia completo?" />
       <TextField fx:id="fieldFecha" layoutX="290.0" layoutY="76.0" prefHeight="25.0" prefWidth="137.0" promptText="Fecha (DD/MM/AAAA)" />
       <TextArea fx:id="areaAlarms" layoutX="440.0" layoutY="175.0" prefHeight="205.0" prefWidth="137.0" promptText="Colocar tiempo de inicio previo al vencimiento de la tarea (Ej: 2h = 2 horas antes del inicio, 30m = 30 minutos antes de la tarea y 1d = 1 dia antes del vencimiento de la tarea) - Separados por enter" />
